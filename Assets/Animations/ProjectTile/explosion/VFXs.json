@@ -1,0 +1,150 @@
+{
+"skeleton": { "hash": "hsy4aYTz2qk", "spine": "4.3.39-beta" },
+"bones": [
+	{ "name": "root" },
+	{ "name": "explosion_001", "parent": "root", "x": -0.41864014, "y": 8.16494, "scaleX": 0.52496934, "scaleY": 0.52496934 }
+],
+"slots": [
+	{ "name": "explosion_001", "bone": "explosion_001" },
+	{ "name": "explosion_002", "bone": "explosion_001", "blend": "additive" }
+],
+"skins": [
+	{
+		"name": "default",
+		"attachments": {
+			"explosion_001": {
+				"Explosion/explosion_": {
+					"x": -4.6106644,
+					"y": -12.36678,
+					"width": 302,
+					"height": 302,
+					"sequence": { "count": 12, "digits": 3 }
+				}
+			},
+			"explosion_002": {
+				"Explosion/explosion_": {
+					"x": -4.6106644,
+					"y": -12.36678,
+					"width": 302,
+					"height": 302,
+					"sequence": { "count": 12, "digits": 3 }
+				}
+			}
+		}
+	}
+],
+"events": {
+	"appear": {},
+	"attack": {}
+},
+"animations": {
+	"explosion_big": {
+		"slots": {
+			"explosion_001": {
+				"rgba": [
+					{
+						"time": 0.3125,
+						"color": "ffffffff",
+						"curve": [ 0.375, 1, 0.4375, 1, 0.375, 1, 0.4375, 1, 0.375, 1, 0.4375, 1, 0.3775312, 0.9883112, 0.4377784, 0.014558971 ]
+					},
+					{ "time": 0.5, "color": "ffffff00" }
+				],
+				"attachment": [
+					{ "name": "Explosion/explosion_" }
+				]
+			},
+			"explosion_002": {
+				"rgba": [
+					{ "color": "ffffffff" },
+					{ "time": 0.3125, "color": "ffffff00" }
+				],
+				"attachment": [
+					{ "name": "Explosion/explosion_" }
+				]
+			}
+		},
+		"bones": {
+			"explosion_001": {
+				"translate": [
+					{ "x": 0.7101898, "y": -4.7345886 }
+				],
+				"scale": [
+					{ "x": 1.9048731, "y": 1.9048731 }
+				]
+			}
+		},
+		"attachments": {
+			"default": {
+				"explosion_001": {
+					"Explosion/explosion_": {
+						"sequence": [
+							{ "mode": "once", "delay": 0.041666668 }
+						]
+					}
+				},
+				"explosion_002": {
+					"Explosion/explosion_": {
+						"sequence": [
+							{ "mode": "once", "delay": 0.041666668 }
+						]
+					}
+				}
+			}
+		}
+	},
+	"explosion_small": {
+		"slots": {
+			"explosion_001": {
+				"rgba": [
+					{
+						"time": 0.3125,
+						"color": "ffffffff",
+						"curve": [ 0.375, 1, 0.4375, 1, 0.375, 1, 0.4375, 1, 0.375, 1, 0.4375, 1, 0.3775312, 0.9883112, 0.4377784, 0.014558971 ]
+					},
+					{ "time": 0.5, "color": "ffffff00" }
+				],
+				"attachment": [
+					{ "name": "Explosion/explosion_" }
+				]
+			},
+			"explosion_002": {
+				"rgba": [
+					{ "color": "ffffffff" },
+					{ "time": 0.3125, "color": "ffffff00" }
+				],
+				"attachment": [
+					{ "name": "Explosion/explosion_" }
+				]
+			}
+		},
+		"bones": {
+			"explosion_001": {
+				"rotate": [
+					{ "value": -175.5144 }
+				],
+				"translate": [
+					{ "x": 1.6571121, "y": -7.1018944 }
+				]
+			}
+		},
+		"attachments": {
+			"default": {
+				"explosion_001": {
+					"Explosion/explosion_": {
+						"sequence": [
+							{ "mode": "once", "delay": 0.033333335 }
+						]
+					}
+				},
+				"explosion_002": {
+					"Explosion/explosion_": {
+						"sequence": [
+							{ "mode": "once", "delay": 0.041666668 }
+						]
+					}
+				}
+			}
+		}
+	}
+}
+}

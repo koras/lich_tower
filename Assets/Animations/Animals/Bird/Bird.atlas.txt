@@ -1,0 +1,17 @@
+Bird.png
+size:32,32
+filter:Linear,Linear
+pma:true
+griff_body
+bounds:13,22,16,8
+griff_head
+bounds:13,13,11,7
+offsets:1,0,12,8
+griff_tail
+bounds:21,2,9,7
+rotate:90
+griff_wing_1
+bounds:2,13,9,17
+griff_wing_2
+bounds:2,2,9,17
+rotate:90

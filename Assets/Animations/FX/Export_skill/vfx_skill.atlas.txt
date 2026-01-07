@@ -1,0 +1,12 @@
+vfx_skill.png
+size:64,64
+filter:Linear,Linear
+pma:true
+fx2
+bounds:34,36,2,8
+offsets:1,1,4,10
+fx3
+bounds:2,2,12,10
+fx_1
+bounds:2,14,30,30
+offsets:1,1,32,32
