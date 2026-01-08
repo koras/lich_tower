@@ -204,13 +204,13 @@ namespace Weapons.GobArcher
 
                     if (distanceToTarget <= groundHitThreshold)
                     {
-                        Debug.Log("[GobArcherWeapons] Попадание в цель!");
+                      //  Debug.Log("[GobArcherWeapons] Попадание в цель!");
                         _targetHealth.TakeDamage(Damage);
                         targetHit = true;
                     }
                     else
                     {
-                        Debug.Log($"[GobArcherWeapons] Цель ушла, расстояние: {distanceToTarget:F2}");
+                      //  Debug.Log($"[GobArcherWeapons] Цель ушла, расстояние: {distanceToTarget:F2}");
                     }
                 }
 

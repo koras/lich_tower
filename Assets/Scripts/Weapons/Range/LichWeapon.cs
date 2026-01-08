@@ -65,7 +65,6 @@ namespace Weapons.Range
           var arrow = Instantiate(_arrowPrefabLich, spawnPos, Quaternion.identity);
               Vector2 target = new Vector2(_targetPosition.x, _targetPosition.y);
               arrow.InitFire(target, 150);
-     
       }
     }
 }

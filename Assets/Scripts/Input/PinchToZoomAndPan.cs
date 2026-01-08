@@ -25,8 +25,8 @@ namespace Input
 
         [Header("Zoom")]
         [SerializeField] public float zoomSpeed = 0.2f;
-        [SerializeField] public float minZoom = 10f;
-        [SerializeField] public float maxZoom = 20f;
+        [SerializeField] public float minZoom = 3f;
+        [SerializeField] public float maxZoom = 10f;
 
         [SerializeField] private TMP_Text _textMinZoom = null;
         [SerializeField] private TMP_Text _textMaxZoom = null;
