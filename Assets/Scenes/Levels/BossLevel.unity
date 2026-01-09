@@ -6399,15 +6399,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1713202252662352884, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.567084
+      value: 11.567423
       objectReference: {fileID: 0}
     - target: {fileID: 1713202252662352884, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.6233034
+      value: -3.1252775
       objectReference: {fileID: 0}
     - target: {fileID: 1713202252662352884, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.776839
+      value: -9.784674
       objectReference: {fileID: 0}
     - target: {fileID: 1713202252662352884, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6447,7 +6447,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2932728975521640500, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
       propertyPath: m_Size.y
-      value: 11.640772
+      value: 10.582819
       objectReference: {fileID: 0}
     - target: {fileID: 2932728975521640500, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
       propertyPath: m_Offset.x
@@ -6455,7 +6455,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2932728975521640500, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
       propertyPath: m_Offset.y
-      value: -3.5710878
+      value: -4.1000643
       objectReference: {fileID: 0}
     - target: {fileID: 3636413265486273615, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
       propertyPath: Lens.OrthographicSize
