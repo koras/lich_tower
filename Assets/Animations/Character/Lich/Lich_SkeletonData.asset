@@ -18,9 +18,13 @@ MonoBehaviour:
   skeletonJSON: {fileID: 4900000, guid: c7c96272472653a4d8ee0bee8316df1d, type: 3}
   isUpgradingBlendModeMaterials: 0
   blendModeMaterials:
-    requiresBlendModeMaterials: 0
-    applyAdditiveMaterial: 0
-    additiveMaterials: []
+    requiresBlendModeMaterials: 1
+    applyAdditiveMaterial: 1
+    additiveMaterials:
+    - pageName: Lich.png
+      material: {fileID: 2100000, guid: a458e908b41ae1c449995abc1fb0161c, type: 2}
+    - pageName: Lich.png
+      material: {fileID: 2100000, guid: 40cfd14d96fd6d748836c40d983f35ed, type: 2}
     multiplyMaterials: []
     screenMaterials: []
   skeletonDataModifiers: []
