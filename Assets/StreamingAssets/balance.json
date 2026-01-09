@@ -1,0 +1,40 @@
+{
+  "difficulties": [
+    {
+      "difficulty": "Easy",
+      "heroes": [
+        { "hero": "Lich", "maxHp": 180, "maxMana": 140, "xpReward": 0 }, 
+        { "hero": "Shaman", "maxHp": 260, "maxMana": 200, "xpReward": 50 },
+		
+        { "hero": "GobArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90 },
+        { "hero": "OrcWar", "maxHp": 91, "maxMana": 92, "xpReward": 90 },
+        { "hero": "SkeletonArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90 },
+        { "hero": "Skeleton", "maxHp": 95, "maxMana": 0, "xpReward": 9 },
+      ]
+    },
+    {
+      "difficulty": "Normal",
+      "heroes": [
+        { "hero": "Lich", "maxHp": 150, "maxMana": 120, "xpReward": 0 }, 
+        { "hero": "Shaman", "maxHp": 320, "maxMana": 220, "xpReward": 70 },
+		
+        { "hero": "GobArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90 },
+        { "hero": "OrcWar", "maxHp": 91, "maxMana": 92, "xpReward": 90 },
+        { "hero": "SkeletonArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90 },
+        { "hero": "Skeleton", "maxHp": 95, "maxMana": 0, "xpReward": 9 },
+      ]
+    },
+    {
+      "difficulty": "Hard",
+      "heroes": [
+        { "hero": "Lich", "maxHp": 130, "maxMana": 110, "xpReward": 0 }, 
+        { "hero": "Shaman", "maxHp": 380, "maxMana": 260, "xpReward": 90 },
+		
+        { "hero": "GobArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90 },
+        { "hero": "OrcWar", "maxHp": 91, "maxMana": 92, "xpReward": 90 },
+        { "hero": "SkeletonArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90 },
+        { "hero": "Skeleton", "maxHp": 95, "maxMana": 0, "xpReward": 9 },
+      ]
+    }
+  ]
+}
