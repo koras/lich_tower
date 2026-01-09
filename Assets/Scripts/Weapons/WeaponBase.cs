@@ -19,7 +19,9 @@ namespace Weapons
         
         
         [Header("Урон")] 
-        [field: SerializeField] public int Damage { get;   set; } = 5;
+        protected int Damage = 5;
+        
+        
         [field: SerializeField] public float Cooldown { get; private set; } = .3f;
     
         [Header("Название оружия для логов")] 

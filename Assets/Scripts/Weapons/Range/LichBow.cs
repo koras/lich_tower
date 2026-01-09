@@ -79,13 +79,7 @@ namespace Weapons.Range
             
             Debug.LogWarning($"отключил LichBombProjectile2D222 Projectile2D!");
             // инициализация параметров снаряда
-       //  proj.Init(
-               // owner: GetComponentInParent<Heroes.HeroesBase>(),
-           //     target: targetForInit,
-           //     damage: Damage//, 
-             //   homing: homing,
-            //    turn: turnSpeed
-         //   );
+ 
 
         }
     }

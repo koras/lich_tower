@@ -6,7 +6,7 @@ namespace Weapons
     public interface IWeapon
     {
        // string Id { get; } // "sword", "bow" и т.п.
-        int Damage { get; }
+       
         float Cooldown { get; }
 
         string WeaponName  { get; }
@@ -15,7 +15,8 @@ namespace Weapons
         void Attack(); // действие
 
         void InvokeAttack();
-        
+
+         void SetDamage(int value);
      //   event Action OnAttack; // события по желанию
 
         void SetEnemyTarget(Transform currentTarget);

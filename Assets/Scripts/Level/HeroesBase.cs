@@ -464,7 +464,7 @@ namespace Heroes
                 // xpReward можно сохранить в поле, если надо:
                 // _xpReward = b.XpReward;
 
-                Debug.LogWarning($"[HeroesBase] Balance applied: {_hero} diff={difficulty} hp={maxHp} mana={_maxManna}");
+                Debug.LogWarning($"[HeroesBase] Balance applied: {_hero} diff={difficulty} hp={maxHp} mana={_maxManna} mana={b.Damage}");
             }
         }
         

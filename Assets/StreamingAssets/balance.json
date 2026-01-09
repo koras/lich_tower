@@ -3,34 +3,34 @@
     {
       "difficulty": "Easy",
       "heroes": [
-        { "hero": "Lich", "maxHp": 180, "maxMana": 140, "xpReward": 0, "Damage": 11, "Cost": 1  },
-        { "hero": "Shaman", "maxHp": 260, "maxMana": 200, "xpReward": 50, "Damage": 11, "Cost": 1  },
-        { "hero": "GobArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90, "Damage": 11, "Cost": 1  },
-        { "hero": "OrcWar", "maxHp": 91, "maxMana": 92, "xpReward": 90, "Damage": 11, "Cost": 1  },
-        { "hero": "SkeletonArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90, "Damage": 11, "Cost": 1  },
-        { "hero": "Skeleton", "maxHp": 95, "maxMana": 0, "xpReward": 9, "Damage": 11, "Cost": 1  }
+        { "hero": "Lich", "maxHp": 180, "maxMana": 140, "xpReward": 0, "damage": 10, "Cost": 1  },
+        { "hero": "Shaman", "maxHp": 260, "maxMana": 200, "xpReward": 50, "damage": 10, "Cost": 1  },
+        { "hero": "GobArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90, "damage": 10, "Cost": 1  },
+        { "hero": "OrcWar", "maxHp": 91, "maxMana": 92, "xpReward": 90, "damage": 10, "Cost": 1  },
+        { "hero": "SkeletonArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90, "damage": 10, "Cost": 1  },
+        { "hero": "Skeleton", "maxHp": 95, "maxMana": 0, "xpReward": 9, "damage": 10, "Cost": 1  }
       ]
     },
     {
       "difficulty": "Normal",
       "heroes": [
-        { "hero": "Lich", "maxHp": 150, "maxMana": 120, "xpReward": 0, "Damage": 10, "Cost": 1 },
-        { "hero": "Shaman", "maxHp": 320, "maxMana": 220, "xpReward": 70, "Damage": 12, "Cost": 1 },
-        { "hero": "GobArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90, "Damage": 11, "Cost": 1 },
-        { "hero": "OrcWar", "maxHp": 91, "maxMana": 92, "xpReward": 90, "Damage": 11, "Cost": 1  },
-        { "hero": "SkeletonArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90, "Damage": 11, "Cost": 1  },
-        { "hero": "Skeleton", "maxHp": 95, "maxMana": 0, "xpReward": 9, "Damage": 11, "Cost": 1  }
+        { "hero": "Lich", "maxHp": 150, "maxMana": 120, "xpReward": 0, "damage": 20, "Cost": 1 },
+        { "hero": "Shaman", "maxHp": 320, "maxMana": 220, "xpReward": 70, "damage": 20, "Cost": 1 },
+        { "hero": "GobArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90, "damage": 20, "Cost": 1 },
+        { "hero": "OrcWar", "maxHp": 91, "maxMana": 92, "xpReward": 90, "damage": 20, "Cost": 1  },
+        { "hero": "SkeletonArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90, "damage": 20, "Cost": 1  },
+        { "hero": "Skeleton", "maxHp": 95, "maxMana": 0, "xpReward": 9, "damage": 20, "Cost": 1  }
       ]
     },
     {
       "difficulty": "Hard",
       "heroes": [
-        { "hero": "Lich", "maxHp": 130, "maxMana": 110, "xpReward": 0, "Damage": 11, "Cost": 1  },
-        { "hero": "Shaman", "maxHp": 380, "maxMana": 260, "xpReward": 90, "Damage": 11, "Cost": 1  },
-        { "hero": "GobArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90, "Damage": 11, "Cost": 1  },
-        { "hero": "OrcWar", "maxHp": 91, "maxMana": 92, "xpReward": 90, "Damage": 11, "Cost": 1  },
-        { "hero": "SkeletonArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90, "Damage": 11, "Cost": 1  },
-        { "hero": "Skeleton", "maxHp": 95, "maxMana": 0, "xpReward": 9, "Damage": 11, "Cost": 1  }
+        { "hero": "Lich", "maxHp": 130, "maxMana": 110, "xpReward": 0, "damage": 21, "Cost": 1  },
+        { "hero": "Shaman", "maxHp": 380, "maxMana": 260, "xpReward": 90, "damage": 21, "Cost": 1  },
+        { "hero": "GobArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90, "damage": 21, "Cost": 1  },
+        { "hero": "OrcWar", "maxHp": 91, "maxMana": 92, "xpReward": 90, "damage": 21, "Cost": 1  },
+        { "hero": "SkeletonArcher", "maxHp": 91, "maxMana": 92, "xpReward": 90, "damage": 21, "Cost": 1  },
+        { "hero": "Skeleton", "maxHp": 95, "maxMana": 0, "xpReward": 9, "damage": 21, "Cost": 1  }
       ]
     }
   ]

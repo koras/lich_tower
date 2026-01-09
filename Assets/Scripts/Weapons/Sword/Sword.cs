@@ -44,8 +44,8 @@ namespace Weapons
 
             _hitAppliedThisSwing = true;
             _targetHealth.TakeDamage(Damage);
-//
-      //      Debug.Log($"[Sword] Удар по {_targetHealth.name}, урон: {Damage}");
+
+
         }
 
         
