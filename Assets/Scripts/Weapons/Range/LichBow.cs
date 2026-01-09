@@ -14,7 +14,7 @@ namespace Weapons.Range
         
         [Header("время жизни снаряда")]    // время жизни снаряда
         [SerializeField] private LayerMask hitMask;             // кого можем ударить
-        [SerializeField] private bool homing = false;           // самонаводящийся?
+    //    [SerializeField] private bool homing = false;           // самонаводящийся?
         [SerializeField] private float turnSpeed = 720f;        // град/сек при самонаводке
         
         

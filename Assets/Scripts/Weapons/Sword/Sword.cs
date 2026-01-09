@@ -1,6 +1,8 @@
 ﻿ 
 using UnityEngine;
  
+using Player;
+using Level;
 
 namespace Weapons
 {
@@ -9,10 +11,6 @@ namespace Weapons
     public class Sword : WeaponBase
     {
         private bool _hitAppliedThisSwing; 
-        
-        
-        
-        
         
         private void Awake()
         {
@@ -76,18 +74,11 @@ namespace Weapons
 
             _lastUseTime = Time.time;
             _hitAppliedThisSwing = false;   // новый взмах, сбрасываем флаг
-
-        //    Debug.Log("скелет атакует");
-
             base.Attack();
-            
             _targetHealth.TakeDamage(Damage);
-            // тут просто запускаешь анимацию удара,
-            // анимация сама дергает HitAttack()
-            // animator.SetTrigger("Attack");
         }
      
-        
+ 
         /// <summary>
         /// Закрепляем цель и кешируем её здоровье.
         /// БЕЗ кулдауна, это просто выбор цели.
@@ -101,10 +92,6 @@ namespace Weapons
                   ?? _currentTarget.GetComponentInParent<Heroes.HeroesBase>()
                 : null;
         }
-        
-        
         private void AttackColliderTurnOff() => _polygonCollider2D.enabled = false;
-
-
     }
 }

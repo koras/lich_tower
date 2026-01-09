@@ -141,8 +141,11 @@ namespace Heroes
 
         private void Awake()
         {
-         //   _goldText.text = $"{_gold}";
+            
             _ai = GetComponent<WarriorAI>();
+            ApplyBalanceFromConfig();
+            
+             
             _visual = GetComponentInChildren<BaseVisualCharacter>(true);
 
             if (_healthbar == null)
@@ -154,7 +157,7 @@ namespace Heroes
 
             HealthBarInActive();
             MannaBarInActive();
-          //  if (_healthbar != null) 
+            
             
             if(_mannabar != null)
             _mannabarCanvasGroup =  _mannabar.GetComponent<CanvasGroup>();
@@ -440,6 +443,31 @@ namespace Heroes
         {
             return _hero;
         }
+        
+        private void ApplyBalanceFromConfig()
+        {
+            if (BalanceManager.I == null) return;
+
+            var difficulty = Level.GameSettings.Difficulty;
+
+            if (BalanceManager.I.TryGetHeroBalance(GetHeroType(), difficulty, out var b))
+            {
+                maxHp = b.MaxHp;
+                _maxManna = b.MaxMana;
+
+                // при спавне логично начинать с полного
+                _currentHp = maxHp;
+                _currentManna = _maxManna;
+                
+                _ai.Weapon.SetDamage(b.Damage);
+
+                // xpReward можно сохранить в поле, если надо:
+                // _xpReward = b.XpReward;
+
+                Debug.LogWarning($"[HeroesBase] Balance applied: {_hero} diff={difficulty} hp={maxHp} mana={_maxManna}");
+            }
+        }
+        
         
         // Возможные герои
         public enum Hero

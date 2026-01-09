@@ -19,7 +19,7 @@ namespace Weapons
         
         
         [Header("Урон")] 
-        [field: SerializeField] public int Damage { get; private set; } = 5;
+        [field: SerializeField] public int Damage { get;   set; } = 5;
         [field: SerializeField] public float Cooldown { get; private set; } = .3f;
     
         [Header("Название оружия для логов")] 
@@ -51,6 +51,10 @@ namespace Weapons
             //   Debug.Log($"base:Attack");
         }
 
+        public void SetDamage(int value)
+        {
+            Damage = value;
+        }
 
         public virtual void ClearTarget()
         {
