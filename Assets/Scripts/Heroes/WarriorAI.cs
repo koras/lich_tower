@@ -116,7 +116,9 @@ namespace Heroes
         private float _dbgTimer;
         private int _lookDir = +1;
 
-        [Header("Здоровье")] [SerializeField] private HeroesBase _heroesBase;
+    
+        
+        private HeroesBase _heroesBase;
         private float _repathCd; // кулдаун пересчёта пути
 
         [Header("текущее состояние")] [SerializeField]
@@ -959,7 +961,7 @@ namespace Heroes
 
 
             _currentTarget = hp.transform; // фиксируемся на том Transform, где есть здоровье
-            // цель со здоровьем
+
             _targetHealth = hp;
 
             _agent.stoppingDistance = AttackEnterDistance;
