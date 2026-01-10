@@ -82,8 +82,9 @@ namespace Heroes
 
         [SerializeField] private float debugInterval = 0.2f;
 
-        [Header("Оружие общее")] [SerializeField]
-        private WeaponBase weapon; // у каждого героя своё оружие
+        [Header("Оружие общее")] 
+        
+        [SerializeField] private WeaponBase weapon; // у каждого героя своё оружие
 
         public WeaponBase Weapon => weapon; // ← публичный геттер
 
