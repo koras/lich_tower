@@ -5404,84 +5404,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!1 &926546707
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 926546709}
-  - component: {fileID: 926546708}
-  - component: {fileID: 926546710}
-  m_Layer: 0
-  m_Name: Input_PinchZoom
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &926546708
+--- !u!114 &926546708 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 4816247810096589245, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+  m_PrefabInstance: {fileID: 5401894583752923645}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 926546707}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fff87c8920c79454d8709f924aedd929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PinchToZoom
-  targetCamera: {fileID: 330585545}
-  animalMask:
-    serializedVersion: 2
-    m_Bits: 8
-  prefabPoint: {fileID: 7977472601716197703, guid: 06557827c967f834fbb540a00f7ad435, type: 3}
-  zoomSpeed: 0.1
-  minZoom: 2
-  maxZoom: 15
-  _textMinZoom: {fileID: 909463639}
-  _textMaxZoom: {fileID: 1049278597}
-  _textCurrentZoom: {fileID: 1344755640}
-  scrollZoomSpeed: 0.02
-  buttonZoomStep: 1
-  heroMask:
-    serializedVersion: 2
-    m_Bits: 192
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  _selectedHero: {fileID: 1792801513}
---- !u!4 &926546709
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 926546707}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10000, y: 10000, z: 1000}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &926546710
+--- !u!114 &926546710 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 2877153339036768718, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+  m_PrefabInstance: {fileID: 5401894583752923645}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 926546707}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e5984ca3c87746ea8bbc302a2d7af5f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player.BaseManager
-  _team: 1
 --- !u!1001 &983372196
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6342,6 +6286,83 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30eab61ba3487f94ab375ae4491c48d8, type: 3}
+--- !u!1001 &5401894583752923645
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1311415127636171488, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: m_Name
+      value: Input_PinchZoom
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657296150631270444, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657296150631270444, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657296150631270444, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657296150631270444, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657296150631270444, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657296150631270444, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657296150631270444, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657296150631270444, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657296150631270444, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3657296150631270444, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4816247810096589245, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: _textMaxZoom
+      value: 
+      objectReference: {fileID: 1049278597}
+    - target: {fileID: 4816247810096589245, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: _textMinZoom
+      value: 
+      objectReference: {fileID: 909463639}
+    - target: {fileID: 4816247810096589245, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 330585545}
+    - target: {fileID: 4816247810096589245, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: _selectedHero
+      value: 
+      objectReference: {fileID: 1792801513}
+    - target: {fileID: 4816247810096589245, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
+      propertyPath: _textCurrentZoom
+      value: 
+      objectReference: {fileID: 1344755640}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f8c2f0c36c9edb24d80a30f51a4e8313, type: 3}
 --- !u!1001 &6783400881081016001
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6637,7 +6658,7 @@ SceneRoots:
   - {fileID: 65648577}
   - {fileID: 258730057}
   - {fileID: 2125359455}
-  - {fileID: 926546709}
+  - {fileID: 5401894583752923645}
   - {fileID: 983372196}
   - {fileID: 2855478579439567163}
   - {fileID: 1916662071}
