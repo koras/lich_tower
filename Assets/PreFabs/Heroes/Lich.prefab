@@ -401,7 +401,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2554709917732477203}
   - component: {fileID: 6276406385027379418}
-  - component: {fileID: 8629886991649857428}
+  - component: {fileID: 3058479100004019078}
   m_Layer: 6
   m_Name: WeaponsFire
   m_TagString: Untagged
@@ -483,7 +483,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &8629886991649857428
+--- !u!114 &3058479100004019078
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -492,20 +492,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3103076786871160939}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b893c21981e4c43b8d8a6c47bcb9e1f, type: 3}
+  m_Script: {fileID: 11500000, guid: f16785d1969840f3a7483ba597a06a65, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Weapons.Range.ShamanBow
+  m_EditorClassIdentifier: Assembly-CSharp::Weapons.Projectile.LichAttack
   _polygonCollider2D: {fileID: 0}
   canAttack: 1
   <Cooldown>k__BackingField: 0.3
   weaponName: Weapon
-  arrowPrefab: {fileID: 2517328470456416780, guid: 310493b1c26badc40b610a970955b901, type: 3}
-  firePoint: {fileID: 0}
-  hitMask:
-    serializedVersion: 2
-    m_Bits: 0
-  aimYOffset: 0.35
-  noTargetForward: 6
 --- !u!1 &3239769074307896495
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,9 +579,8 @@ MonoBehaviour:
   flipThreshold: 0.02
   attackRate: 1.2
   debugInterval: 0.2
-  weapon: {fileID: 8629886991649857428}
+  weapon: {fileID: 3058479100004019078}
   _weaponLichFireball: {fileID: 3855697240862667242}
-  _heroesBase: {fileID: 0}
   _state: 6
   debugAI: 0
   senseInterval: 0.3

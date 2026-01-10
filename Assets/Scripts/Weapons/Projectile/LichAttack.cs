@@ -34,8 +34,7 @@ namespace Weapons.Projectile
                 return;
             }
 
-         //   Debug.Log("Sword.HitAttack()");
-
+         //   Debug.Log("Sword.HitAttack()");  
             // цель не назначена
             if (_targetHealth == null || _currentTarget == null)
                 return;
@@ -45,6 +44,7 @@ namespace Weapons.Projectile
                 return;
 
             _hitAppliedThisSwing = true;
+            
             _targetHealth.TakeDamage(Damage);
 
 

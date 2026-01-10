@@ -3,6 +3,7 @@ using System;
 using Title;
 using Player;
 using Level;
+using Damage;
 
 namespace Heroes
 {
@@ -81,6 +82,11 @@ namespace Heroes
         [SerializeField] private bool _findBoss = true;
 
          
+        [Header("Показываем урон лича по героям")]
+        [SerializeField] private ShowDamageLichAnimation _showDamageLichAnimation; // Префаб для спауна
+
+         private Transform firePoint;
+        
         
         public int GetMaxManna()
         { 
@@ -443,7 +449,34 @@ namespace Heroes
         {
             return _hero;
         }
+
         
+        public void ShowDamageAnimation(Hero hero)
+        {      
+            Debug.LogWarning($"[HeroesBase] ShowDamageAnimation hero={hero}");
+            if (hero == Hero.Lich)
+            {
+                // ShowDamageLichAnimation
+                
+              //  _showDamageLichAnimation;
+              
+              Debug.Log($"Кидаем фаербол1111");
+              if (_showDamageLichAnimation == null)
+              {
+              
+                  Debug.LogError($"arrowPrefab _showDamageLichAnimation не установлен");
+                  return;
+              }
+
+              Transform fp = transform;
+              Vector2 spawnPos = fp.position;
+              spawnPos.y -= 0.1f;
+                 Instantiate(_showDamageLichAnimation, spawnPos, Quaternion.identity);
+           //   Vector2 target = new Vector2(_targetPosition.x, _targetPosition.y);
+           //   arrow.InitFire(target, 150);
+            }
+        }
+
         private void ApplyBalanceFromConfig()
         {
             if (BalanceManager.I == null) return;
@@ -461,8 +494,8 @@ namespace Heroes
                 
                 _ai.Weapon.SetDamage(b.Damage);
 
-                // xpReward можно сохранить в поле, если надо:
-                // _xpReward = b.XpReward;
+    
+                
 
                 Debug.LogWarning($"[HeroesBase] Balance applied: {_hero} diff={difficulty} hp={maxHp} mana={_maxManna} mana={b.Damage}");
             }

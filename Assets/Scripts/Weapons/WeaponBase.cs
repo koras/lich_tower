@@ -55,6 +55,8 @@ namespace Weapons
 
         public void SetDamage(int value)
         {
+            
+         //j   _targetHealth.ShowDamageAnimation(Hero hero);
             Damage = value;
         }
 
@@ -70,9 +72,7 @@ namespace Weapons
          */
         public virtual void InvokeAttack()
         {
-            
             Debug.Log($"InvokeAttack");
-            
         }
         
         public virtual void SpawnBow()

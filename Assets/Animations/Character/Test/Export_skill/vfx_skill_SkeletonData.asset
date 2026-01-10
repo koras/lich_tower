@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
-  m_Name: Lich_SkeletonData
+  m_Name: vfx_skill_SkeletonData
   m_EditorClassIdentifier: spine-unity::Spine.Unity.SkeletonDataAsset
   atlasAssets:
-  - {fileID: 11400000, guid: dc3a3f40e83ea6f46ad7b35daf68b2dc, type: 2}
+  - {fileID: 11400000, guid: f0c25d11752764c4fb5eb8409b638f9e, type: 2}
   scale: 0.01
-  skeletonJSON: {fileID: 4900000, guid: bf79a85cbb0958f46921cdff6caff47a, type: 3}
+  skeletonJSON: {fileID: 4900000, guid: 5c20a7ef54930514c980a04a3ce27972, type: 3}
   isUpgradingBlendModeMaterials: 0
   blendModeMaterials:
     requiresBlendModeMaterials: 0

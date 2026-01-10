@@ -1,70 +1,13 @@
 fileFormatVersion: 2
-guid: a50fe11da4abc524b83aead81b626af4
+guid: e19f2702a85199341b92d909eb2834ea
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2858330702786226967
-    second: Lich_0
+      213: -7865913807888557958
+    second: vfx_skill_0
   - first:
-      213: -7724329806726024027
-    second: Lich_1
-  - first:
-      213: 3089427746389262809
-    second: Lich_2
-  - first:
-      213: 4845579391436846936
-    second: Lich_3
-  - first:
-      213: 6597111557104804870
-    second: Lich_4
-  - first:
-      213: 8234244101049959897
-    second: Lich_5
-  - first:
-      213: -4472360494249376509
-    second: Lich_6
-  - first:
-      213: -2313437134969294721
-    second: Lich_7
-  - first:
-      213: -6384956234278177999
-    second: Lich_8
-  - first:
-      213: 3178093096880041300
-    second: Lich_9
-  - first:
-      213: 1232664630021279282
-    second: Lich_10
-  - first:
-      213: 7660938425337341024
-    second: Lich_11
-  - first:
-      213: 3949435969094270480
-    second: Lich_12
-  - first:
-      213: 7040392197183725648
-    second: Lich_13
-  - first:
-      213: -5255730764284253252
-    second: Lich_14
-  - first:
-      213: -4693130689082491140
-    second: Lich_15
-  - first:
-      213: -7950732282520478954
-    second: Lich_16
-  - first:
-      213: -7399802629963102980
-    second: Lich_17
-  - first:
-      213: -5928340315222162437
-    second: Lich_18
-  - first:
-      213: -8447246390493236513
-    second: Lich_19
-  - first:
-      213: -4563787861416602985
-    second: Lich_20
+      213: -6088761213486037900
+    second: vfx_skill_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -145,32 +88,6 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 1
   - serializedVersion: 4
     buildTarget: Standalone
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
-  - serializedVersion: 4
-    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1

@@ -91,14 +91,13 @@ namespace Heroes
 
         [Header("Оружие Лича")] [SerializeField]
         private LichWeapon _weaponLichFireball;
-        //  [SerializeField] private LichFireballAbility _weaponLichFireball; // у каждого героя своё оружие
-        // public WeaponBase WeaponLichFireball => _weaponLichFireball; // ← публичный геттер
-
+ 
+        
         // Позиция куда будет акатковать Лич
         private Vector3 _targetPosition;
 
 
-        //  [Header("Анимация персоны")] [SerializeField]
+        
         private BaseVisualCharacter _character;
 
         // ===== КОМПОНЕНТЫ И ПЕРЕМЕННЫЕ =====
@@ -761,7 +760,11 @@ namespace Heroes
             // ПЕРЕД ВЫСТРЕЛОМ ОБНОВЛЯЕМ ЦЕЛЬ В ОРУЖИИ
             weapon?.SetEnemyTarget(_currentTarget);
             weapon?.SetTargetHealth(_targetHealth);
-
+            
+            HeroesBase.Hero _hero = _heroesBase.GetHeroType();
+            _targetHealth?.ShowDamageAnimation(_hero);
+            
+         
             if (_currentTarget != null)
             {
                 weapon?.Attack();
