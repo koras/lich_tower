@@ -274,21 +274,21 @@ namespace Heroes
  
         
             // Промах
-            if (CheckForMiss())
-            {
-                ShowFloatingText("MISS!", Color.yellow);
-                return;
-            }
-
-            // Крит
-            bool isCritical = CheckForCritical();
-            int finalDmg = baseDmg;
-
-            if (isCritical)
-            {
-                finalDmg = Mathf.RoundToInt(baseDmg * criticalMultiplier);
-                ShowFloatingText("CRIT!", Color.red);
-            }
+            // if (CheckForMiss())
+            // {
+            //     ShowFloatingText("MISS!", Color.yellow);
+            //     return;
+            // }
+            //
+            // // Крит
+            // bool isCritical = CheckForCritical();
+             int finalDmg = baseDmg;
+            //
+            // if (isCritical)
+            // {
+            //     finalDmg = Mathf.RoundToInt(baseDmg * criticalMultiplier);
+            //     ShowFloatingText("CRIT!", Color.red);
+            // }
           
             if (IsDead) return;
 
