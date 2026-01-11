@@ -87,7 +87,10 @@ namespace Heroes
 
          private Transform firePoint;
         
-        
+         [Header("При смерти юнита")]
+         [SerializeField] private GameObject gibsContainerPrefab;
+         
+         
         public int GetMaxManna()
         { 
             return _maxManna;
