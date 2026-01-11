@@ -328,7 +328,7 @@ RectTransform:
   m_Father: {fileID: 3606638426781739050}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -0.000015258789, y: -0.000005722046}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.50000006, y: 0.5}
@@ -5577,7 +5577,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1462989104657218601
 Transform:
   m_ObjectHideFlags: 0
@@ -5802,6 +5802,7 @@ MonoBehaviour:
   regenPerSecond: 2
   _findBoss: 0
   _showDamageLichAnimation: {fileID: 3109325695784698206, guid: d4dfcb521c01a8148a65a7d93394b531, type: 3}
+  gibsContainerPrefab: {fileID: 0}
 --- !u!210 &-6411471893498264474
 SortingGroup:
   m_ObjectHideFlags: 0

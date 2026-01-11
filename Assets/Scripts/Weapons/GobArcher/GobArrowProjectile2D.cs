@@ -205,7 +205,14 @@ namespace Weapons.GobArcher
                     if (distanceToTarget <= groundHitThreshold)
                     {
                       //  Debug.Log("[GobArcherWeapons] Попадание в цель!");
-                        _targetHealth.TakeDamage(Damage);
+                    //    _targetHealth.TakeDamage(Damage);
+                        // направление от стрелы к цели (по сути "откуда прилетело")
+                        Vector2 hitDir = ((Vector2)_targetHealth.transform.position - _end).normalized;
+// если хочешь проще: hitDir = (_end - _start).normalized; // направление полёта
+
+                        _targetHealth.TakeDamage(Damage, hitDir);
+                        
+                        
                         targetHit = true;
                     }
                     else

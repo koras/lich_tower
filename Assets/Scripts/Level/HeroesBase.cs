@@ -10,6 +10,10 @@ namespace Heroes
     public class HeroesBase : MonoBehaviour
     {
         
+        
+        private Vector2 _lastHitDir = Vector2.left; // дефолт, чтобы не было нулей
+        public Vector2 LastHitDir => _lastHitDir;
+        
         [Header("Команда")]
         [SerializeField] protected int _team = 1;
         [SerializeField] private BaseManager _baseManager; 
@@ -272,7 +276,7 @@ namespace Heroes
             // ShowFloatingText("+" + whole, Color.green);
         }
 
-        public void TakeDamage(int baseDmg)
+        public void TakeDamage(int baseDmg, Vector2 hitDir)
         {  
  
         
@@ -294,7 +298,10 @@ namespace Heroes
             // }
           
             if (IsDead) return;
-
+            // запоминаем направление удара, если оно валидно
+            if (hitDir.sqrMagnitude > 0.0001f)
+                _lastHitDir = hitDir.normalized;
+            
             if (_visual != null) 
                 _visual.FlashHit();
         

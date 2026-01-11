@@ -281,8 +281,12 @@ namespace Weapons.Projectile
 
             PlaySound(SoundId.HitAttackFireBall);
             // Наносим урон
-            if(_targetHealth != null)
-                _targetHealth.TakeDamage(Damage);
+            if (_targetHealth != null)
+            {
+                Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
+                _targetHealth.TakeDamage(Damage,hitDir);
+            }
+ 
             
  
          Transform fp = firePoint != null ? firePoint : transform;
@@ -290,7 +294,6 @@ namespace Weapons.Projectile
 
              var arrow = Instantiate(_shamanFireFirstPrefab, spawnPos, Quaternion.identity);
              arrow.transform.position = spawnPos;
-             
              Destroy(gameObject);
             
         }

@@ -45,7 +45,8 @@ namespace Weapons.Projectile
 
             _hitAppliedThisSwing = true;
             
-            _targetHealth.TakeDamage(Damage);
+            Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
+            _targetHealth.TakeDamage(Damage,hitDir);
 
 
         }
@@ -77,7 +78,9 @@ namespace Weapons.Projectile
             _lastUseTime = Time.time;
             _hitAppliedThisSwing = false;   // новый взмах, сбрасываем флаг
             base.Attack();
-            _targetHealth.TakeDamage(Damage);
+            
+            Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
+            _targetHealth.TakeDamage(Damage,hitDir);
         }
      
  
