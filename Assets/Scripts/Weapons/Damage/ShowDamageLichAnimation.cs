@@ -22,7 +22,7 @@ namespace Damage
         
         private void Start()
         {
-            Play(showDamageAnimation, true,3);
+            Play(showDamageAnimation, false,1);
             Destroy(gameObject, 1.5f);
         }
 
