@@ -358,6 +358,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: GobArcher
       objectReference: {fileID: 0}
+    - target: {fileID: 5421430756166857992, guid: 35bd50a3846b9224dbbe928d6cc20b8b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7755541182736222971, guid: 35bd50a3846b9224dbbe928d6cc20b8b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7755541182736222971, guid: 35bd50a3846b9224dbbe928d6cc20b8b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260947727884312212, guid: 35bd50a3846b9224dbbe928d6cc20b8b, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -371,13 +387,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1571961709089150443, guid: 1400ba4ce032bd348a2d4e16d5d727b8, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1571961709089150443, guid: 1400ba4ce032bd348a2d4e16d5d727b8, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1678996882195284727, guid: 1400ba4ce032bd348a2d4e16d5d727b8, type: 3}
       propertyPath: m_Name
       value: OrcWar (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 1678996882195284727, guid: 1400ba4ce032bd348a2d4e16d5d727b8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3362557165218113475, guid: 1400ba4ce032bd348a2d4e16d5d727b8, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4272401726461480684, guid: 1400ba4ce032bd348a2d4e16d5d727b8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.968
+      value: 3.32
       objectReference: {fileID: 0}
     - target: {fileID: 4272401726461480684, guid: 1400ba4ce032bd348a2d4e16d5d727b8, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1234,7 +1266,7 @@ PrefabInstance:
       objectReference: {fileID: 1111039141}
     - target: {fileID: 9114318263286097030, guid: 7ef5d927ff4a0cb41bb055abc5148640, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.55
+      value: -1.5
       objectReference: {fileID: 0}
     - target: {fileID: 9114318263286097030, guid: 7ef5d927ff4a0cb41bb055abc5148640, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1421,7 +1453,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1713202252662352884, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.67713
+      value: 6.6271305
       objectReference: {fileID: 0}
     - target: {fileID: 1713202252662352884, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1493,7 +1525,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5808684654825597267, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.24585
+      value: 6.19585
       objectReference: {fileID: 0}
     - target: {fileID: 5808684654825597267, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
       propertyPath: m_LocalPosition.y
