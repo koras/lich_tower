@@ -320,7 +320,7 @@ namespace Heroes
 
                 case State.Death:
                 //    DLog($"[{namePNS}] смерть юнита");
-                    //  OnDeath(); // смерть юнита
+              
                     break;
                 case State.Roaming:
               //      DLog($"[{namePNS}] Roaming");
@@ -1234,6 +1234,32 @@ namespace Heroes
                 _heroesBase.OnDeath -= HandleDeath;
             }
 
+            if (_heroesBase.GetHeroType() == HeroesBase.Hero.Skeleton || _heroesBase.GetHeroType() == HeroesBase.Hero.SkeletonArcher )
+            {
+                if (_heroesBase != null && _heroesBase.GibsPrefab != null)
+                {
+                    var go = Instantiate(_heroesBase.GibsPrefab, transform.position, Quaternion.identity);
+
+                    var gibs = go.GetComponent<Heroes.BodyParts.Skeleton.GibsContainer2D>();
+                    if (gibs != null)
+                    {
+                        // Вот это ключ: куда разлетается
+                        // Если hitDir = "от атакующего к жертве", то куски обычно летят "по этому же" направлению.
+                        Vector2 pushDir = _heroesBase.LastHitDir;
+
+                        // Если хочешь наоборот (удар справа -> влево), просто инвертируй:
+                        // Vector2 pushDir = -_heroesBase.LastHitDir;
+
+                        Debug.LogWarning($"[HeroesBase] {pushDir} pushDir: {pushDir}");
+                        
+                        
+                        gibs.Scatter(Vector2.zero, pushDir);
+                    }
+                }
+
+                Destroy(gameObject, 0f);
+                return;
+            }
 
             Destroy(gameObject, 7f);
         }

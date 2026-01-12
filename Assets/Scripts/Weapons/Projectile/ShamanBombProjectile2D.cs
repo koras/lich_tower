@@ -283,8 +283,8 @@ namespace Weapons.Projectile
             // Наносим урон
             if (_targetHealth != null)
             {
-                Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
-                _targetHealth.TakeDamage(Damage,hitDir);
+             //   Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
+                _targetHealth.TakeDamage(Damage,transform);
             }
  
             

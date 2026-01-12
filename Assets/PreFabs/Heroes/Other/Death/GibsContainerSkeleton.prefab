@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 4291892656698295859}
   - component: {fileID: 8375072007611697095}
   - component: {fileID: 7720565536759335866}
+  - component: {fileID: 4157316031974185519}
+  - component: {fileID: 3695841531701488754}
   m_Layer: 0
   m_Name: Piece_Pers_Skell_RHand
   m_TagString: Untagged
@@ -179,6 +181,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 930d1a15f55a459b824cae09724faed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heroes.BodyParts.Skeleton.GibPieceClickForwarder
+--- !u!210 &4157316031974185519
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1674180613137578880}
+  m_Enabled: 1
+  m_SortingLayerID: -1123069753
+  m_SortingLayer: 2
+  m_SortingOrder: 9
+  m_SortAtRoot: 1
+  m_Sort3DAs2D: 0
+--- !u!114 &3695841531701488754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1674180613137578880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ff9212acff06649bfda840ee0a3984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level.SortByY
+  offset: 9
+  precision: 100
 --- !u!1 &3118047215778812712
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,6 +218,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9222286244603585851}
   - component: {fileID: 5577978493243097716}
+  - component: {fileID: -4143350524662737027}
+  - component: {fileID: -1422771479665601838}
   m_Layer: 0
   m_Name: GibsContainerSkeleton
   m_TagString: Untagged
@@ -209,13 +240,13 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8143793962498102174}
   - {fileID: 861046818195651372}
   - {fileID: 748455773339824651}
   - {fileID: 3160828109483152062}
   - {fileID: 6789900267212934359}
   - {fileID: 1594355346666796248}
   - {fileID: 567200499175902891}
-  - {fileID: 8143793962498102174}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5577978493243097716
@@ -230,26 +261,62 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db0556b0d1e241b8a0795fde8be28e65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heroes.BodyParts.Skeleton.GibsContainer2D
-  autoDespawnSeconds: 5
+  autoDespawnSeconds: 10
   fadeDuration: 0.5
   minY: 1
-  pushMultiplier: 2
-  maxHorizontalSpeed: 6
-  scaleMultiplier: 1.2
+  pushMultiplier: 0.5
+  maxHorizontalSpeed: 4
+  scaleMultiplier: 1.3
   scaleUpTime: 0.06
   scaleDownTime: 0.12
-  sidewaysSpeedMin: 0.8
-  sidewaysSpeedMax: 1.8
-  jumpSpeedMin: 2.8
-  jumpSpeedMax: 3.6
+  sidewaysSpeedMin: 2
+  sidewaysSpeedMax: 5
+  jumpSpeedMin: 4.5
+  jumpSpeedMax: 8
   fanHalfAngle: 35
-  angularMin: -80
-  angularMax: -80
-  physicsDisableDelay: 0.7
-  linearDrag: 1
+  angularMin: -180
+  angularMax: 180
+  physicsDisableDelay: 0.2
+  linearDrag: 2.7
   angularDrag: 3
-  gravityScale: 1.2
+  gravityScale: 2.2
   goldAmount: 10
+  _scattered: 0
+  useVirtualFloor: 1
+  fakeGravity: 20
+  bounce: 0.25
+  yDamping: 1.9
+  stopVyThreshold: 0.15
+  groundFriction: 0.3
+  debugGibs: 1
+  debugPrintInterval: 0.2
+--- !u!210 &-4143350524662737027
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3118047215778812712}
+  m_Enabled: 1
+  m_SortingLayerID: -1123069753
+  m_SortingLayer: 2
+  m_SortingOrder: 9
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
+--- !u!114 &-1422771479665601838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3118047215778812712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ff9212acff06649bfda840ee0a3984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level.SortByY
+  offset: 9
+  precision: 100
 --- !u!1 &4667754696939552692
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,6 +330,8 @@ GameObject:
   - component: {fileID: 9194225434687796949}
   - component: {fileID: 9219132140532079566}
   - component: {fileID: 681139607459918072}
+  - component: {fileID: 1688726449895859077}
+  - component: {fileID: 7058309140164367320}
   m_Layer: 0
   m_Name: Piece_Pers_Skell_Head
   m_TagString: Untagged
@@ -429,6 +498,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 930d1a15f55a459b824cae09724faed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heroes.BodyParts.Skeleton.GibPieceClickForwarder
+--- !u!210 &1688726449895859077
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4667754696939552692}
+  m_Enabled: 1
+  m_SortingLayerID: -1123069753
+  m_SortingLayer: 2
+  m_SortingOrder: 9
+  m_SortAtRoot: 1
+  m_Sort3DAs2D: 0
+--- !u!114 &7058309140164367320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4667754696939552692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ff9212acff06649bfda840ee0a3984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level.SortByY
+  offset: 9
+  precision: 100
 --- !u!1 &4714747996152022746
 GameObject:
   m_ObjectHideFlags: 0
@@ -442,6 +538,8 @@ GameObject:
   - component: {fileID: 5256745342677866486}
   - component: {fileID: 2300127298740068330}
   - component: {fileID: 2774829177974747182}
+  - component: {fileID: 381774964801292881}
+  - component: {fileID: 4697412250688393658}
   m_Layer: 0
   m_Name: Piece_Pers_Skell_LHand
   m_TagString: Untagged
@@ -608,6 +706,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 930d1a15f55a459b824cae09724faed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heroes.BodyParts.Skeleton.GibPieceClickForwarder
+--- !u!210 &381774964801292881
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4714747996152022746}
+  m_Enabled: 1
+  m_SortingLayerID: -1123069753
+  m_SortingLayer: 2
+  m_SortingOrder: 9
+  m_SortAtRoot: 1
+  m_Sort3DAs2D: 0
+--- !u!114 &4697412250688393658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4714747996152022746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ff9212acff06649bfda840ee0a3984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level.SortByY
+  offset: 9
+  precision: 100
 --- !u!1 &5455987262561661649
 GameObject:
   m_ObjectHideFlags: 0
@@ -621,6 +746,8 @@ GameObject:
   - component: {fileID: 4651459195675996723}
   - component: {fileID: 6138714215245432835}
   - component: {fileID: 6562885863198589136}
+  - component: {fileID: 4623277302524512464}
+  - component: {fileID: 6001242402495674370}
   m_Layer: 0
   m_Name: Piece_Pers_Skell_LLeg
   m_TagString: Untagged
@@ -787,6 +914,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 930d1a15f55a459b824cae09724faed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heroes.BodyParts.Skeleton.GibPieceClickForwarder
+--- !u!210 &4623277302524512464
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5455987262561661649}
+  m_Enabled: 1
+  m_SortingLayerID: -1123069753
+  m_SortingLayer: 2
+  m_SortingOrder: 9
+  m_SortAtRoot: 1
+  m_Sort3DAs2D: 0
+--- !u!114 &6001242402495674370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5455987262561661649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ff9212acff06649bfda840ee0a3984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level.SortByY
+  offset: 9
+  precision: 100
 --- !u!1 &6355174346396787804
 GameObject:
   m_ObjectHideFlags: 0
@@ -800,6 +954,8 @@ GameObject:
   - component: {fileID: 6850677307569949545}
   - component: {fileID: 1759616083750773023}
   - component: {fileID: 1273467319431499928}
+  - component: {fileID: 6254854600982633408}
+  - component: {fileID: 4415504291591217452}
   m_Layer: 0
   m_Name: Piece_Pers_Skell_Tors
   m_TagString: Untagged
@@ -966,6 +1122,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 930d1a15f55a459b824cae09724faed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heroes.BodyParts.Skeleton.GibPieceClickForwarder
+--- !u!210 &6254854600982633408
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6355174346396787804}
+  m_Enabled: 1
+  m_SortingLayerID: -1123069753
+  m_SortingLayer: 2
+  m_SortingOrder: 9
+  m_SortAtRoot: 1
+  m_Sort3DAs2D: 0
+--- !u!114 &4415504291591217452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6355174346396787804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ff9212acff06649bfda840ee0a3984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level.SortByY
+  offset: 9
+  precision: 100
 --- !u!1 &7254386961287563410
 GameObject:
   m_ObjectHideFlags: 0
@@ -979,6 +1162,8 @@ GameObject:
   - component: {fileID: 7917892849962272985}
   - component: {fileID: 4326044757027107832}
   - component: {fileID: 4330655797487722074}
+  - component: {fileID: 12070416055710576}
+  - component: {fileID: 500259905176799475}
   m_Layer: 0
   m_Name: Piece_Pers_Skell_Weap1
   m_TagString: Untagged
@@ -1145,6 +1330,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 930d1a15f55a459b824cae09724faed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heroes.BodyParts.Skeleton.GibPieceClickForwarder
+--- !u!210 &12070416055710576
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254386961287563410}
+  m_Enabled: 1
+  m_SortingLayerID: -1123069753
+  m_SortingLayer: 2
+  m_SortingOrder: 9
+  m_SortAtRoot: 1
+  m_Sort3DAs2D: 0
+--- !u!114 &500259905176799475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254386961287563410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ff9212acff06649bfda840ee0a3984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level.SortByY
+  offset: 9
+  precision: 100
 --- !u!1 &7992463937098723583
 GameObject:
   m_ObjectHideFlags: 0
@@ -1158,6 +1370,8 @@ GameObject:
   - component: {fileID: 8765402733840563136}
   - component: {fileID: 4436404115525821706}
   - component: {fileID: 7475794352584044438}
+  - component: {fileID: 252563979214142390}
+  - component: {fileID: 1386028671023297754}
   m_Layer: 0
   m_Name: Piece_Pers_Skell_RLeg
   m_TagString: Untagged
@@ -1324,3 +1538,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 930d1a15f55a459b824cae09724faed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heroes.BodyParts.Skeleton.GibPieceClickForwarder
+--- !u!210 &252563979214142390
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7992463937098723583}
+  m_Enabled: 1
+  m_SortingLayerID: -1123069753
+  m_SortingLayer: 2
+  m_SortingOrder: 9
+  m_SortAtRoot: 1
+  m_Sort3DAs2D: 0
+--- !u!114 &1386028671023297754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7992463937098723583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ff9212acff06649bfda840ee0a3984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level.SortByY
+  offset: 9
+  precision: 100

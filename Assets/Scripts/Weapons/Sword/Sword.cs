@@ -44,9 +44,9 @@ namespace Weapons
 
             _hitAppliedThisSwing = true;
            // _targetHealth.TakeDamage(Damage);
-            Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
+        //    Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
 
-            _targetHealth.TakeDamage(Damage, hitDir);
+            _targetHealth.TakeDamage(Damage, transform);
 
         }
 
@@ -78,9 +78,9 @@ namespace Weapons
             _hitAppliedThisSwing = false;   // новый взмах, сбрасываем флаг
             base.Attack();
             
-            Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
+         //   Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
 
-            _targetHealth.TakeDamage(Damage, hitDir);
+            _targetHealth.TakeDamage(Damage, transform);
         }
      
  

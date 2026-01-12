@@ -77,7 +77,6 @@ MonoBehaviour:
   debugInterval: 0.2
   weapon: {fileID: 5417026764700915198}
   _weaponLichFireball: {fileID: 0}
-  _heroesBase: {fileID: 0}
   _state: 6
   debugAI: 0
   senseInterval: 0.3
@@ -202,6 +201,8 @@ MonoBehaviour:
   mannaRegenInterval: 0.1
   regenPerSecond: 1
   _findBoss: 1
+  _showDamageLichAnimation: {fileID: 0}
+  _gibsContainerPrefab: {fileID: 5577978493243097716, guid: 5709660be0db5704eb4cd1dc8c4c0568, type: 3}
 --- !u!210 &8467580168069705345
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -214,6 +215,7 @@ SortingGroup:
   m_SortingLayer: 2
   m_SortingOrder: 10
   m_SortAtRoot: 1
+  m_Sort3DAs2D: 0
 --- !u!114 &-1533997313976420493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -487,6 +489,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1326252328481193630
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -532,6 +535,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -4596925356590474502, guid: cd79ebb5478acee4194586821a357f44, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -541,7 +545,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &4145862317891785991
 GameObject:
@@ -827,7 +830,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Weapons.Sword
   _polygonCollider2D: {fileID: 0}
   canAttack: 1
-  <Damage>k__BackingField: 5
   <Cooldown>k__BackingField: 0.3
   weaponName: Weapon
 --- !u!1 &8636664765663922815
@@ -877,7 +879,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heroes.BaseVisualCharacter
   _who: 0
-  playAnimalSounds: 1
   soundOffset: {x: 0, y: 0, z: 0}
   debugAI: 1
   showTargetInfo: 1
@@ -984,6 +985,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &1141711205406285762
 MonoBehaviour:

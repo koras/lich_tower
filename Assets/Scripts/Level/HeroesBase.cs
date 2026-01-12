@@ -5,6 +5,10 @@ using Player;
 using Level;
 using Damage;
 
+
+
+
+
 namespace Heroes
 {
     public class HeroesBase : MonoBehaviour
@@ -92,9 +96,10 @@ namespace Heroes
          private Transform firePoint;
         
          [Header("При смерти юнита")]
-         [SerializeField] private GameObject gibsContainerPrefab;
+         [SerializeField] private  BodyParts.Skeleton.GibsContainer2D _gibsContainerPrefab;
          
-         
+         public BodyParts.Skeleton.GibsContainer2D GibsPrefab => _gibsContainerPrefab;
+
         public int GetMaxManna()
         { 
             return _maxManna;
@@ -275,11 +280,21 @@ namespace Heroes
             // Если хочешь всплывающий текст на каждый тик хила:
             // ShowFloatingText("+" + whole, Color.green);
         }
-
-        public void TakeDamage(int baseDmg, Vector2 hitDir)
+        
+        
+        public void TakeDamage(int baseDmg)
+        {
+            TakeDamage(baseDmg, null);
+        }
+        
+        public void TakeDamage(int baseDmg, Transform attacker)
         {  
  
-        
+            if (attacker != null)
+                Debug.Log($"[TakeDamage] victim={name} attacker={attacker.name} ax={attacker.position.x:F3} vx={transform.position.x:F3} hp={_currentHp}->{Mathf.Max(0,_currentHp-baseDmg)}");
+            else
+                Debug.Log($"[TakeDamage] victim={name} attacker=NULL hp={_currentHp}->{Mathf.Max(0,_currentHp-baseDmg)}");
+            
             // Промах
             // if (CheckForMiss())
             // {
@@ -299,8 +314,17 @@ namespace Heroes
           
             if (IsDead) return;
             // запоминаем направление удара, если оно валидно
-            if (hitDir.sqrMagnitude > 0.0001f)
-                _lastHitDir = hitDir.normalized;
+            int newHp = Mathf.Max(0, _currentHp - finalDmg);
+
+            // Если этот удар убивает, фиксируем направление
+            if (newHp == 0 && attacker != null)
+            {
+                float dx = transform.position.x - attacker.position.x; // victim - attacker
+                if (Mathf.Abs(dx) > 0.01f)
+                    _lastHitDir = dx > 0f ? Vector2.right : Vector2.left;
+            }
+            
+            
             
             if (_visual != null) 
                 _visual.FlashHit();
@@ -463,7 +487,7 @@ namespace Heroes
         
         public void ShowDamageAnimation(Hero hero)
         {      
-            Debug.LogWarning($"[HeroesBase] ShowDamageAnimation hero={hero}");
+         //   Debug.LogWarning($"[HeroesBase] ShowDamageAnimation hero={hero}");
             if (hero == Hero.Lich)
             {
                 // ShowDamageLichAnimation
