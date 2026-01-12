@@ -10,8 +10,6 @@ namespace Weapons.Range
         [Header("Настройки выстрела, чем стреляем")]
         [SerializeField] private ShamanBombProjectile2D arrowPrefab; // префаб снаряда
         [SerializeField] private Transform firePoint;
-
-        
         
         [Header("время жизни снаряда")]    // время жизни снаряда
         [SerializeField] private LayerMask hitMask;             // кого можем ударить

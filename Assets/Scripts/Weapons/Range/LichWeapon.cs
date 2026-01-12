@@ -22,13 +22,13 @@ namespace Weapons.Range
         private int _mannaCost = 35;   // стоимость манны
 
 
-        [Header("время жизни снаряда")]    // время жизни снаряда
-        [SerializeField] private LayerMask hitMask;             // кого можем ударить
+    //    [Header("время жизни снаряда")]    // время жизни снаряда
+    //    [SerializeField] private LayerMask hitMask;             // кого можем ударить
 
         
-        [Header("Наведение")]
-        [SerializeField] private float aimYOffset = 0.35f;
-        [SerializeField] private float noTargetForward = 6f;
+     //   [Header("Наведение")]
+      //  [SerializeField] private float aimYOffset = 0.35f;
+      //  [SerializeField] private float noTargetForward = 6f;
 
         
         
@@ -65,7 +65,6 @@ namespace Weapons.Range
           var arrow = Instantiate(_arrowPrefabLich, spawnPos, Quaternion.identity);
               Vector2 target = new Vector2(_targetPosition.x, _targetPosition.y);
               arrow.InitFire(target, 150);
-     
       }
     }
 }

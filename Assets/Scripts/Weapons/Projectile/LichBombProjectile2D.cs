@@ -273,8 +273,9 @@ namespace Weapons.Projectile
                 // Вариант 1: hp.TakeDamage(_damage, _owner);
                 // Вариант 2: hp.ApplyDamage(_damage);
                 // Вариант 3: hp.Damage(_damage);
+              //  Vector2 hitDir = ((Vector2)hp.transform.position - (Vector2)transform.position).normalized;
 
-                hp.TakeDamage(_damage); // <-- ПОДСТАВЬ СВОЙ МЕТОД
+                hp.TakeDamage(_damage,transform); // <-- ПОДСТАВЬ СВОЙ МЕТОД
             }
         }
         

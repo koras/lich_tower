@@ -16,8 +16,8 @@ TagManager:
   - Ground
   - Road
   - Wall
-  - 
-  - 
+  - WalkableRoad
+  - Outline
   - 
   - 
   - 

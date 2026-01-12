@@ -3,11 +3,20 @@ using System;
 using Title;
 using Player;
 using Level;
+using Damage;
+
+
+
+
 
 namespace Heroes
 {
     public class HeroesBase : MonoBehaviour
     {
+        
+        
+        private Vector2 _lastHitDir = Vector2.left; // дефолт, чтобы не было нулей
+        public Vector2 LastHitDir => _lastHitDir;
         
         [Header("Команда")]
         [SerializeField] protected int _team = 1;
@@ -81,7 +90,16 @@ namespace Heroes
         [SerializeField] private bool _findBoss = true;
 
          
+        [Header("Показываем урон лича по героям")]
+        [SerializeField] private ShowDamageLichAnimation _showDamageLichAnimation; // Префаб для спауна
+
+         private Transform firePoint;
         
+         [Header("При смерти юнита")]
+         [SerializeField] private  BodyParts.Skeleton.GibsContainer2D _gibsContainerPrefab;
+         
+         public BodyParts.Skeleton.GibsContainer2D GibsPrefab => _gibsContainerPrefab;
+
         public int GetMaxManna()
         { 
             return _maxManna;
@@ -141,8 +159,11 @@ namespace Heroes
 
         private void Awake()
         {
-         //   _goldText.text = $"{_gold}";
+            
             _ai = GetComponent<WarriorAI>();
+            ApplyBalanceFromConfig();
+            
+             
             _visual = GetComponentInChildren<BaseVisualCharacter>(true);
 
             if (_healthbar == null)
@@ -154,7 +175,7 @@ namespace Heroes
 
             HealthBarInActive();
             MannaBarInActive();
-          //  if (_healthbar != null) 
+            
             
             if(_mannabar != null)
             _mannabarCanvasGroup =  _mannabar.GetComponent<CanvasGroup>();
@@ -259,30 +280,52 @@ namespace Heroes
             // Если хочешь всплывающий текст на каждый тик хила:
             // ShowFloatingText("+" + whole, Color.green);
         }
-
+        
+        
         public void TakeDamage(int baseDmg)
+        {
+            TakeDamage(baseDmg, null);
+        }
+        
+        public void TakeDamage(int baseDmg, Transform attacker)
         {  
  
-        
+            if (attacker != null)
+                Debug.Log($"[TakeDamage] victim={name} attacker={attacker.name} ax={attacker.position.x:F3} vx={transform.position.x:F3} hp={_currentHp}->{Mathf.Max(0,_currentHp-baseDmg)}");
+            else
+                Debug.Log($"[TakeDamage] victim={name} attacker=NULL hp={_currentHp}->{Mathf.Max(0,_currentHp-baseDmg)}");
+            
             // Промах
-            if (CheckForMiss())
-            {
-                ShowFloatingText("MISS!", Color.yellow);
-                return;
-            }
-
-            // Крит
-            bool isCritical = CheckForCritical();
-            int finalDmg = baseDmg;
-
-            if (isCritical)
-            {
-                finalDmg = Mathf.RoundToInt(baseDmg * criticalMultiplier);
-                ShowFloatingText("CRIT!", Color.red);
-            }
+            // if (CheckForMiss())
+            // {
+            //     ShowFloatingText("MISS!", Color.yellow);
+            //     return;
+            // }
+            //
+            // // Крит
+            // bool isCritical = CheckForCritical();
+             int finalDmg = baseDmg;
+            //
+            // if (isCritical)
+            // {
+            //     finalDmg = Mathf.RoundToInt(baseDmg * criticalMultiplier);
+            //     ShowFloatingText("CRIT!", Color.red);
+            // }
           
             if (IsDead) return;
+            // запоминаем направление удара, если оно валидно
+            int newHp = Mathf.Max(0, _currentHp - finalDmg);
 
+            // Если этот удар убивает, фиксируем направление
+            if (newHp == 0 && attacker != null)
+            {
+                float dx = transform.position.x - attacker.position.x; // victim - attacker
+                if (Mathf.Abs(dx) > 0.01f)
+                    _lastHitDir = dx > 0f ? Vector2.right : Vector2.left;
+            }
+            
+            
+            
             if (_visual != null) 
                 _visual.FlashHit();
         
@@ -440,6 +483,58 @@ namespace Heroes
         {
             return _hero;
         }
+
+        
+        public void ShowDamageAnimation(Hero hero)
+        {      
+         //   Debug.LogWarning($"[HeroesBase] ShowDamageAnimation hero={hero}");
+            if (hero == Hero.Lich)
+            {
+                // ShowDamageLichAnimation
+                
+              //  _showDamageLichAnimation;
+              
+              Debug.Log($"Кидаем фаербол1111");
+              if (_showDamageLichAnimation == null)
+              {
+              
+                  Debug.LogError($"arrowPrefab _showDamageLichAnimation не установлен");
+                  return;
+              }
+
+              Transform fp = transform;
+              Vector2 spawnPos = fp.position;
+              spawnPos.y -= 0.1f;
+                 Instantiate(_showDamageLichAnimation, spawnPos, Quaternion.identity);
+           //   Vector2 target = new Vector2(_targetPosition.x, _targetPosition.y);
+           //   arrow.InitFire(target, 150);
+            }
+        }
+
+        private void ApplyBalanceFromConfig()
+        {
+            if (BalanceManager.I == null) return;
+
+            var difficulty = Level.GameSettings.Difficulty;
+
+            if (BalanceManager.I.TryGetHeroBalance(GetHeroType(), difficulty, out var b))
+            {
+                maxHp = b.MaxHp;
+                _maxManna = b.MaxMana;
+
+                // при спавне логично начинать с полного
+                _currentHp = maxHp;
+                _currentManna = _maxManna;
+                
+                _ai.Weapon.SetDamage(b.Damage);
+
+    
+                
+
+                Debug.LogWarning($"[HeroesBase] Balance applied: {_hero} diff={difficulty} hp={maxHp} mana={_maxManna} mana={b.Damage}");
+            }
+        }
+        
         
         // Возможные герои
         public enum Hero

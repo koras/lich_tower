@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1311415127636171488
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3657296150631270444}
+  - component: {fileID: 4816247810096589245}
+  - component: {fileID: 2877153339036768718}
+  m_Layer: 0
+  m_Name: Input_PinchZoom
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3657296150631270444
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311415127636171488}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10000, y: 10000, z: 1000}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4816247810096589245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311415127636171488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fff87c8920c79454d8709f924aedd929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PinchToZoom
+  targetCamera: {fileID: 0}
+  animalMask:
+    serializedVersion: 2
+    m_Bits: 8
+  prefabPoint: {fileID: 7977472601716197703, guid: 06557827c967f834fbb540a00f7ad435, type: 3}
+  zoomSpeed: 0.1
+  minZoom: 2
+  maxZoom: 15
+  _textMinZoom: {fileID: 0}
+  _textMaxZoom: {fileID: 0}
+  _textCurrentZoom: {fileID: 0}
+  scrollZoomSpeed: 0.02
+  buttonZoomStep: 1
+  heroMask:
+    serializedVersion: 2
+    m_Bits: 192
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  _selectedHero: {fileID: 0}
+--- !u!114 &2877153339036768718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311415127636171488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5984ca3c87746ea8bbc302a2d7af5f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player.BaseManager
+  _team: 1

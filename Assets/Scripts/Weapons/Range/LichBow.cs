@@ -14,7 +14,7 @@ namespace Weapons.Range
         
         [Header("время жизни снаряда")]    // время жизни снаряда
         [SerializeField] private LayerMask hitMask;             // кого можем ударить
-        [SerializeField] private bool homing = false;           // самонаводящийся?
+    //    [SerializeField] private bool homing = false;           // самонаводящийся?
         [SerializeField] private float turnSpeed = 720f;        // град/сек при самонаводке
         
         
@@ -79,13 +79,7 @@ namespace Weapons.Range
             
             Debug.LogWarning($"отключил LichBombProjectile2D222 Projectile2D!");
             // инициализация параметров снаряда
-       //  proj.Init(
-               // owner: GetComponentInParent<Heroes.HeroesBase>(),
-           //     target: targetForInit,
-           //     damage: Damage//, 
-             //   homing: homing,
-            //    turn: turnSpeed
-         //   );
+ 
 
         }
     }

@@ -324,12 +324,12 @@ namespace Heroes
 
             if (_who == Hero.SkeletonArcher || _who == Hero.Skeleton)
             {
-                Debug.LogError($"Скелет звук смерти");
+                Debug.Log($"Скелет звук смерти");
                 PlaySound(SoundId.SkeletonDeath);
             } 
             if (_who == Hero.OrcWar || _who == Hero.GobArcher)
             {
-                Debug.LogError($"Orc звук смерти");
+                Debug.Log($"Orc звук смерти");
                 PlaySound(SoundId.OrcDeath);
             } 
             SetAnimation(deathAnimation, false, 1f);
@@ -375,7 +375,7 @@ namespace Heroes
             //     PlaySound(SoundId.Archer_Attack);
             // }g
             
-            Debug.LogError($"_who {_who}");
+       //     Debug.LogError($"_who {_who}");
              
             _ai.InvokeAttackFromAnimation();
         }

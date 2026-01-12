@@ -66,14 +66,14 @@ namespace Weapons.Projectile
         [Header("Урон")] 
         [field: SerializeField] public int Damage { get; private set; } = 5;
 
-        [SerializeField] private float hitRadius = 0.3f;  
-        [SerializeField] private LayerMask damageMask = -1;
+     //   [SerializeField] private float hitRadius = 0.3f;  
+      //  [SerializeField] private LayerMask damageMask = -1;
         [SerializeField] private Transform ignoreCollisionsWith; // Чей коллайдер игнорировать
 
-        [Header("Визуализация траектории")]
-        [SerializeField] private bool showTrajectory = true;
-        [SerializeField] private Color trajectoryColor = Color.red;
-        [SerializeField] private int trajectoryPoints = 20;
+     //   [Header("Визуализация траектории")]
+     //   [SerializeField] private bool showTrajectory = true;
+     //   [SerializeField] private Color trajectoryColor = Color.red;
+     //   [SerializeField] private int trajectoryPoints = 20;
 
         [Header("Жизненный цикл")]
         [SerializeField] private bool destroyOnArrive = true;
@@ -281,8 +281,12 @@ namespace Weapons.Projectile
 
             PlaySound(SoundId.HitAttackFireBall);
             // Наносим урон
-            if(_targetHealth != null)
-                _targetHealth.TakeDamage(Damage);
+            if (_targetHealth != null)
+            {
+             //   Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
+                _targetHealth.TakeDamage(Damage,transform);
+            }
+ 
             
  
          Transform fp = firePoint != null ? firePoint : transform;
@@ -290,7 +294,6 @@ namespace Weapons.Projectile
 
              var arrow = Instantiate(_shamanFireFirstPrefab, spawnPos, Quaternion.identity);
              arrow.transform.position = spawnPos;
-             
              Destroy(gameObject);
             
         }

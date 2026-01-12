@@ -25,7 +25,7 @@ namespace Heroes
         }
         public static Transform GetEnemyBoss(int myTeam)
         {
-            Debug.Log($" myTeam== {myTeam}");
+            //       Debug.Log($" myTeam== {myTeam}");
             // если у тебя 2 команды: 0/1
             foreach (var kv in _bossByTeam)
             {
