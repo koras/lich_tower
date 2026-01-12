@@ -13,7 +13,8 @@ namespace Weapons.GobArcher
         [SerializeField] private Vector3 soundOffset = Vector3.zero;
 
 
-        
+        [Header("Хозяин стрелы")]
+        [SerializeField] private Transform _owner;
         
         [SerializeField] private bool debugStraight = false;
 
@@ -66,6 +67,14 @@ namespace Weapons.GobArcher
         private ArrowPool _pool;
         public void SetPool(ArrowPool pool) => _pool = pool;
 
+        
+        
+        public void SetOwner(Transform owner)
+        {
+            _owner = owner;
+        }
+        
+        
         private void Awake()
         {
             _arrowCollider = GetComponent<Collider2D>();
@@ -195,7 +204,7 @@ namespace Weapons.GobArcher
             if (!_hitApplied)
             {
                 _hitApplied = true;
-
+                Debug.Log($"[ArrowHit] ownerX={_owner?.position.x} arrowX={transform.position.x} targetX={_targetHealth.transform.position.x}");
                 // Проверяем, достаточно ли близко к цели для нанесения урона
                 bool targetHit = false;
                 if (_targetHealth != null && !_targetHealth.IsDead)
@@ -205,7 +214,14 @@ namespace Weapons.GobArcher
                     if (distanceToTarget <= groundHitThreshold)
                     {
                       //  Debug.Log("[GobArcherWeapons] Попадание в цель!");
-                        _targetHealth.TakeDamage(Damage);
+                    //    _targetHealth.TakeDamage(Damage);
+                        // направление от стрелы к цели (по сути "откуда прилетело")
+                        //    Vector2 hitDir = ((Vector2)_targetHealth.transform.position - _end).normalized;
+// если хочешь проще: hitDir = (_end - _start).normalized; // направление полёта
+
+                        _targetHealth.TakeDamage(Damage, _owner != null ? _owner : transform);
+                        
+                        
                         targetHit = true;
                     }
                     else

@@ -67,10 +67,12 @@ namespace Weapons.Range
 
             var arrow = pool.Get(spawnPos, Quaternion.identity);
             if (arrow == null) return;
-
+     
+            
             if (_target != null)
             {
-                 
+                arrow.SetOwner(transform); // <-- лучник/оружие (лучше сам лучник)
+
                 arrow.SetTargetHealth(_targetHealth);
                 arrow.LaunchTowards(_target, aimYOffset);
                 
