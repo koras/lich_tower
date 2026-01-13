@@ -24,16 +24,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 229082690584721999}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0.60876137, y: 0, z: 0, w: 0.7933534}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9114318263286097030}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 75, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.038, y: -0.138}
+  m_AnchoredPosition: {x: 0.046, y: -0.1258}
   m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &4619971461263427998
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -3512171685201346364, guid: 0392d5744feec084280ea1295cba3ba8, type: 3}
+  m_Sprite: {fileID: -2558126821556392893, guid: 3615e594dc7ea7c4b9ee9a219252ee09, type: 3}
   m_Color: {r: 0.7735849, g: 0.53640085, b: 0.53640085, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -121,11 +121,11 @@ Transform:
   m_GameObject: {fileID: 677244507813656940}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.031, y: -0.201, z: 0}
-  m_LocalScale: {x: 1.4714, y: 0.7325, z: 1}
+  m_LocalPosition: {x: 0.0332, y: -0.138, z: 0}
+  m_LocalScale: {x: 1, y: 0.57, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 988766472256153456}
+  m_Father: {fileID: 9114318263286097030}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2009486137124122807
 SpriteRenderer:
@@ -177,7 +177,7 @@ SpriteRenderer:
   m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: -4596925356590474502, guid: cd79ebb5478acee4194586821a357f44, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.34901962}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -254,7 +254,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2554709917732477203}
-  - {fileID: 3246028998904278691}
   - {fileID: 2821354644194194434}
   - {fileID: 8497246822237007252}
   m_Father: {fileID: 9114318263286097030}
@@ -402,7 +401,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2554709917732477203}
   - component: {fileID: 6276406385027379418}
-  - component: {fileID: 8629886991649857428}
+  - component: {fileID: 3058479100004019078}
   m_Layer: 6
   m_Name: WeaponsFire
   m_TagString: Untagged
@@ -484,7 +483,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &8629886991649857428
+--- !u!114 &3058479100004019078
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -493,21 +492,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3103076786871160939}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b893c21981e4c43b8d8a6c47bcb9e1f, type: 3}
+  m_Script: {fileID: 11500000, guid: f16785d1969840f3a7483ba597a06a65, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Weapons.Range.ShamanBow
+  m_EditorClassIdentifier: Assembly-CSharp::Weapons.Projectile.LichAttack
   _polygonCollider2D: {fileID: 0}
   canAttack: 1
-  <Damage>k__BackingField: 10
   <Cooldown>k__BackingField: 0.3
   weaponName: Weapon
-  arrowPrefab: {fileID: 2517328470456416780, guid: 310493b1c26badc40b610a970955b901, type: 3}
-  firePoint: {fileID: 0}
-  hitMask:
-    serializedVersion: 2
-    m_Bits: 0
-  aimYOffset: 0.35
-  noTargetForward: 6
 --- !u!1 &3239769074307896495
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,6 +541,7 @@ Transform:
   - {fileID: 6723023987530647649}
   - {fileID: 2223343577663865423}
   - {fileID: 3265623419428180325}
+  - {fileID: 3246028998904278691}
   - {fileID: 8554572902504730659}
   - {fileID: 8071668888554497321}
   m_Father: {fileID: 0}
@@ -587,9 +579,8 @@ MonoBehaviour:
   flipThreshold: 0.02
   attackRate: 1.2
   debugInterval: 0.2
-  weapon: {fileID: 8629886991649857428}
+  weapon: {fileID: 3058479100004019078}
   _weaponLichFireball: {fileID: 3855697240862667242}
-  _heroesBase: {fileID: 0}
   _state: 6
   debugAI: 0
   senseInterval: 0.3
@@ -6331,7 +6322,7 @@ GameObject:
   - component: {fileID: 9144413278915794280}
   - component: {fileID: 7976627237400294734}
   - component: {fileID: 1984400708240459938}
-  m_Layer: 7
+  m_Layer: 12
   m_Name: Spine GameObject (Lich)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6386,7 +6377,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: aba3be2b0f392414fa3b1ac69ff21b71, type: 2}
+  - {fileID: 2100000, guid: a458e908b41ae1c449995abc1fb0161c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6598,17 +6589,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Weapons.Range.LichWeapon
   _polygonCollider2D: {fileID: 0}
   canAttack: 1
-  <Damage>k__BackingField: 5
   <Cooldown>k__BackingField: 0.3
   weaponName: Weapon
   _arrowPrefabLich: {fileID: 5697931853395996183, guid: fabcbffe59d76e740872b3aeacdf0477, type: 3}
   firePoint: {fileID: 0}
   heightSpawnOffset: 3
-  hitMask:
-    serializedVersion: 2
-    m_Bits: 0
-  aimYOffset: 0.35
-  noTargetForward: 6
 --- !u!1 &8452387019059549704
 GameObject:
   m_ObjectHideFlags: 0

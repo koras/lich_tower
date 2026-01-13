@@ -82,22 +82,22 @@ namespace Heroes
 
         [SerializeField] private float debugInterval = 0.2f;
 
-        [Header("Оружие общее")] [SerializeField]
-        private WeaponBase weapon; // у каждого героя своё оружие
+        [Header("Оружие общее")] 
+        
+        [SerializeField] private WeaponBase weapon; // у каждого героя своё оружие
 
         public WeaponBase Weapon => weapon; // ← публичный геттер
 
 
         [Header("Оружие Лича")] [SerializeField]
         private LichWeapon _weaponLichFireball;
-        //  [SerializeField] private LichFireballAbility _weaponLichFireball; // у каждого героя своё оружие
-        // public WeaponBase WeaponLichFireball => _weaponLichFireball; // ← публичный геттер
-
+ 
+        
         // Позиция куда будет акатковать Лич
         private Vector3 _targetPosition;
 
 
-        //  [Header("Анимация персоны")] [SerializeField]
+        
         private BaseVisualCharacter _character;
 
         // ===== КОМПОНЕНТЫ И ПЕРЕМЕННЫЕ =====
@@ -116,7 +116,9 @@ namespace Heroes
         private float _dbgTimer;
         private int _lookDir = +1;
 
-        [Header("Здоровье")] [SerializeField] private HeroesBase _heroesBase;
+    
+        
+        private HeroesBase _heroesBase;
         private float _repathCd; // кулдаун пересчёта пути
 
         [Header("текущее состояние")] [SerializeField]
@@ -318,7 +320,7 @@ namespace Heroes
 
                 case State.Death:
                 //    DLog($"[{namePNS}] смерть юнита");
-                    //  OnDeath(); // смерть юнита
+              
                     break;
                 case State.Roaming:
               //      DLog($"[{namePNS}] Roaming");
@@ -758,7 +760,11 @@ namespace Heroes
             // ПЕРЕД ВЫСТРЕЛОМ ОБНОВЛЯЕМ ЦЕЛЬ В ОРУЖИИ
             weapon?.SetEnemyTarget(_currentTarget);
             weapon?.SetTargetHealth(_targetHealth);
-
+            
+            HeroesBase.Hero _hero = _heroesBase.GetHeroType();
+            _targetHealth?.ShowDamageAnimation(_hero);
+            
+         
             if (_currentTarget != null)
             {
                 weapon?.Attack();
@@ -959,7 +965,7 @@ namespace Heroes
 
 
             _currentTarget = hp.transform; // фиксируемся на том Transform, где есть здоровье
-            // цель со здоровьем
+
             _targetHealth = hp;
 
             _agent.stoppingDistance = AttackEnterDistance;
@@ -1228,6 +1234,32 @@ namespace Heroes
                 _heroesBase.OnDeath -= HandleDeath;
             }
 
+            if (_heroesBase.GetHeroType() == HeroesBase.Hero.Skeleton || _heroesBase.GetHeroType() == HeroesBase.Hero.SkeletonArcher )
+            {
+                if (_heroesBase != null && _heroesBase.GibsPrefab != null)
+                {
+                    var go = Instantiate(_heroesBase.GibsPrefab, transform.position, Quaternion.identity);
+
+                    var gibs = go.GetComponent<Heroes.BodyParts.Skeleton.GibsContainer2D>();
+                    if (gibs != null)
+                    {
+                        // Вот это ключ: куда разлетается
+                        // Если hitDir = "от атакующего к жертве", то куски обычно летят "по этому же" направлению.
+                        Vector2 pushDir = _heroesBase.LastHitDir;
+
+                        // Если хочешь наоборот (удар справа -> влево), просто инвертируй:
+                        // Vector2 pushDir = -_heroesBase.LastHitDir;
+
+                        Debug.LogWarning($"[HeroesBase] {pushDir} pushDir: {pushDir}");
+                        
+                        
+                        gibs.Scatter(Vector2.zero, pushDir);
+                    }
+                }
+
+                Destroy(gameObject, 0f);
+                return;
+            }
 
             Destroy(gameObject, 7f);
         }

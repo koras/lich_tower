@@ -22,13 +22,13 @@ namespace Weapons.Range
         private int _mannaCost = 35;   // стоимость манны
 
 
-        [Header("время жизни снаряда")]    // время жизни снаряда
-        [SerializeField] private LayerMask hitMask;             // кого можем ударить
+    //    [Header("время жизни снаряда")]    // время жизни снаряда
+    //    [SerializeField] private LayerMask hitMask;             // кого можем ударить
 
         
-        [Header("Наведение")]
-        [SerializeField] private float aimYOffset = 0.35f;
-        [SerializeField] private float noTargetForward = 6f;
+     //   [Header("Наведение")]
+      //  [SerializeField] private float aimYOffset = 0.35f;
+      //  [SerializeField] private float noTargetForward = 6f;
 
         
         

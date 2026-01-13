@@ -214,7 +214,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heroes.BaseVisualCharacter
   _who: 5
-  playAnimalSounds: 1
   soundOffset: {x: 0, y: 0, z: 0}
   debugAI: 0
   showTargetInfo: 1
@@ -258,6 +257,7 @@ SortingGroup:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
 --- !u!1 &2731587545078492603
 GameObject:
   m_ObjectHideFlags: 0
@@ -566,6 +566,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6770748846917989830
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -611,6 +612,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 111
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -9187798618468224767, guid: 5236ad2124f59304195ff51d4d0f55f9, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -620,7 +622,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &9001591492474393208
 MonoBehaviour:
@@ -636,7 +637,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Weapons.Range.ShamanBow
   _polygonCollider2D: {fileID: 0}
   canAttack: 1
-  <Damage>k__BackingField: 10
   <Cooldown>k__BackingField: 0.3
   weaponName: Weapon
   arrowPrefab: {fileID: 2517328470456416780, guid: 310493b1c26badc40b610a970955b901, type: 3}
@@ -680,6 +680,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4621338116872776829
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -725,6 +726,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -4596925356590474502, guid: cd79ebb5478acee4194586821a357f44, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -734,7 +736,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &5421430756166857992
 GameObject:
@@ -813,7 +814,6 @@ MonoBehaviour:
   debugInterval: 0.2
   weapon: {fileID: 9001591492474393208}
   _weaponLichFireball: {fileID: 0}
-  _heroesBase: {fileID: 0}
   _state: 6
   debugAI: 0
   senseInterval: 0.3
@@ -938,6 +938,7 @@ MonoBehaviour:
   mannaRegenInterval: 0.1
   regenPerSecond: 15
   _findBoss: 1
+  _showDamageLichAnimation: {fileID: 3109325695784698206, guid: d4dfcb521c01a8148a65a7d93394b531, type: 3}
 --- !u!210 &7597333721634270098
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -950,6 +951,7 @@ SortingGroup:
   m_SortingLayer: 2
   m_SortingOrder: 10
   m_SortAtRoot: 1
+  m_Sort3DAs2D: 0
 --- !u!114 &3910553020322385286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1067,6 +1069,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &8940100354040378492
 MonoBehaviour:

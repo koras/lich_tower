@@ -60,7 +60,7 @@ namespace Level
             // Логируем загрузку сцены
             if (debugMode)
             {
-                Debug.Log($"Загружена сцена: {scene.name}, GameManager сброшен");
+            //    Debug.Log($"Загружена сцена: {scene.name}, GameManager сброшен");
             }
         }
         /// <summary>
