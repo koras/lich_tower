@@ -17,7 +17,9 @@ namespace Level
         [SerializeField] private Button resetDefaultButton;
         [SerializeField] private TMP_Text infoText;
 
-        [Header("Table")] [SerializeField] private Transform tableContent; // Content из ScrollView
+        [Header("Table")] 
+        
+        [SerializeField] private Transform tableContent; // Content из ScrollView
         [SerializeField] private BalanceHeroRowUI rowPrefab; // prefab строки
 
         private readonly List<BalanceHeroRowUI> _rows = new();
@@ -165,10 +167,10 @@ namespace Level
             var bm = BalanceManager.I;
             string path = bm != null ? bm.GetPersistentPath() : "(BalanceManager missing)";
 
-            infoText.text =
-                $"Difficulty: {SelectedDifficulty}\n" +
-                $"File: {path}\n" +
-                $"State: {(HasDirtyRows() ? "Modified (not saved)" : "Clean")}";
+         //   infoText.text =
+           //     $"Difficulty: {SelectedDifficulty}\n" +
+          //      $"File: {path}\n" +
+         //      $"State: {(HasDirtyRows() ? "Modified (not saved)" : "Clean")}";
         }
     }
 }
