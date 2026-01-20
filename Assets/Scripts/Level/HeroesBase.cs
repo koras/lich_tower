@@ -22,9 +22,17 @@ namespace Heroes
         [SerializeField] protected int _team = 1;
         [SerializeField] private BaseManager _baseManager; 
         [SerializeField] private bool _isBoss; 
+        public event Action<HeroesBase, int> OnDamage; //  victim, dmg
+        public event Action<HeroesBase> OnKilled;      //  victim
+        
+        [Header("Передвижение")]
+        [SerializeField] private bool _canMove = true;
+        public bool CanMove => _canMove;
         
         [SerializeField] private Hero _hero = Hero.Lich; 
+        public event Action<bool> OnCanMoveChanged;
 
+  
         
         [Header("Может гулять ?")] [SerializeField]
         public bool canRoaming = false;
@@ -110,6 +118,13 @@ namespace Heroes
             return _team;
         }
         
+        public void SetCanMove(bool value)
+        {
+            if (_canMove == value) return;
+            _canMove = value;
+            OnCanMoveChanged?.Invoke(_canMove);
+        }
+        
         /// <summary>
         /// Может ли юнит искать босса противоположной команды
         /// </summary>
@@ -128,7 +143,7 @@ namespace Heroes
             if (GetIsBoss())
             {
                 // регистрируем босса 
-                Debug.Log($"BossRegistry.RegisterBoss {GetTeam()} {transform}");
+           //     Debug.Log($"BossRegistry.RegisterBoss {GetTeam()} {transform}");
                 BossRegistry.RegisterBoss(GetTeam(), transform);
             }
         }
@@ -289,11 +304,11 @@ namespace Heroes
         
         public void TakeDamage(int baseDmg, Transform attacker)
         {  
- 
-            if (attacker != null)
-                Debug.Log($"[TakeDamage] victim={name} attacker={attacker.name} ax={attacker.position.x:F3} vx={transform.position.x:F3} hp={_currentHp}->{Mathf.Max(0,_currentHp-baseDmg)}");
-            else
-                Debug.Log($"[TakeDamage] victim={name} attacker=NULL hp={_currentHp}->{Mathf.Max(0,_currentHp-baseDmg)}");
+         
+          //  if (attacker != null)
+          //      Debug.Log($"[TakeDamage] victim={name} attacker={attacker.name} ax={attacker.position.x:F3} vx={transform.position.x:F3} hp={_currentHp}->{Mathf.Max(0,_currentHp-baseDmg)}");
+           // else
+           //     Debug.Log($"[TakeDamage] victim={name} attacker=NULL hp={_currentHp}->{Mathf.Max(0,_currentHp-baseDmg)}");
             
             // Промах
             // if (CheckForMiss())
@@ -302,15 +317,15 @@ namespace Heroes
             //     return;
             // }
             //
-            // // Крит
-            // bool isCritical = CheckForCritical();
+            
+            // Крит
+             bool isCritical = CheckForCritical();
              int finalDmg = baseDmg;
             //
-            // if (isCritical)
-            // {
-            //     finalDmg = Mathf.RoundToInt(baseDmg * criticalMultiplier);
-            //     ShowFloatingText("CRIT!", Color.red);
-            // }
+             if (isCritical)
+             {
+                 finalDmg = Mathf.RoundToInt(baseDmg * criticalMultiplier);     ShowFloatingText("CRIT!", Color.red);
+             }
           
             if (IsDead) return;
             // запоминаем направление удара, если оно валидно
@@ -331,6 +346,13 @@ namespace Heroes
         
             _currentHp = Mathf.Max(0, _currentHp - finalDmg);
 
+            
+            // событие урона (после применения)
+            if (_team != 1)
+            {
+                OnDamage?.Invoke(this, finalDmg);
+            }
+
             if (_healthbar != null)
                 _healthbar.SetHealth(_currentHp, maxHp);
 
@@ -341,6 +363,11 @@ namespace Heroes
                 HealthBarInActive();
                 MannaBarInActive();
                 _ai?.SetDeath(); 
+                // событие убийства (если есть атакующий)
+                if (_team != 1)
+                {
+                    OnKilled?.Invoke(this);
+                }
                 
                 // ВАЖНО: Уведомляем GameManager о смерти героя
                 if (Level.GameManager.Instance != null)

@@ -1,12 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
-using System.IO;
-using UnityEngine;
-using System;
-using UnityEngine;
-using UnityEngine.Networking;
-using System.Collections;
 using System;
 
 namespace Player
@@ -65,7 +59,6 @@ namespace Player
 
         private void LoadSavedData()
         {
-            // Загружаем сохраненные данные
             if (PlayerPrefs.HasKey(PLAYER_NAME_KEY))
             {
                 playerName = PlayerPrefs.GetString(PLAYER_NAME_KEY);
@@ -77,42 +70,40 @@ namespace Player
                 if (isRegistered && !string.IsNullOrEmpty(authToken))
                 {
                     Debug.Log($"Loaded registered user: {playerName}, ID: {userId}");
-                    // Пользователь уже зарегистрирован и есть токен
                 }
                 else
                 {
-                    // Нужна регистрация
+                    Debug.Log("User exists but not registered, re-registering...");
                     StartCoroutine(RegisterPlayer());
                 }
             }
             else
             {
-                // Первый запуск - генерируем уникальное имя и регистрируемся
-                GenerateUniqueName();
+                GenerateSimpleUniqueName();
                 StartCoroutine(RegisterPlayer());
             }
         }
 
-        private void GenerateUniqueName()
+        // ИСПРАВЛЕННЫЙ МЕТОД: Генерация более простого имени
+        private void GenerateSimpleUniqueName()
         {
-            // Генерируем уникальное имя для регистрации
-            string deviceId = SystemInfo.deviceUniqueIdentifier;
+            // Простое имя для тестирования
+            int randomNum = UnityEngine.Random.Range(1000000, 9999999);
+            playerName = $"Player{randomNum}";
             
-            if (string.IsNullOrEmpty(deviceId) || deviceId == "unknown")
-            {
-                deviceId = Guid.NewGuid().ToString();
-            }
-            
-            long timestamp = DateTime.UtcNow.Ticks;
-            int randomNum = UnityEngine.Random.Range(10000, 99999);
-            
-            playerName = $"Player_{deviceId.GetHashCode():X6}_{timestamp % 1000000}_{randomNum}";
-            playerName = playerName.Replace("-", "").Substring(0, Mathf.Min(playerName.Length, 50));
-            
-            Debug.Log($"Generated player name: {playerName}");
+            Debug.Log($"Generated simple player name: {playerName}");
         }
 
-        // Метод для регистрации на сервере и получения токена
+        // ДОБАВЛЕНО: Метод для отладки запроса
+        private void DebugRequest(UnityWebRequest www)
+        {
+            Debug.Log($"Request URL: {www.url}");
+            Debug.Log($"Request Method: {www.method}");
+            Debug.Log($"Request Headers: {www.GetRequestHeader("Accept")}");
+            Debug.Log($"Request Body (name): {playerName}");
+        }
+
+        // УЛУЧШЕННЫЙ МЕТОД: Регистрация с детальной отладкой
         private IEnumerator RegisterPlayer()
         {
             string serverUrl = "http://localhost:8881/api/auth/register";
@@ -123,43 +114,90 @@ namespace Player
             using (UnityWebRequest www = UnityWebRequest.Post(serverUrl, form))
             {
                 www.SetRequestHeader("Accept", "application/json");
+                www.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 www.chunkedTransfer = false;
+                
+                // Отладка запроса
+                DebugRequest(www);
                 
                 yield return www.SendWebRequest();
 
+                // Детальная обработка результата
                 if (www.result == UnityWebRequest.Result.Success)
                 {
-                    Debug.Log("Registration successful!");
+                    Debug.Log($"Registration successful! Status: {www.responseCode}");
+                    Debug.Log($"Response: {www.downloadHandler.text}");
                     
-                    // Парсим ответ сервера
-                    AuthResponse response = JsonUtility.FromJson<AuthResponse>(www.downloadHandler.text);
-                    
-                    if (response.success)
+                    try
                     {
-                        // Сохраняем полученные данные
-                        authToken = response.data.token;
-                        userId = response.data.user.id;
+                        AuthResponse response = JsonUtility.FromJson<AuthResponse>(www.downloadHandler.text);
                         
-                        // Сохраняем данные локально
-                        SavePlayerData();
-                        
-                        Debug.Log($"Token received: {authToken.Substring(0, 20)}...");
-                        Debug.Log($"User ID: {userId}");
-                        
-                        // Можно вызвать событие успешной регистрации
-                        OnRegistrationComplete?.Invoke(true, response.message);
+                        if (response.success)
+                        {
+                            authToken = response.data.token;
+                            userId = response.data.user.id;
+                            
+                            SavePlayerData();
+                            
+                            Debug.Log($"Token received (first 20 chars): {authToken.Substring(0, Mathf.Min(20, authToken.Length))}...");
+                            Debug.Log($"User ID: {userId}");
+                            
+                            OnRegistrationComplete?.Invoke(true, response.message);
+                        }
+                        else
+                        {
+                            Debug.LogError($"Server returned error: {response.message}");
+                            HandleRegistrationError(response.message);
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        Debug.LogError($"Registration failed: {response.message}");
-                        OnRegistrationComplete?.Invoke(false, response.message);
+                        Debug.LogError($"JSON Parse Error: {e.Message}");
+                        Debug.LogError($"Raw response: {www.downloadHandler.text}");
+                        HandleRegistrationError($"Parse error: {e.Message}");
                     }
                 }
                 else
                 {
-                    Debug.LogError($"Registration error: {www.error}");
-                    OnRegistrationComplete?.Invoke(false, www.error);
+                    Debug.LogError($"HTTP Error: {www.error}");
+                    Debug.LogError($"Status Code: {www.responseCode}");
+                    Debug.LogError($"Response: {www.downloadHandler.text}");
+                    
+                    // Попробуем более простое имя при ошибке 500
+                    if (www.responseCode == 500)
+                    {
+                        Debug.Log("Trying with simpler name...");
+                        GenerateSimpleNameForRetry();
+                        yield return new WaitForSeconds(1f);
+                        yield return StartCoroutine(RegisterPlayer());
+                    }
+                    else
+                    {
+                        OnRegistrationComplete?.Invoke(false, $"HTTP Error: {www.error}");
+                    }
                 }
+            }
+        }
+
+        // ДОБАВЛЕНО: Генерация очень простого имени для повторной попытки
+        private void GenerateSimpleNameForRetry()
+        {
+            playerName = $"User{DateTime.UtcNow.Ticks % 1000000}";
+            Debug.Log($"Generated retry name: {playerName}");
+        }
+
+        // ДОБАВЛЕНО: Обработка ошибок регистрации
+        private void HandleRegistrationError(string error)
+        {
+            if (error.Contains("name") && error.Contains("taken"))
+            {
+                Debug.Log("Name already taken, generating new one...");
+                GenerateSimpleUniqueName();
+                StartCoroutine(RegisterPlayer());
+            }
+            else
+            {
+                OnRegistrationComplete?.Invoke(false, error);
             }
         }
 
@@ -174,8 +212,23 @@ namespace Player
             Debug.Log("Player data saved locally");
         }
 
-        // Общий метод для отправки запросов с авторизацией
-        public IEnumerator SendAuthorizedRequest(string url, WWWForm form = null, Action<string> onSuccess = null, Action<string> onError = null)
+        // МЕТОД ДЛЯ ТЕСТИРОВАНИЯ ВРУЧНУЮ
+        public IEnumerator TestRegistrationWithName(string testName)
+        {
+            playerName = testName;
+            Debug.Log($"Testing registration with name: {testName}");
+            yield return StartCoroutine(RegisterPlayer());
+        }
+ 
+
+        // ДОБАВЛЕНЫ ПУБЛИЧНЫЕ ГЕТТЕРЫ
+        public string PlayerName => playerName;
+        public string AuthToken => authToken; // ← ВОТ ЭТО НУЖНО ДОБАВИТЬ
+        public int UserId => userId;
+        public bool IsRegistered => !string.IsNullOrEmpty(authToken);
+        
+        public IEnumerator SendAuthorizedRequest(string url, WWWForm form = null, 
+            Action<string> onSuccess = null, Action<string> onError = null)
         {
             if (string.IsNullOrEmpty(authToken))
             {
@@ -195,7 +248,6 @@ namespace Player
                 www = UnityWebRequest.Get(url);
             }
             
-            // Добавляем токен авторизации
             www.SetRequestHeader("Authorization", $"Bearer {authToken}");
             www.SetRequestHeader("Accept", "application/json");
             
@@ -203,101 +255,22 @@ namespace Player
 
             if (www.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log($"Request to {url} successful");
+                Debug.Log($"Request successful: {www.downloadHandler.text}");
                 onSuccess?.Invoke(www.downloadHandler.text);
             }
             else
             {
-                Debug.LogError($"Request to {url} failed: {www.error}");
+                Debug.LogError($"Request failed: {www.error}");
+                Debug.LogError($"Response: {www.downloadHandler.text}");
                 onError?.Invoke(www.error);
             }
         }
 
-        // Пример метода для отправки статистики босса
-        public IEnumerator SendBossDamage(int bossId, float damageDealt)
-        {
-            string url = "http://localhost:8881/api/game/boss-damage";
-            
-            WWWForm form = new WWWForm();
-            form.AddField("boss_id", bossId.ToString());
-            form.AddField("damage", damageDealt.ToString());
-            form.AddField("timestamp", DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"));
-
-            yield return SendAuthorizedRequest(
-                url, 
-                form,
-                response => {
-                    Debug.Log($"Boss damage recorded: {response}");
-                    // Обработка успешного ответа
-                },
-                error => {
-                    Debug.LogError($"Failed to record boss damage: {error}");
-                    // Обработка ошибки
-                }
-            );
-        }
-
-        // Пример метода для отправки убийств героев
-        public IEnumerator SendHeroKill(int heroId, string heroType, int waveNumber)
-        {
-            string url = "http://localhost:8881/api/game/hero-kill";
-            
-            WWWForm form = new WWWForm();
-            form.AddField("hero_id", heroId.ToString());
-            form.AddField("hero_type", heroType);
-            form.AddField("wave", waveNumber.ToString());
-            form.AddField("timestamp", DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss"));
-
-            yield return SendAuthorizedRequest(
-                url, 
-                form,
-                response => {
-                    Debug.Log($"Hero kill recorded: {response}");
-                    // Обработка успешного ответа
-                },
-                error => {
-                    Debug.LogError($"Failed to record hero kill: {error}");
-                    // Обработка ошибки
-                }
-            );
-        }
-
-        // Метод для получения статистики
-        public IEnumerator GetPlayerStats(Action<string> onSuccess)
-        {
-            string url = $"http://localhost:8881/api/game/stats/{userId}";
-            
-            yield return SendAuthorizedRequest(
-                url,
-                null,
-                onSuccess,
-                error => Debug.LogError($"Failed to get stats: {error}")
-            );
-        }
-
-        // Метод для сброса данных (для тестирования)
-        public void ResetPlayerData()
-        {
-            PlayerPrefs.DeleteKey(PLAYER_NAME_KEY);
-            PlayerPrefs.DeleteKey(AUTH_TOKEN_KEY);
-            PlayerPrefs.DeleteKey(USER_ID_KEY);
-            PlayerPrefs.DeleteKey(IS_REGISTERED_KEY);
-            PlayerPrefs.Save();
-            
-            playerName = "";
-            authToken = "";
-            userId = 0;
-            
-            Debug.Log("Player data reset");
-        }
-
-        // Свойства для доступа к данным
-        public string PlayerName => playerName;
-        public string AuthToken => authToken;
-        public int UserId => userId;
-        public bool IsRegistered => !string.IsNullOrEmpty(authToken);
-
-        // Событие для уведомления о завершении регистрации
         public event Action<bool, string> OnRegistrationComplete;
     }
+        
+    
+ 
+    
+    
 }

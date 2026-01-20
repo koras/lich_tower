@@ -41,6 +41,10 @@ namespace Level
             
             // Подписываемся на событие загрузки сцены
             SceneManager.sceneLoaded += OnSceneLoaded;
+            
+ 
+            
+            
         }
         
         private void OnDestroy()
@@ -86,9 +90,18 @@ namespace Level
 
         private void GameOver(bool isWin)
         {
+
+           // StatsCollector.SubmitFinalStats(isWin);
+            
+            
             if (_gameEnded) return;
             _gameEnded = true;
-
+            
+            int sessionId = Player.GameAPIService.Instance.GetCurrentSessionId();
+            var payload = Player.GameStatsCollector.I.BuildPayload(isWin, sessionId);
+            StartCoroutine(Player.GameAPIService.Instance.SendFinalStats(payload));
+            
+            
             // Вызываем события
             if (isWin)
             { 

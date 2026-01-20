@@ -64,7 +64,7 @@ namespace Level
         private void Start()
         {
             ResetSpawnTimer();
-            Debug.Log($"Старт менеджера спауна. Первая волна через {initialSpawnDelay} секунд");
+        //    Debug.Log($"Старт менеджера спауна. Первая волна через {initialSpawnDelay} секунд");
         }
 
         private void Update()
@@ -95,12 +95,12 @@ namespace Level
                 timeUntilNextSpawn = Random.Range(spawnIntervalMin, spawnIntervalMax);
             }
 
-            Debug.Log($"Следующая волна через {timeUntilNextSpawn:F0} секунд");
+        //    Debug.Log($"Следующая волна через {timeUntilNextSpawn:F0} секунд");
         }
 
         private void SpawnWave()
         {
-            Debug.Log("=== НАЧАЛО ВОЛНЫ ===");
+       //     Debug.Log("=== НАЧАЛО ВОЛНЫ ===");
             int totalSpawned = 0;
 
             foreach (var platform in spawnPlatforms)
@@ -124,10 +124,10 @@ namespace Level
                     }
                 }
 
-                Debug.Log($"Платформа {platform.name} заспаунила {unitsToSpawn} юнитов");
+           //     Debug.Log($"Платформа {platform.name} заспаунила {unitsToSpawn} юнитов");
             }
 
-            Debug.Log($"=== ВОЛНА ЗАКОНЧИЛАСЬ. Всего заспаунено: {totalSpawned} ===");
+         //   Debug.Log($"=== ВОЛНА ЗАКОНЧИЛАСЬ. Всего заспаунено: {totalSpawned} ===");
             OnWaveSpawned?.Invoke();
         }
 
@@ -136,7 +136,7 @@ namespace Level
             if (spawnedUnits.Contains(unit))
             {
                 spawnedUnits.Remove(unit);
-                Debug.Log($"Юнит удален из списка. Осталось: {spawnedUnits.Count}");
+            //    Debug.Log($"Юнит удален из списка. Осталось: {spawnedUnits.Count}");
             }
         }
 

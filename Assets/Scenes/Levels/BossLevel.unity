@@ -1984,7 +1984,8 @@ PrefabInstance:
       value: CameraGame
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4577230165075517935, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 874d3f642b8869b4290e0fd020c8e5ab, type: 3}

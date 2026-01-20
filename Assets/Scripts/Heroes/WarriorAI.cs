@@ -165,7 +165,31 @@ namespace Heroes
       
         }
 
+        private bool CanMoveNow()
+        {
+            return _heroesBase != null && _heroesBase.CanMove && _agent != null && _agent.enabled;
+        }
 
+        private void ApplyMovement(bool allowMove)
+        {
+            if (_agent == null) return;
+
+            if (!allowMove)
+            {
+                _agent.isStopped = true;
+                _agent.ResetPath();
+                // Важно: скорость можно не трогать, но можно и обнулить
+                // _agent.speed = 0f;
+            }
+            else
+            {
+                // _agent.speed = _moveSpeed; // если нужно восстановить
+                _agent.isStopped = false;
+            }
+        }
+        
+        
+        
         private void OnEnable()
         {
             if (_heroesBase == null) _heroesBase = GetComponent<HeroesBase>();
@@ -185,6 +209,10 @@ namespace Heroes
         // вызвать, когда кликнули по карте
         public void MoveToPointManual(Vector3 worldPos)
         {
+            
+            if (!CanMoveNow()) return; // ← добавили
+            
+            
             IsManualControl = true;
             ClearTarget(); // забываем врагов
             _manualDestination = worldPos;
@@ -199,8 +227,20 @@ namespace Heroes
         // ===== ИНИЦИАЛИЗАЦИЯ =====
         private void Awake()
         {
+            
+            if (_heroesBase != null && !_heroesBase.CanMove)
+            {
+                // вариант 1: просто стопаем
+                ApplyMovement(false);
+
+                // вариант 2 (жёстче): выключить агент
+                // _agent.enabled = false;
+            }
+            
+            
             _lichFireball = GetComponent<LichFireballAbility>();
 
+            
 
             _agent = GetComponent<NavMeshAgent>();
             _agent.updateRotation = false; // отключаем авто-поворот
@@ -214,7 +254,13 @@ namespace Heroes
             _heroesBase = GetComponent<HeroesBase>();
             if (_heroesBase != null)
                 _heroesBase.OnDeath += HandleDeath;
-
+            
+            if (_heroesBase != null)
+            {
+                _heroesBase.OnDeath += HandleDeath;
+                _heroesBase.OnCanMoveChanged += OnCanMoveChanged;
+            }
+            
             if (weapon == null)
                 weapon = GetComponentInChildren<WeaponBase>(true); // ищем у своих детей
         }
@@ -233,7 +279,17 @@ namespace Heroes
         {
             _targetPosition = Vector3.zero;
         }
-
+        private void OnCanMoveChanged(bool canMove)
+        {
+            ApplyMovement(canMove);
+            if (!canMove)
+            {
+                // когда запретили двигаться, лучше сразу уйти в Idle
+                IsManualControl = false;
+                ClearTargetPosition(); // если используешь
+                SwitchState(State.Idle);
+            }
+        }
 
         // ===== ОСНОВНОЙ ЦИКЛ =====
         private void Update()
@@ -509,12 +565,16 @@ namespace Heroes
         // ===== ДВИЖЕНИЕ К БОССУ =====
         private void GoToBoss()
         {
+            if (!CanMoveNow()) { SwitchState(State.Idle); return; }
+            
+            
             if (_controlledHero)
             {
                 // управлемый герой игроком
                 return;
             }
 
+            
             if (_state == State.Appear) return;
             if (_state == State.Death) return;
             
@@ -606,7 +666,16 @@ namespace Heroes
                 SwitchState(State.Attacking);
                 return;
             }
-
+            
+            if (!CanMoveNow())
+            {
+                // стоячий юнит: не может догонять, значит просто атакуем если в радиусе,
+                // иначе остаёмся Idle/Attacking по твоей логике
+                SwitchState(State.Idle);
+                return;
+            }
+            
+            
             if (_dbgTimer <= 0f)
             {
                 _dbgTimer = debugInterval;
@@ -968,6 +1037,19 @@ namespace Heroes
 
             _targetHealth = hp;
 
+            
+            
+            // если ходить нельзя — не ставим destination и не уходим в Chasing
+            if (!CanMoveNow())
+            {
+                // Если уже в радиусе атаки — атакуем, иначе просто держим цель
+                float dist = Vector3.Distance(transform.position, _currentTarget.position);
+                if (dist <= AttackEnterDistance) SwitchState(State.Attacking);
+                else SwitchState(State.Idle);
+                return;
+            }
+            
+            
             _agent.stoppingDistance = AttackEnterDistance;
 
             _agent.isStopped = false; // ← ВАЖНО
@@ -1345,5 +1427,14 @@ namespace Heroes
         {
             if (debugAI) Debug.Log(msg);
         }
+        
+        
+        private void OnDestroy()
+        {
+            if (_heroesBase != null)
+                _heroesBase.OnCanMoveChanged -= OnCanMoveChanged;
+        }
+        
+        
     }
 }

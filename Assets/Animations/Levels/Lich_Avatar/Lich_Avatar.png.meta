@@ -1,0 +1,222 @@
+fileFormatVersion: 2
+guid: 864e46193c1d26d4185bf8c33fa6a392
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1341276768500404552
+    second: Lich_Avatar_0
+  - first:
+      213: 6888505654455232403
+    second: Lich_Avatar_1
+  - first:
+      213: 2165172694835591023
+    second: Lich_Avatar_2
+  - first:
+      213: -4050401839161373341
+    second: Lich_Avatar_3
+  - first:
+      213: -28810505002892619
+    second: Lich_Avatar_4
+  - first:
+      213: 1106879998961528905
+    second: Lich_Avatar_5
+  - first:
+      213: 8115810467983254920
+    second: Lich_Avatar_6
+  - first:
+      213: 5980630399380881676
+    second: Lich_Avatar_7
+  - first:
+      213: -4141601342242541320
+    second: Lich_Avatar_8
+  - first:
+      213: 94070430902558867
+    second: Lich_Avatar_9
+  - first:
+      213: 4317616010873967964
+    second: Lich_Avatar_10
+  - first:
+      213: 325669719697154875
+    second: Lich_Avatar_11
+  - first:
+      213: -1710872148920007691
+    second: Lich_Avatar_12
+  - first:
+      213: 3517080126681480582
+    second: Lich_Avatar_13
+  - first:
+      213: 846241960773644323
+    second: Lich_Avatar_14
+  - first:
+      213: -8225635019666329745
+    second: Lich_Avatar_15
+  - first:
+      213: -1556375243097083733
+    second: Lich_Avatar_16
+  - first:
+      213: 1110617894602184857
+    second: Lich_Avatar_17
+  - first:
+      213: 1245047241906275095
+    second: Lich_Avatar_18
+  - first:
+      213: -7398042655023939202
+    second: Lich_Avatar_19
+  - first:
+      213: 8742596456071378544
+    second: Lich_Avatar_20
+  - first:
+      213: -5142438489822977901
+    second: Lich_Avatar_21
+  - first:
+      213: -3322724224363022825
+    second: Lich_Avatar_22
+  - first:
+      213: 145084097980724926
+    second: Lich_Avatar_23
+  - first:
+      213: -3701589587476582829
+    second: Lich_Avatar_24
+  - first:
+      213: 1213251388698291253
+    second: Lich_Avatar_25
+  - first:
+      213: -1853438295980391492
+    second: Lich_Avatar_26
+  - first:
+      213: -4958809848511941091
+    second: Lich_Avatar_27
+  - first:
+      213: 3494334347122556280
+    second: Lich_Avatar_28
+  - first:
+      213: -6658973862691823248
+    second: Lich_Avatar_29
+  - first:
+      213: 1876410148349915651
+    second: Lich_Avatar_30
+  - first:
+      213: 7544106373234769041
+    second: Lich_Avatar_31
+  - first:
+      213: 2013743945779317774
+    second: Lich_Avatar_32
+  - first:
+      213: -4768411898839912520
+    second: Lich_Avatar_33
+  - first:
+      213: 374062040571738116
+    second: Lich_Avatar_34
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 0
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
+  nPOTScale: 1
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 0
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 0
+  spriteTessellationDetail: -1
+  textureType: 0
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  spriteSheet:
+    serializedVersion: 2
+    sprites: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable: {}
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -204,7 +204,7 @@ namespace Weapons.GobArcher
             if (!_hitApplied)
             {
                 _hitApplied = true;
-                Debug.Log($"[ArrowHit] ownerX={_owner?.position.x} arrowX={transform.position.x} targetX={_targetHealth.transform.position.x}");
+                    //   Debug.Log($"[ArrowHit] ownerX={_owner?.position.x} arrowX={transform.position.x} targetX={_targetHealth.transform.position.x}");
                 // Проверяем, достаточно ли близко к цели для нанесения урона
                 bool targetHit = false;
                 if (_targetHealth != null && !_targetHealth.IsDead)
@@ -271,7 +271,7 @@ namespace Weapons.GobArcher
             float randomRotation = Random.Range(-10f, 10f);
             transform.Rotate(0, 0, randomRotation);
             PlaySound(SoundId.ArcherOnGrass);
-            Debug.Log("[GobArrow] Стрела воткнулась в землю");
+        //    Debug.Log("[GobArrow] Стрела воткнулась в землю");
         }
 
         private void StartFadeOut()
