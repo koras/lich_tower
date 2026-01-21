@@ -170,6 +170,15 @@ namespace Heroes
             return _heroesBase != null && _heroesBase.CanMove && _agent != null && _agent.enabled;
         }
 
+        private void HardStopAgent()
+        {
+            if (_agent == null || !_agent.enabled) return;
+            _agent.isStopped = true; 
+            _agent.ResetPath();
+            _agent.velocity = Vector3.zero; // иногда помогает убрать "дрожь"
+        }
+        
+        
         private void ApplyMovement(bool allowMove)
         {
             if (_agent == null) return;
@@ -178,6 +187,7 @@ namespace Heroes
             {
                 _agent.isStopped = true;
                 _agent.ResetPath();
+                _agent.enabled = false;
                 // Важно: скорость можно не трогать, но можно и обнулить
                 // _agent.speed = 0f;
             }
@@ -185,6 +195,7 @@ namespace Heroes
             {
                 // _agent.speed = _moveSpeed; // если нужно восстановить
                 _agent.isStopped = false;
+                _agent.enabled = true;
             }
         }
         
@@ -228,6 +239,16 @@ namespace Heroes
         private void Awake()
         {
             
+            
+            
+            _agent = GetComponent<NavMeshAgent>();
+            _agent.updateRotation = false; // отключаем авто-поворот
+            _agent.updateUpAxis = false; // отключаем выравнивание по оси Y (важно для 2D)
+            _agent.angularSpeed = 0f; // чтобы не вращался
+            
+            
+            _heroesBase = GetComponent<HeroesBase>();
+            
             if (_heroesBase != null && !_heroesBase.CanMove)
             {
                 // вариант 1: просто стопаем
@@ -236,30 +257,24 @@ namespace Heroes
                 // вариант 2 (жёстче): выключить агент
                 // _agent.enabled = false;
             }
+             
+            if (_heroesBase != null)
+            { 
+                _heroesBase.OnDeath += HandleDeath;
+                _heroesBase.OnCanMoveChanged += OnCanMoveChanged;
+                
+                if (!_heroesBase.CanMove)
+                    HardStopAgent();
+            }
             
             
             _lichFireball = GetComponent<LichFireballAbility>();
 
             
-
-            _agent = GetComponent<NavMeshAgent>();
-            _agent.updateRotation = false; // отключаем авто-поворот
-            _agent.updateUpAxis = false; // отключаем выравнивание по оси Y (важно для 2D)
-            _agent.angularSpeed = 0f; // чтобы не вращался
+ 
             _baseSpeed = _agent.speed;
 
             _character = GetComponentInChildren<BaseVisualCharacter>(true); // ищем у своих детей
-
-
-            _heroesBase = GetComponent<HeroesBase>();
-            if (_heroesBase != null)
-                _heroesBase.OnDeath += HandleDeath;
-            
-            if (_heroesBase != null)
-            {
-                _heroesBase.OnDeath += HandleDeath;
-                _heroesBase.OnCanMoveChanged += OnCanMoveChanged;
-            }
             
             if (weapon == null)
                 weapon = GetComponentInChildren<WeaponBase>(true); // ищем у своих детей
@@ -396,6 +411,7 @@ namespace Heroes
          */
         public void SetIsStoppedAgent()
         {
+            if (_agent != null && _agent.enabled)
             _agent.isStopped = true;
         }
  
@@ -472,18 +488,30 @@ namespace Heroes
                 return;
             } // если уже в этом состоянии — ничего не делаем
 
+            // если юнит НЕ может двигаться — никогда не разрешаем агенту движение
+ 
+            
+            
             _state = s;
             DLog($"Меняем состояние на {_state}");
             // Событие — только при смене!
-            StateChanged?.Invoke(_state);
-            //  _agent.speed = _baseSpeed;
-
+            StateChanged?.Invoke(_state); 
+            
+            if (!CanMoveNow())
+            {
+                HardStopAgent();
+                // состояние меняем, анимацию меняем, но движение не включаем
+                ChangeAnimation();
+                return;
+            }
 
             switch (s)
             {
                 case State.Roaming:
                 case State.RoamingWait:
                     DLog($"switch Roaming");
+                    
+                    
                     _agent.speed = _roamSpeed;
                     _agent.isStopped = false;
                     break;
@@ -497,11 +525,15 @@ namespace Heroes
                 //   case State.Appear:
                 case State.Attacking:
                     DLog($"switch State.Attacking");
-                    _agent.isStopped = false; // позволяем подправлять позицию
+                    if (CanMoveNow())
+                        _agent.isStopped = false;
+                    else
+                        HardStopAgent(); // ✅ стоячий не двигается
                     _agent.speed = _moveSpeed;
                     break;
                 case State.Idle:
                     DLog($"switch State.Idle");
+                    if (_agent != null && _agent.enabled)
                     _agent.isStopped = true;
                     _agent.speed = _moveSpeed;
                     break;
@@ -513,7 +545,9 @@ namespace Heroes
             }
             ChangeAnimation();
         }
-
+        
+ 
+        
         // олько при смене состояния
         private void ChangeAnimation()
         {
@@ -530,7 +564,10 @@ namespace Heroes
                     break;
 
                 case State.Chasing:
-                    _character?.PlayWalk(); // логика преследования врага
+                    if (!CanMoveNow())
+                        _character?.PlayIdle();   // турель “целится” стоя
+                    else
+                        _character?.PlayWalk();
                     break;
 
                 case State.Attacking:
@@ -669,9 +706,11 @@ namespace Heroes
             
             if (!CanMoveNow())
             {
-                // стоячий юнит: не может догонять, значит просто атакуем если в радиусе,
-                // иначе остаёмся Idle/Attacking по твоей логике
-                SwitchState(State.Idle);
+                HardStopAgent();
+                if (dist <= AttackEnterDistance)
+                    SwitchState(State.Attacking);
+                else
+                    SwitchState(State.Chasing); // остаёмся в "держу цель"
                 return;
             }
             
@@ -717,8 +756,16 @@ namespace Heroes
 
             if (distSqr > exitSqr)
             {
-                _agent.isStopped = false;
-                SwitchState(State.Chasing);
+                if (CanMoveNow())
+                {
+                    _agent.isStopped = false;
+                    SwitchState(State.Chasing);
+                }
+                else
+                {
+                    HardStopAgent();
+                    SwitchState(State.Chasing);
+                }
                 return;
             }
 
@@ -1042,10 +1089,11 @@ namespace Heroes
             // если ходить нельзя — не ставим destination и не уходим в Chasing
             if (!CanMoveNow())
             {
+                HardStopAgent();
                 // Если уже в радиусе атаки — атакуем, иначе просто держим цель
                 float dist = Vector3.Distance(transform.position, _currentTarget.position);
                 if (dist <= AttackEnterDistance) SwitchState(State.Attacking);
-                else SwitchState(State.Idle);
+                else SwitchState(State.Chasing);
                 return;
             }
             
@@ -1054,12 +1102,9 @@ namespace Heroes
 
             _agent.isStopped = false; // ← ВАЖНО
             _agent.SetDestination(_currentTarget.position);
-
-
+            
             var ai = _currentTarget.GetComponent<WarriorAI>();
             var targetPns = ai != null ? ai.namePNS : _currentTarget.name;
-
-
             SwitchState(State.Chasing);
         }
 
@@ -1078,6 +1123,8 @@ namespace Heroes
             if (weapon != null)
                 weapon.ClearTarget();
             _agent.stoppingDistance = _attackingDistance;
+            
+            if (_agent != null && _agent.enabled)
             _agent.isStopped = true;
 
             SwitchState(State.Idle);
