@@ -28,7 +28,7 @@ namespace Level
         [SerializeField] private Sprite startPressedSprite; // спрайт после нажатия
 
         [Header("Переход")] [SerializeField] private string nextSceneName = "PinchLevel"; // имя сцены для перехода
-        [SerializeField, Min(0f)] private float startDelay = 1f;
+        [SerializeField, Min(0f)] private float startDelay = 0.1f;
 
         private bool _starting;
 
@@ -76,17 +76,14 @@ namespace Level
         {
             if (_starting) return;
             _starting = true;
-
             // Меняем картинку на кнопке Start
             if (startButtonImage != null && startPressedSprite != null)
                 startButtonImage.sprite = startPressedSprite;
-
             // Блокируем повторные тыки (люди любят тыкать)
             startButton.interactable = false;
             easyButton.interactable = false;
             normalButton.interactable = false;
             hardButton.interactable = false;
-
             StartCoroutine(LoadSceneAfterDelay());
         }
 

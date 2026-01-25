@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/BalanceLevel.unity
     guid: 268aeea64b0e3f54388e701c48bd4979
+  - enabled: 1
+    path: Assets/Scenes/LoadingScene.unity
+    guid: 437e89864cd522843ae0e74316568431
   m_configObjects:
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 9dc78d9f2736a6342a9ff0bdeb5323d9, type: 2}
     com.unity.addressableassets: {fileID: 11400000, guid: 1c30bee4fc5d98443ae2c5aad37c7fea, type: 2}
