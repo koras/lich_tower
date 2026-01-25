@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Level.Loading;
 
 namespace Level
 {
@@ -27,8 +28,10 @@ namespace Level
         [SerializeField] private Sprite startDefaultSprite; // спрайт до нажатия
         [SerializeField] private Sprite startPressedSprite; // спрайт после нажатия
 
-        [Header("Переход")] [SerializeField] private string nextSceneName = "PinchLevel"; // имя сцены для перехода
-        [SerializeField, Min(0f)] private float startDelay = 0.1f;
+        [Header("Переход")] 
+        
+        [SerializeField] private string nextSceneName = "PinchLevel"; // имя сцены для перехода
+        [SerializeField, Min(0f)] private float startDelay = 0.0f;
 
         private bool _starting;
 
@@ -89,8 +92,10 @@ namespace Level
 
         private IEnumerator LoadSceneAfterDelay()
         {
-            yield return new WaitForSeconds(startDelay);
-            SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
+            Debug.Log($"[DifficultyMenuController] nextSceneName: {nextSceneName}");
+                 yield return new WaitForSeconds(startDelay);
+                 SceneTransition.Load(nextSceneName);
+                     //  SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
         }
     }
 }

@@ -4,17 +4,21 @@ using UnityEngine.UI;
 using System.Collections;
 using Spine.Unity;
 
-namespace Level
+namespace Level.Loading
 {
     public class SceneLoader : MonoBehaviour
     {
         public Slider progressBar;
         public string sceneToLoad;
+        public static string TargetScene; // ← КУДА ИДЁМ
+        [Header("Минимальное время загрузки")]
+        [SerializeField] private float minLoadDuration = 3f;
+        [SerializeField] private AnimationCurve progressCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
         [Header("Spine")]
-        public SkeletonAnimation loaderSpine; // объект на сцене
-        public string loopAnim = "idle";      // как у тебя называется
-        public string finishAnim = "finish";  // опционально
+        public SkeletonAnimation loaderSpine;
+        public string loopAnim = "idle";
+        public string finishAnim = "idle";
 
         void Start()
         {
@@ -26,25 +30,49 @@ namespace Level
 
         IEnumerator LoadSceneAsync()
         {
-            AsyncOperation operation = SceneManager.LoadSceneAsync(sceneToLoad);
+            AsyncOperation operation = SceneManager.LoadSceneAsync(TargetScene);
             operation.allowSceneActivation = false;
 
             bool finishPlayed = false;
+            float loadStartTime = Time.time;
+            
+            // Инициализируем progress с небольшим значением для визуала
+            float visualProgress = 0.1f;
+            progressBar.value = visualProgress;
 
             while (!operation.isDone)
             {
-                float progress = Mathf.Clamp01(operation.progress / 0.9f);
-                progressBar.value = progress;
+                // Реальный прогресс загрузки от Unity
+                float realProgress = Mathf.Clamp01(operation.progress / 0.9f);
+                
+                // Время с начала загрузки
+                float elapsedTime = Time.time - loadStartTime;
+                float timeProgress = Mathf.Clamp01(elapsedTime / minLoadDuration);
+                
+                // Смешиваем реальный прогресс и временной
+                // Пока реальная загрузка не завершена, используем меньший из двух
+                float targetProgress = Mathf.Min(realProgress, timeProgress);
+                
+                // Применяем кривую для более плавного движения
+                targetProgress = progressCurve.Evaluate(targetProgress);
+                
+                // Плавно интерполируем к целевому прогрессу
+                visualProgress = Mathf.MoveTowards(visualProgress, targetProgress, Time.deltaTime * 2f);
+                progressBar.value = visualProgress;
 
-                if (progress >= 1f && !finishPlayed)
+                // Если прошло достаточно времени И загрузка фактически завершена
+                if (elapsedTime >= minLoadDuration && realProgress >= 1f && !finishPlayed)
                 {
                     finishPlayed = true;
 
-                    // если есть финиш-анимация, сыграем её один раз
+                    // Гарантируем, что слайдер покажет 100%
+                    progressBar.value = 1f;
+                    
+                    // Воспроизводим финишную анимацию
                     if (loaderSpine != null && !string.IsNullOrEmpty(finishAnim))
                     {
                         loaderSpine.AnimationState.SetAnimation(0, finishAnim, false);
-                        yield return new WaitForSeconds(0.3f); // под длину finish
+                        yield return new WaitForSeconds(0.3f);
                     }
                     else
                     {

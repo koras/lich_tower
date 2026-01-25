@@ -21,7 +21,6 @@ namespace Level
         public void GoScene()
         {
             Debug.Log($"[ChangeLevel] GoScene ");
-         //   UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
             SceneManager.LoadScene(sceneName,  LoadSceneMode.Single);
         }
     }

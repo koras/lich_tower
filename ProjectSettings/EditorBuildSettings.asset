@@ -6,19 +6,19 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Levels/MainMenu.unity
+    path: Assets/Scenes/MainMenu.unity
     guid: 8cce458b16c3529458affdb3b4d0f912
   - enabled: 1
-    path: Assets/Scenes/Levels/LevelWin.unity
+    path: Assets/Scenes/LevelWin.unity
     guid: bd1a1cbe07b8c7f49894541c0d253f68
   - enabled: 1
-    path: Assets/Scenes/Levels/LevelLose.unity
+    path: Assets/Scenes/LevelLose.unity
     guid: 1bdeb58a00cae974fa64cd33cffe8977
   - enabled: 1
-    path: Assets/Scenes/Levels/DemoPreFab.unity
+    path: Assets/Scenes/DemoPreFab.unity
     guid: 189dbcac09cdf8a4491382e0f2f62ae6
   - enabled: 1
-    path: Assets/Scenes/Levels/BalanceLevel.unity
+    path: Assets/Scenes/BalanceLevel.unity
     guid: 268aeea64b0e3f54388e701c48bd4979
   - enabled: 1
     path: Assets/Scenes/LoadingScene.unity

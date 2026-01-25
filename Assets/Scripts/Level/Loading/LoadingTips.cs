@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace Level
+namespace Level.Loading
 {
     public class LoadingTips : MonoBehaviour
     {

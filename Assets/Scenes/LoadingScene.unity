@@ -153,8 +153,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.35247993}
+  m_SizeDelta: {x: 0, y: -0.70504}
   m_Pivot: {x: 0.50000006, y: 0.5}
 --- !u!114 &215546550
 MonoBehaviour:
@@ -242,9 +242,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Level.SceneLoader
   progressBar: {fileID: 812175526}
   sceneToLoad: DemoPreFab
+  minLoadDuration: 3
+  progressCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   loaderSpine: {fileID: 435577938}
   loopAnim: idle
-  finishAnim: finish
+  finishAnim: idle
 --- !u!114 &375473866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,11 +285,9 @@ MonoBehaviour:
   tipText: {fileID: 1314240833}
   changeInterval: 0.7
   tips:
-  - "\u0417\u043B\u043E \u0433\u0440\u0443\u0437\u0438\u0442\u0441\u044F..."
   - "\u041F\u0440\u0438\u0437\u044B\u0432\u0430\u0435\u043C \u0441\u043A\u0435\u043B\u0435\u0442\u043E\u0432"
   - "\u0417\u0430\u0440\u044F\u0436\u0430\u0435\u043C \u043C\u0430\u0433\u0438\u044E
     \u0442\u044C\u043C\u044B"
-  - "\u0427\u0438\u043D\u0438\u043C \u0437\u043E\u043C\u0431\u0438-\u043C\u044F\u0441\u043E"
   - "\u0417\u0430\u0432\u0430\u0440\u0438\u0432\u0430\u0435\u043C \u0447\u0430\u0439
     \u0438\u0437 \u043F\u043E\u043B\u044B\u043D\u0438"
   - "\u041F\u044B\u043B\u0435\u0441\u043E\u0441\u0438\u043C \u0441\u043A\u043B\u0435\u043F"
@@ -273,13 +296,15 @@ MonoBehaviour:
     \u0437\u043B\u0430"
   - "\u0421\u043E\u0440\u0442\u0438\u0440\u0443\u0435\u043C \u0431\u0438\u0431\u043B\u0438\u043E\u0442\u0435\u043A\u0443
     \u043F\u043E \u0437\u043B\u043E\u0432\u0435\u0449\u0435\u0441\u0442\u0438"
-  - "\u0412\u0430\u0448 \u0441\u0442\u0440\u0430\u0445 \u0437\u0430\u0433\u0440\u0443\u0436\u0435\u043D
-    \u043D\u0430 75%"
-  - "\u0418\u0434\u0451\u0442 \u043F\u0440\u043E\u0446\u0435\u0441\u0441 \u043E\u043C\u0435\u0440\u0442\u0432\u0435\u043D\u0438\u044F"
   - "\u0417\u0430\u0442\u043E\u0447\u043A\u0430 \u043A\u043E\u0433\u0442\u0435\u0439"
-  - "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0430 \u0437\u043B\u043E\u0432\u0435\u0449\u0435\u0433\u043E"
-  - "\u0420\u043E\u043B\u043B\u0438\u043C \u0448\u043C\u043E\u0442 \u0438\u0437 \u0441\u0443\u043D\u0434\u0443\u043A\u0430
-    \u043F\u0430\u043B\u0430\u0434\u0438\u043D\u043E\u0432"
+  - "\u0420\u0430\u0441\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u043C \u0433\u0440\u0438\u043C\u0443\u0430\u0440\u044B
+    \u043F\u043E \u0430\u043B\u0444\u0430\u0432\u0438\u0442\u0443"
+  - "\u041F\u0440\u0438\u0440\u0443\u0447\u0430\u0435\u043C \u0442\u0435\u043D\u044C"
+  - "\u0420\u0435\u043F\u0435\u0442\u0438\u0440\u0443\u0435\u043C \u0437\u043B\u043E\u0432\u0435\u0449\u0438\u0439
+    \u0441\u043C\u0435\u0445"
+  - "\u0428\u043B\u0438\u0444\u0443\u0435\u043C \u0430\u043B\u0442\u0430\u0440\u044C"
+  - "\u0427\u0438\u043D\u0438\u043C \u0442\u0440\u0435\u0449\u0438\u043D\u0443 \u0432
+    \u0440\u0435\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438"
 --- !u!1 &397048229
 GameObject:
   m_ObjectHideFlags: 0
@@ -346,7 +371,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -1.4343, z: 0}
-  m_LocalScale: {x: 0.4749069, y: 0.3786795, z: 1}
+  m_LocalScale: {x: 0.3786795, y: 0.3786795, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 375473864}
@@ -667,7 +692,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -1.9047}
+  m_AnchoredPosition: {x: 0, y: -2.07}
   m_SizeDelta: {x: 6.3273, y: 0.5133}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &812175526
@@ -985,8 +1010,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 1.07
-  m_fontSizeBase: 1.07
+  m_fontSize: 0.7
+  m_fontSizeBase: 0.7
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1092,7 +1117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3297045779390574649, guid: 1e364075c67d27a40a01bf68173c4999, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 12.544
+      value: 24.1079
       objectReference: {fileID: 0}
     - target: {fileID: 3297045779390574649, guid: 1e364075c67d27a40a01bf68173c4999, type: 3}
       propertyPath: m_LocalPosition.x
