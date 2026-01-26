@@ -167,10 +167,10 @@ namespace Level
             var bm = BalanceManager.I;
             string path = bm != null ? bm.GetPersistentPath() : "(BalanceManager missing)";
 
-         //   infoText.text =
-           //     $"Difficulty: {SelectedDifficulty}\n" +
-          //      $"File: {path}\n" +
-         //      $"State: {(HasDirtyRows() ? "Modified (not saved)" : "Clean")}";
+         infoText.text =
+             $"Difficulty: {SelectedDifficulty}\n" +
+             $"File: {path}\n" +
+            $"State: {(HasDirtyRows() ? "Modified (not saved)" : "Clean")}";
         }
     }
 }

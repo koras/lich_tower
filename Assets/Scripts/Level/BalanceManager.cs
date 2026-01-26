@@ -164,15 +164,19 @@ namespace Level
 
         private void EnsureConfigExists()
         {
-            // Если в persistentDataPath нет balance.json, копируем дефолтный из StreamingAssets
             if (File.Exists(PersistentPath)) return;
 
             try
             {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            // На Android StreamingAssets читается не как обычный файл (jar), нужен UnityWebRequest.
-            // Чтобы не расписывать простыню, проще положить дефолт как TextAsset в Resources.
-            Debug.LogWarning("[BalanceManager] Android: лучше положить дефолтный баланс в Resources и скопировать оттуда.");
+        var ta = Resources.Load<TextAsset>("balance"); // balance.json -> "balance"
+        if (ta == null)
+        {
+            Debug.LogWarning("[BalanceManager] Resources/balance.json not found");
+            return;
+        }
+        File.WriteAllText(PersistentPath, ta.text);
+        Debug.Log($"[BalanceManager] balance.json created from Resources at: {PersistentPath}");
 #else
                 if (File.Exists(StreamingPath))
                 {
