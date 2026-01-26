@@ -571,8 +571,8 @@ MonoBehaviour:
   unitMask:
     serializedVersion: 2
     m_Bits: 192
-  sightRadius: 6.78
-  _attackingDistance: 5.55
+  sightRadius: 1.7
+  _attackingDistance: 1.4
   attackEnterMul: 0.8
   attackExitMul: 1.2
   repathRate: 0.25
@@ -6073,8 +6073,8 @@ Transform:
   m_GameObject: {fileID: 6418602024147182086}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0688, y: -0.0553, z: 0}
-  m_LocalScale: {x: 0.7964117, y: 1.7709875, z: 1}
+  m_LocalPosition: {x: -0.0089, y: -0.1737, z: 0}
+  m_LocalScale: {x: 0.7178961, y: 0.7877817, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9114318263286097030}

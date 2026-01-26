@@ -3,6 +3,7 @@ using UnityEngine;
 using Weapons;
 using System.Collections.Generic;
 using AudioSystem; 
+using Unity.Cinemachine;
 
 namespace Weapons.Projectile
 {
@@ -54,7 +55,10 @@ namespace Weapons.Projectile
         private const string FIRE = "fire"; 
         private const string EXIT = "exit";
          
-         
+        
+        [SerializeField] private CinemachineImpulseSource impulse;
+        
+        
         // Параметры, что задаёт оружие
         private int _damage;
       //  private bool _homing;
@@ -130,21 +134,23 @@ namespace Weapons.Projectile
         }
 
         
-        
+        private GameObject _spawnedHole;
         private bool _holeSpawned;
-        public void SetHole()
+        public GameObject SetHole()
         {
-            
-            if (_holeSpawned) return;
+            if (_holeSpawned) return _spawnedHole;
             _holeSpawned = true;
+
             if (_prefabHole == null)
             {
                 Debug.LogError("[LichBombProjectile2D] _prefabHole не задан");
-                return;
+                return null;
             }
-            var spawnedObject = Instantiate(_prefabHole, transform.position, Quaternion.identity);
+
+            _spawnedHole = Instantiate(_prefabHole, transform.position, Quaternion.identity);
             Debug.Log("SetHole");
-        //    _animator.SetBool(HOLE, true ); 
+
+            return _spawnedHole;
         }
 
 
@@ -297,6 +303,14 @@ namespace Weapons.Projectile
             // теперь здесь анимация
             Debug.Log($"теперь здесь анимация");
              SetBoom();
+             
+             
+             // 2) трясём камеру через Hole (там у тебя BombImpulse + CinemachineImpulseSource)
+             var hole = SetHole(); // вернёт уже созданный, повторно не создаст
+             var imp = hole != null ? hole.GetComponent<BombImpulse>() : null;
+
+             if (imp == null) Debug.LogWarning("[LichBombProjectile2D] На Hole нет BombImpulse");
+             else imp.Shake(0.3f);
         }
 
         // Визуализация в редакторе

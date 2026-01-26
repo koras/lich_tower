@@ -322,6 +322,7 @@ namespace Heroes
             {
                 case State.Idle:
                 {
+                    if(_agent != null)
                     _agent.isStopped = true;
                     // сначала ищем врагов
                     bool hasEnemy = SenseForEnemies();
@@ -352,7 +353,6 @@ namespace Heroes
                             DLog($"[{namePNS}] Этот юнит не ищет босса (findBoss=false или это босс) {namePNS}");
                         }
                     }
-
                     break;
                 }
 
