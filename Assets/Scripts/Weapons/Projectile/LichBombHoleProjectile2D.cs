@@ -35,7 +35,7 @@ namespace Weapons.Projectile
 
         private void Start()
         {
-            Debug.LogError($"ExplosionBoomLichExplosionBoomLichExplosionBoomLichExplosionBoomLich");
+             Debug.LogError($"ExplosionBoomLichExplosionBoomLichExplosionBoomLichExplosionBoomLich");
             PlaySound(SoundId.ExplosionBoomLich);
             StartCoroutine(LifeRoutine());
         }

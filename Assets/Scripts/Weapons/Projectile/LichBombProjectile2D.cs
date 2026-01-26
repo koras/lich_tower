@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Weapons;
 using System.Collections.Generic;
 using AudioSystem; 
@@ -123,14 +124,24 @@ namespace Weapons.Projectile
         {
             if (_showBool) return;
             _showBool = true;
-            //Debug.Log("SetBoom");
+             Debug.Log("SetBoom");
             SetHole();
             _animator.SetBool(BOOM, true ); 
         }
 
+        
+        
+        private bool _holeSpawned;
         public void SetHole()
         {
             
+            if (_holeSpawned) return;
+            _holeSpawned = true;
+            if (_prefabHole == null)
+            {
+                Debug.LogError("[LichBombProjectile2D] _prefabHole не задан");
+                return;
+            }
             var spawnedObject = Instantiate(_prefabHole, transform.position, Quaternion.identity);
             Debug.Log("SetHole");
         //    _animator.SetBool(HOLE, true ); 

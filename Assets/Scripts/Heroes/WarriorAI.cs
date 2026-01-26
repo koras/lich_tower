@@ -854,6 +854,8 @@ namespace Heroes
 
         public void InvokeAttackFromAnimation()
         {
+            Debug.Log($"InvokeAttackFromAnimation");
+            
             if (!canAttack)
             {
                 DLog($"WarriorAI запрет на атаку canAttack {namePNS}");
@@ -877,12 +879,23 @@ namespace Heroes
             weapon?.SetEnemyTarget(_currentTarget);
             weapon?.SetTargetHealth(_targetHealth);
             
-            HeroesBase.Hero _hero = _heroesBase.GetHeroType();
-            _targetHealth?.ShowDamageAnimation(_hero);
+            HeroesBase.Hero _hero = _heroesBase.GetHeroType(); 
             
-         
+// эффект урона лича спавним с ЛИЧА (атакующий), но в позиции цели
+            if (_hero == HeroesBase.Hero.Lich && _targetHealth != null)
+            {
+                Debug.Log($"ShowDamageAnimation1");
+                _heroesBase.ShowDamageAnimationAt(_targetHealth.transform.position);
+            }
+            else
+            {
+                Debug.Log($"ShowDamageAnimation2");
+                _targetHealth?.ShowDamageAnimation(_hero);
+            }
+
             if (_currentTarget != null)
             {
+                Debug.Log($"Attack1");
                 weapon?.Attack();
             }
             else

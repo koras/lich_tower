@@ -202,7 +202,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 8.46271, y: -0.59985, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4788605338641325422}
@@ -222,6 +222,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Damage.ShowDamageLichAnimation
   skeletonAnimation: {fileID: 3973653324014297396}
   showDamageAnimation: {fileID: 11400000, guid: 1c4cbb9bb8e071640b466a71cc1d90f3, type: 2}
+  showTime: 0.2
+  fadeOutTime: 0.35
 --- !u!210 &1322315657602320446
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -230,8 +232,8 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3035572538092593175}
   m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1123069753
+  m_SortingLayer: 2
   m_SortingOrder: 11
   m_SortAtRoot: 1
   m_Sort3DAs2D: 0

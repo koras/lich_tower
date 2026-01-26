@@ -685,6 +685,7 @@ MonoBehaviour:
   _team: 1
   _baseManager: {fileID: 0}
   _isBoss: 1
+  _canMove: 1
   _hero: 0
   canRoaming: 0
   floatingText: {fileID: 170592296297075250, guid: c7f3d3d63a282a9499f36bb7486d966a, type: 3}
@@ -705,6 +706,8 @@ MonoBehaviour:
   mannaRegenInterval: 0.1
   regenPerSecond: 15
   _findBoss: 1
+  _showDamageLichAnimation: {fileID: 2959045381566191925, guid: f7face5836ea2a544979e3af931aee19, type: 3}
+  _gibsContainerPrefab: {fileID: 0}
 --- !u!114 &6314312694185787797
 MonoBehaviour:
   m_ObjectHideFlags: 0

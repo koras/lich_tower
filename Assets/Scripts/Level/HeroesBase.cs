@@ -212,7 +212,17 @@ namespace Heroes
         {
             return _gold;
        }
+        public void ShowDamageAnimationAt(Vector3 worldPos)
+        {
+            if (_showDamageLichAnimation == null)
+            {
+                Debug.LogError($"[{name}] _showDamageLichAnimation не установлен на атакующем (Личе)!");
+                return;
+            }
 
+            worldPos.y -= 0.1f;
+            Instantiate(_showDamageLichAnimation, worldPos, Quaternion.identity);
+        }
         private void Start()
         {
             if (_healthbar != null)
@@ -517,9 +527,9 @@ namespace Heroes
          //   Debug.LogWarning($"[HeroesBase] ShowDamageAnimation hero={hero}");
             if (hero == Hero.Lich)
             {
-                // ShowDamageLichAnimation
+            
                 
-              //  _showDamageLichAnimation;
+    
               
               Debug.Log($"Кидаем фаербол1111");
               if (_showDamageLichAnimation == null)
