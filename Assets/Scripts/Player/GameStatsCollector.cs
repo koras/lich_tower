@@ -92,12 +92,7 @@ namespace Player
         private void OnAnyDamage( HeroesBase victim, int dmg)
         {
             if (dmg <= 0) return;
-
             
-
-
-            
-
             TotalDamageDone += dmg;
 
             var victimType = victim.GetHeroType();

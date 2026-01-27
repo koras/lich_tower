@@ -29,7 +29,8 @@ namespace Player
         public string created_at;
         public int id;
     }
-
+// Добавьте этот метод в ваш PlayerAuthManager
+ 
     public class PlayerAuthManager : MonoBehaviour
     {
         public static PlayerAuthManager Instance { get; private set; }
@@ -56,14 +57,29 @@ namespace Player
                 Destroy(gameObject);
             }
         }
-
+        public void ClearLocalData()
+        {
+            PlayerPrefs.DeleteKey(PLAYER_NAME_KEY);
+            PlayerPrefs.DeleteKey(AUTH_TOKEN_KEY);
+            PlayerPrefs.DeleteKey(USER_ID_KEY);
+            PlayerPrefs.DeleteKey(IS_REGISTERED_KEY);
+            PlayerPrefs.Save();
+    
+            playerName = "";
+            authToken = "";
+            userId = 0;
+    
+            Debug.Log("Local player data cleared!");
+        }
         private void LoadSavedData()
         {
-            if (PlayerPrefs.HasKey(PLAYER_NAME_KEY))
+            if (PlayerPrefs.HasKey(PLAYER_NAME_KEY) && PlayerPrefs.HasKey(AUTH_TOKEN_KEY))
             {
                 playerName = PlayerPrefs.GetString(PLAYER_NAME_KEY);
                 authToken = PlayerPrefs.GetString(AUTH_TOKEN_KEY);
                 userId = PlayerPrefs.GetInt(USER_ID_KEY);
+                // ПРОВЕРЬТЕ ТОКЕН ЧЕРЕЗ АПИ ПЕРЕД ИСПОЛЬЗОВАНИЕМ
+                StartCoroutine(ValidateTokenAndProceed());
                 
                 bool isRegistered = PlayerPrefs.GetInt(IS_REGISTERED_KEY, 0) == 1;
                 
@@ -102,7 +118,38 @@ namespace Player
             Debug.Log($"Request Headers: {www.GetRequestHeader("Accept")}");
             Debug.Log($"Request Body (name): {playerName}");
         }
-
+// ДОБАВЬТЕ МЕТОД ПРОВЕРКИ ТОКЕНА
+        private IEnumerator ValidateTokenAndProceed()
+        {
+            string validateUrl = "http://localhost:8881/api/auth/validate";
+    
+            using (UnityWebRequest www = UnityWebRequest.Get(validateUrl))
+            {
+                www.SetRequestHeader("Authorization", $"Bearer {authToken}");
+                www.SetRequestHeader("Accept", "application/json");
+        
+                yield return www.SendWebRequest();
+        
+                if (www.result == UnityWebRequest.Result.Success)
+                {
+                    // Токен валиден
+                    Debug.Log("Existing token is valid!");
+                    bool isRegistered = PlayerPrefs.GetInt(IS_REGISTERED_KEY, 0) == 1;
+            
+                    if (!isRegistered)
+                    {
+                        SavePlayerData(); // Обновить флаг регистрации
+                    }
+                }
+                else
+                {
+                    // Токен невалиден - перерегистрируемся
+                    Debug.Log("Token invalid, re-registering...");
+                    GenerateSimpleUniqueName();
+                    StartCoroutine(RegisterPlayer());
+                }
+            }
+        }
         // УЛУЧШЕННЫЙ МЕТОД: Регистрация с детальной отладкой
         private IEnumerator RegisterPlayer()
         {

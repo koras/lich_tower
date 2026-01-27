@@ -145,10 +145,15 @@ namespace Player
             if (!PlayerAuthManager.Instance.IsRegistered)
                 yield break;
 
-            var url = "http://localhost:8881/api/stats/final";
+           // var url = "http://localhost:8881/api/stats/final";
+            var url = "http://localhost:8881/api/game/stats/save";
+            
+            
+
             var token = PlayerAuthManager.Instance.AuthToken;
 
             WWWForm form = new WWWForm();
+            form.AddField("session_id", payload.session_id.ToString());
             form.AddField("session_id", payload.session_id.ToString());
             form.AddField("team", payload.team.ToString());
             form.AddField("is_win", payload.is_win ? "1" : "0");
