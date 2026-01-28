@@ -67,7 +67,7 @@ MonoBehaviour:
   unitMask:
     serializedVersion: 2
     m_Bits: 192
-  sightRadius: 2.77
+  sightRadius: 2
   _attackingDistance: 0.4
   attackEnterMul: 0.8
   attackExitMul: 1.2
@@ -181,6 +181,7 @@ MonoBehaviour:
   _team: 1
   _baseManager: {fileID: 0}
   _isBoss: 0
+  _canMove: 1
   _hero: 2
   canRoaming: 0
   floatingText: {fileID: 170592296297075250, guid: c7f3d3d63a282a9499f36bb7486d966a, type: 3}
