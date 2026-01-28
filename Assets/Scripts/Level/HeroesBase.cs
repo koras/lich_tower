@@ -27,6 +27,11 @@ namespace Heroes
         
         [Header("Передвижение")]
         [SerializeField] private bool _canMove = true;
+        
+        
+        [Header("На вышке ли герой")]
+        [SerializeField] private bool  _onTheTower = false;
+        
         public bool CanMove => _canMove;
         
         [SerializeField] private Hero _hero = Hero.Lich; 
@@ -112,11 +117,18 @@ namespace Heroes
         { 
             return _maxManna;
         }
-            // Получение текущей команды
+        // Получение текущей команды
         public int GetTeam()
         {
             return _team;
         }
+        
+        public bool GetOnTheTower()
+        {
+            return _onTheTower;
+        }
+
+         
         
         public void SetCanMove(bool value)
         {

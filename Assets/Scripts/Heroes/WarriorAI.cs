@@ -1038,7 +1038,13 @@ namespace Heroes
                     if (!unit || unit.Hp == null) continue;
                     var hp = unit.Hp;
 
-
+                    
+                    if(_heroesBase.GetHeroType() == HeroesBase.Hero.Skeleton && 
+                        unit.GetComponent<HeroesBase>().GetOnTheTower()){
+                        continue;
+                    }
+                    
+                    
                     //  var hp = col.GetComponentInParent<HeroesBase>();
                     // ИСПРАВЛЕНИЕ: атаковать врагов, у которых команда НЕ совпадает с нашей
                     if (!hp || hp.IsDead) continue;
