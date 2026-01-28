@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7093564217788129143}
   - component: {fileID: 6591512619484082727}
+  - component: {fileID: 4648482162158173965}
   m_Layer: 0
   m_Name: TreeMiddleA
   m_TagString: Untagged
@@ -91,3 +92,19 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!208 &4648482162158173965
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4060116600922075165}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.08, y: 0.12, z: 0.1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.01, y: -0.04, z: 0}
+  m_TimeToStationary: 0.5
