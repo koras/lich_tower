@@ -9,7 +9,7 @@ namespace Player
         
         
         [Header("Настройки")]
-        [SerializeField, Min(0)] private int _startGold = 100000;
+        [SerializeField, Min(0)] private int _startGold = 100;
         [SerializeField, Min(1)] private int _addAmount = 1000; // количество золота за нажатие
         public int Gold { get; private set; }
 
@@ -77,6 +77,8 @@ namespace Player
 
         private void Load()
         {
+            Gold = _startGold;
+            return;
             if (SaveManager.TryLoad(out SaveData data))
             {
                 Gold = data.Gold;
