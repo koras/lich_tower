@@ -26,10 +26,17 @@ namespace Player
         public int id;
     }
 
+ 
+    
+    
+    
     public class GameAPIService : MonoBehaviour
     {
         public static GameAPIService Instance { get; private set; }
 
+
+        private string _host = "http://localhost:8881";
+        
         private Queue<APITask> pendingTasks = new Queue<APITask>();
         private bool isProcessing = false;
         
@@ -71,6 +78,76 @@ namespace Player
             public System.Action<string> onError;
         }
 
+
+         
+        /// <summary>
+        /// Получить текущий хост
+        /// </summary>
+        public string getHost()
+        {
+          return _host;
+        }
+
+
+        
+        
+         
+    /// <summary>
+    /// Получить таблицу лидеров
+    /// </summary>
+    public IEnumerator GetHighScores(Action<List<HighScoreEntry>> onSuccess = null, Action<string> onError = null)
+    {
+        if (!PlayerAuthManager.Instance.IsRegistered)
+        {
+            Debug.LogError("Cannot get high scores: player not registered");
+            onError?.Invoke("Player not registered");
+            yield break;
+        }
+
+        string url = $"{_host}/api/game/stats/leaderboard"; // Или ваш эндпоинт
+        string token = PlayerAuthManager.Instance.AuthToken;
+
+        using (UnityWebRequest www = UnityWebRequest.Get(url))
+        {
+            www.SetRequestHeader("Authorization", $"Bearer {token}");
+            www.SetRequestHeader("Accept", "application/json");
+
+            Debug.Log("Fetching high scores...");
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                try
+                {
+                    HighScoreResponse response = JsonUtility.FromJson<HighScoreResponse>(www.downloadHandler.text);
+                
+                    if (response.success && response.data != null)
+                    {
+                        Debug.Log($"Successfully fetched {response.data.Count} high scores");
+                        onSuccess?.Invoke(response.data);
+                    }
+                    else
+                    {
+                        Debug.LogError($"Failed to get high scores: {response.message}");
+                        onError?.Invoke(response.message);
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"High score parse error: {e.Message}");
+                    onError?.Invoke(e.Message);
+                }
+            }
+            else
+            {
+                Debug.LogError($"High score fetch failed: {www.error}");
+                onError?.Invoke(www.error);
+            }
+        }
+    }
+    
+    
+    
         // === СЕССИОННЫЕ МЕТОДЫ ===
         
         /// <summary>
@@ -85,7 +162,7 @@ namespace Player
                 yield break;
             }
 
-            string url = "http://localhost:8881/api/sessions/start";
+            string url = $"{_host}/api/sessions/start";
             string token = PlayerAuthManager.Instance.AuthToken;
             string userId = PlayerAuthManager.Instance.UserId.ToString();
 
@@ -146,7 +223,7 @@ namespace Player
                 yield break;
 
            // var url = "http://localhost:8881/api/stats/final";
-            var url = "http://localhost:8881/api/game/stats/save";
+            var url = $"{_host}/api/game/stats/save";
             
             
 
@@ -329,7 +406,7 @@ namespace Player
         private IEnumerator SendAuthorizedRequestCoroutine(string endpoint, WWWForm form,
             System.Action<string> onSuccess, System.Action<string> onError)
         {
-            string url = $"http://localhost:8881/api/{endpoint}";
+            string url = $"{_host}/api/{endpoint}";
             string token = PlayerAuthManager.Instance.AuthToken;
 
             using (UnityWebRequest www = UnityWebRequest.Post(url, form))
