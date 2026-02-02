@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Spine.Unity;
 using Level.Loading;
 using System.Collections;
@@ -7,110 +8,350 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.UI;
 using Player;
+using UnityEngine.Networking;
+using TMPro;
 
 namespace Ui
 {
+    
+ 
+    
     public class HighScoreTable : MonoBehaviour
     {
+        
+        
+        private List<HighScoreEntry> highScores = new List<HighScoreEntry>();
+        private UserStats currentUserStats;
+
+        
+        [System.Serializable]
+        public class HighScoreEntry
+        {
+            public int user_id;
+            public string player_name;
+            public int total_damage;
+            public int total_kills;
+            public int win_count;
+            public int total_games;
+            public int rank;
+            public int user_rank;
+            
+            
+             
+            public string last_played_at;
+        }
+    
+        [System.Serializable]
+        public class UserStats
+        {
+            public int user_id;
+            public string player_name;
+            public int total_damage;
+            public int total_kills;
+            public int win_count;
+            public int total_games;
+            public int rank;
+            public float avg_damage;
+            public float avg_kills;
+            public string last_played_at;
+        }
+            
+        [System.Serializable]
+        public class Top10Response
+        {
+            public bool success;
+            public string message;
+            public List<HighScoreEntry> data;
+            public UserStats user_stats;
+            public int user_rank;
+            public int current_user_id;
+        }
+        
+        [System.Serializable]
+        public class SimpleTop10Response
+        {
+            public bool success;
+            public string message;
+            public List<HighScoreEntry> data;
+        }
+
+        
+        
         //   [Header("Animations")] [SerializeField]
         [SerializeField] private Transform _entryContainer;
         [SerializeField] private Transform _entryTemplate;
+        private bool isLoading = false;
 
-        private List<HighScoreEntry> highScores = new List<HighScoreEntry>();
-
-
-        private int _rowsTable = 10;
-        private int maxEntries = 10;
-        [SerializeField] private float _templateHeight = 40f; 
-        // Добавьте Text элементы для отображения данных
         [SerializeField] private Text loadingText;
+        [SerializeField] private Text userRankText;
+        [SerializeField] private Text userStatsText;
 
+        
+        
+        private int maxEntries = 5;
+        private float _templateHeight = 100f; 
+        // Добавьте Text элементы для отображения данных
+ 
+
+        
         private void Start()
         {
             StartCoroutine(LoadHighScores());
         }
-
-        private void Awake()
+        
+        private IEnumerator LoadHighScores()
         {
-            // _entryContainer = _entryContainer.Find("highScoreEntryContainer");
-            //  _entryTemplate = _entryContainer.Find("highScoreEntryTemplate");
-
-            _entryTemplate.gameObject.SetActive(false);
-
-
-            for (int i = 0; i < _rowsTable; i++)
+            if (isLoading) yield break;
+            
+            isLoading = true;
+     
+            
+            if (loadingText != null)
+                loadingText.text = "Загрузка рейтинга...";
+            
+            if (userRankText != null)
+                userRankText.text = "";
+                
+            if (userStatsText != null)
+                userStatsText.text = "";
+            
+            // Проверяем авторизацию
+          //  if (Player.PlayerAuthManager.Instance != null && Player.PlayerAuthManager.Instance.IsRegistered)
+          //  {
+                // Авторизованный пользователь - загружаем топ-10 с центрированием
+                yield return StartCoroutine(LoadTop10Centered());
+        //    }
+        //    else
+        //    {
+         //       // Неавторизованный пользователь - загружаем обычный топ-10
+          //      yield return StartCoroutine(LoadTop10Public());
+         //   }
+            
+            isLoading = false;
+        }
+        
+        private IEnumerator LoadTop10Centered()
+        {
+            
+            string url = "http://localhost:8881/api/game/stats/top10-centered";
+            string token = Player.PlayerAuthManager.Instance.AuthToken;
+            
+            using (UnityWebRequest www = UnityWebRequest.Get(url))
             {
-             //   Debug.Log($"[Input] targetCamera {i}");
-                Transform entryTransform = Instantiate(_entryTemplate, _entryContainer);
-                RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
-                entryRectTransform.anchoredPosition = new Vector2(0, -_templateHeight * i);
-                entryTransform.gameObject.SetActive(true);
-
-                int rank = i + 1;
-
-                entryTransform.Find("posText").GetComponent<Text>().text = rank.ToString();
-                entryTransform.Find("posText").GetComponent<Text>().text = rank.ToString();
-                entryTransform.Find("posText").GetComponent<Text>().text = rank.ToString();
+                www.SetRequestHeader("Authorization", $"Bearer {token}");
+                www.SetRequestHeader("Accept", "application/json");
+                
+                yield return www.SendWebRequest();
+                
+                if (www.result == UnityWebRequest.Result.Success)
+                {
+                
+                        Top10Response response = JsonUtility.FromJson<Top10Response>(www.downloadHandler.text);
+                        
+                        if (response.success)
+                        {
+                            highScores = response.data;
+                            currentUserStats = response.user_stats;
+                            
+                            Debug.Log($"Загружено {highScores.Count} записей. Позиция пользователя: {response.user_rank}");
+                            
+                            // Обновляем UI с информацией о пользователе
+                            UpdateUserInfoUI();
+                            
+                            // Отображаем таблицу
+                            DisplayHighScores();
+                            
+                            if (loadingText != null)
+                                loadingText.gameObject.SetActive(false);
+                        }
+                        else
+                        {
+                            Debug.LogError($"Ошибка сервера: {response.message}");
+                            if (loadingText != null)
+                                loadingText.text = $"Ошибка: {response.message}";
+                                
+                            // Пробуем загрузить обычный топ-10
+                            yield return StartCoroutine(LoadTop10Public());
+                        }
+             
+                }
+                else
+                {
+                    Debug.LogError($"Ошибка сети: {www.error}");
+                    
+                    if (loadingText != null)
+                    {
+                        if (www.responseCode == 401)
+                            loadingText.text = "Требуется авторизация";
+                        else
+                            loadingText.text = "Ошибка соединения";
+                    }
+                    
+                    // Пробуем загрузить обычный топ-10
+                    yield return StartCoroutine(LoadTop10Public());
+                }
+            }
+        }
+        private void UpdateUserInfoUI()
+        {
+            if (currentUserStats == null) return;
+            
+            if (userRankText != null)
+            {
+                userRankText.text = $"Ваша позиция: #{currentUserStats.rank}";
+            }
+            
+            if (userStatsText != null)
+            {
+                userStatsText.text = $"Урон: {currentUserStats.total_damage:N0} | " +
+                                     $"Убийства: {currentUserStats.total_kills} | " +
+                                     $"Победы: {currentUserStats.win_count}";
             }
         }
 
-        private IEnumerator LoadHighScores()
+        private IEnumerator LoadTop10Public()
         {
-            if (loadingText != null)
-                loadingText.text = "Загрузка рекордов...";
-
-            bool isLoading = true;
-            bool hasError = false;
-
-            Player.GameAPIService.Instance.GetHighScores(
-                onSuccess: (scores) =>
+            string url = "http://localhost:8881/api/stats/top10";
+            
+            using (UnityWebRequest www = UnityWebRequest.Get(url))
+            {
+                www.SetRequestHeader("Accept", "application/json");
+                
+                yield return www.SendWebRequest();
+                
+                if (www.result == UnityWebRequest.Result.Success)
                 {
-                    highScores = scores;
-                    isLoading = false;
-                    Debug.Log($"Loaded {scores.Count} high scores");
-                },
-                onError: (error) =>
-                {
-                    Debug.LogError($"Error loading high scores: {error}");
-                    isLoading = false;
-                    hasError = true;
+                    try
+                    {
+                        SimpleTop10Response response = JsonUtility.FromJson<SimpleTop10Response>(www.downloadHandler.text);
+                        
+                        if (response.success)
+                        {
+                            highScores = response.data;
+                            currentUserStats = null;
+                            
+                            Debug.Log($"Загружен публичный топ-10: {highScores.Count} записей");
+                            
+                            DisplayHighScores();
+                            
+                            if (loadingText != null)
+                            {
+                                loadingText.text = "Публичный рейтинг";
+                                // Через 2 секунды скрываем текст
+                                StartCoroutine(HideLoadingTextAfterDelay(2f));
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogError($"Ошибка при загрузке публичного рейтинга: {response.message}");
+                            CreateMockData();
+                            DisplayHighScores();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"Ошибка парсинга публичного рейтинга: {e.Message}");
+                        CreateMockData();
+                        DisplayHighScores();
+                    }
                 }
-            );
-
-            // Ждем загрузки
-            while (isLoading)
-            {
-                yield return null;
+                else
+                {
+                    Debug.LogError($"Ошибка сети при загрузке публичного рейтинга: {www.error}");
+                    CreateMockData();
+                    DisplayHighScores();
+                }
             }
-
-            if (hasError && loadingText != null)
-            {
-                loadingText.text = "Ошибка загрузки данных";
-                yield break;
-            }
-
-            // Очищаем контейнер
-            foreach (Transform child in _entryContainer)
-            {
-                if (child != _entryTemplate)
-                    Destroy(child.gameObject);
-            }
-
-            // Скрываем шаблон
-            _entryTemplate.gameObject.SetActive(false);
-
-            // Отображаем данные
-            DisplayHighScores();
-
+        }
+        
+        
+            
+        private IEnumerator HideLoadingTextAfterDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
             if (loadingText != null)
                 loadingText.gameObject.SetActive(false);
         }
+
+                
+        private void CreateMockData()
+        {
+            highScores = new List<HighScoreEntry>();
+            
+            // Добавляем текущего пользователя в центр (если авторизован)
+            int userRank = UnityEngine.Random.Range(4, 8);
+            string userName = "Player_" + UnityEngine.Random.Range(1000, 9999);
+            
+            if (Player.PlayerAuthManager.Instance != null && Player.PlayerAuthManager.Instance.IsRegistered)
+            {
+                userName = Player.PlayerAuthManager.Instance.PlayerName;
+            }
+            
+            // Создаем 5 записей выше пользователя
+            for (int i = userRank - 5; i < userRank; i++)
+            {
+                if (i >= 1)
+                {
+                    highScores.Add(CreateMockEntry(i, $"Player_{UnityEngine.Random.Range(1000, 9999)}"));
+                }
+            }
+            
+            // Добавляем пользователя
+            highScores.Add(CreateMockEntry(userRank, userName));
+            
+            // Создаем записи ниже пользователя
+            for (int i = userRank + 1; i <= userRank + 4 && highScores.Count < 10; i++)
+            {
+                highScores.Add(CreateMockEntry(i, $"Player_{UnityEngine.Random.Range(1000, 9999)}"));
+            }
+            
+            Debug.Log("Созданы тестовые данные");
+        }
+
+        private HighScoreEntry CreateMockEntry(int rank, string name)
+        {
+            return new HighScoreEntry
+            {
+                rank = rank,
+                user_id = UnityEngine.Random.Range(1000, 9999),
+                player_name = name,
+                total_damage = UnityEngine.Random.Range(50000, 200000),
+                total_kills = UnityEngine.Random.Range(100, 500),
+                win_count = UnityEngine.Random.Range(5, 50),
+                total_games = UnityEngine.Random.Range(10, 100),
+                last_played_at = DateTime.Now.AddDays(-UnityEngine.Random.Range(0, 30)).ToString("o")
+            };
+        }
+        
+        // Вспомогательный метод для безопасной установки текста
+        private void SetTextIfExists(Transform parent, string childName, string text)
+        {
+            Transform child = parent.Find(childName);
+            if (child != null)
+            {
+                Text textComponent = child.GetComponent<Text>();
+                if (textComponent != null)
+                {
+                    textComponent.text = text;
+                }
+                else
+                {
+                    Debug.LogWarning($"No Text component found on {childName}");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Child {childName} not found in entry template");
+            }
+        }
+
 
         private void DisplayHighScores()
         {
             int displayCount = Mathf.Min(highScores.Count, maxEntries);
 
-            for (int i = 0; i < displayCount; i++)
+            Debug.Log($"highScores.Count {highScores.Count} highScores.Counte");
+            for (int i = 0; i < highScores.Count; i++)
             {
                 Transform entryTransform = Instantiate(_entryTemplate, _entryContainer);
                 RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
@@ -120,24 +361,67 @@ namespace Ui
                 // Получаем данные записи
                 var entry = highScores[i];
 
-                // Заполняем UI элементы
-                entryTransform.Find("posText").GetComponent<Text>().text = entry.rank.ToString();
-                entryTransform.Find("nameText").GetComponent<Text>().text = entry.player_name;
-                entryTransform.Find("scoreText").GetComponent<Text>().text = entry.total_score.ToString();
-                entryTransform.Find("killsText").GetComponent<Text>().text = entry.total_kills.ToString();
-                entryTransform.Find("damageText").GetComponent<Text>().text = entry.total_damage.ToString();
-                entryTransform.Find("winsText").GetComponent<Text>().text = entry.win_count.ToString();
-
-                // Если нужно отобразить дату
-                if (entryTransform.Find("dateText") != null)
+                
+                
+             //   Debug.Log($"Child {entry.total_damage} entry.total_damage");
+             //   Debug.Log($"player_name {entry.player_name} entry.total_damage");
+            //    Debug.Log($"player_name {entry.rank} entry.total_damage");
+           //     Debug.Log("-----------------");
+                
+                var damageTf = entryTransform.Find("TitleRows/DamageText");
+                if (damageTf != null)
                 {
-                    System.DateTime date = System.DateTime.Parse(entry.updated_at);
-                    entryTransform.Find("dateText").GetComponent<Text>().text = date.ToString("dd.MM.yyyy");
+                    var tmp = damageTf.GetComponent<TextMeshProUGUI>();
+                    tmp.text = entry.total_damage.ToString(); 
+                    
+                    if (entry.user_id == Player.PlayerAuthManager.Instance.UserId)
+                    {
+                        tmp.color = GetColor();
+                    }
+                }
+                
+                var NameText = entryTransform.Find("TitleRows/NameText");
+                if (NameText != null)
+                {
+                    var tmp = NameText.GetComponent<TextMeshProUGUI>();
+                    tmp.text = entry.player_name.ToString();
+
+                    if (entry.user_id == Player.PlayerAuthManager.Instance.UserId)
+                    {
+                        tmp.color = GetColor();
+                    }
+                }
+                
+                var RankText = entryTransform.Find("TitleRows/RankText");
+                if (RankText != null)
+                {
+
+
+                    Debug.Log($"entry.rank {entry.rank}");
+                    var tmp =RankText.GetComponent<TextMeshProUGUI>();
+                    tmp.text = entry.user_rank.ToString(); 
+                    
+                    if (entry.user_id == Player.PlayerAuthManager.Instance.UserId)
+                    {
+                        tmp.color = GetColor();
+                    }
                 }
 
+                var KillsTotalText = entryTransform.Find("TitleRows/KillsTotalText");
+                if (KillsTotalText != null)
+                {
+                    var tmp =KillsTotalText.GetComponent<TextMeshProUGUI>();
+                    tmp.text = entry.total_kills.ToString(); 
+                    
+                    if (entry.user_id == Player.PlayerAuthManager.Instance.UserId)
+                    {
+                        tmp.color = GetColor();
+                    }
+                }
+ 
                 // Подсветка текущего игрока (опционально)
                 if (Player.PlayerAuthManager.Instance.IsRegistered &&
-                    entry.userId == Player.PlayerAuthManager.Instance.UserId)
+                    entry.user_id == Player.PlayerAuthManager.Instance.UserId)
                 {
                     var entryImage = entryTransform.GetComponent<Image>();
                     if (entryImage != null)
@@ -147,26 +431,12 @@ namespace Ui
                 }
             }
 
-            // Если записей меньше максимума, заполняем оставшиеся места пустыми
-            for (int i = displayCount; i < maxEntries; i++)
-            {
-                Transform entryTransform = Instantiate(_entryTemplate, _entryContainer);
-                RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
-                entryRectTransform.anchoredPosition = new Vector2(0, -_templateHeight * i);
-                entryTransform.gameObject.SetActive(true);
 
-                entryTransform.Find("posText").GetComponent<Text>().text = (i + 1).ToString();
-                entryTransform.Find("nameText").GetComponent<Text>().text = "---";
-                entryTransform.Find("scoreText").GetComponent<Text>().text = "0";
-                entryTransform.Find("killsText").GetComponent<Text>().text = "0";
-                entryTransform.Find("damageText").GetComponent<Text>().text = "0";
-                entryTransform.Find("winsText").GetComponent<Text>().text = "0";
+        }
 
-                if (entryTransform.Find("dateText") != null)
-                {
-                    entryTransform.Find("dateText").GetComponent<Text>().text = "--.--.----";
-                }
-            }
+        private Color GetColor()
+        {
+            return Color.chartreuse;
         }
     }
 }
