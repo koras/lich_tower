@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6692366494423484729
 Transform:
   m_ObjectHideFlags: 0
@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3057915394691258065}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.2, y: -2.19, z: -7.17}
   m_LocalScale: {x: 1, y: 1, z: -1}
   m_ConstrainProportionsScale: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd6f9541b60844b1b237ca15496a477d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Level.WinLose
-  skeletonAnimation: {fileID: 0}
+  skeletonAnimation: {fileID: 2494182849204252650}
   _idle: {fileID: 11400000, guid: b47b02bfc159cb440b66b6a4193ba4b4, type: 2}
   _rePlay: 0
   _idleSpeed: 1

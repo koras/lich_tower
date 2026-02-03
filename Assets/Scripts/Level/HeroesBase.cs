@@ -6,137 +6,128 @@ using Level;
 using Damage;
 
 
-
-
-
 namespace Heroes
 {
     public class HeroesBase : MonoBehaviour
     {
-        
-        
         private Vector2 _lastHitDir = Vector2.left; // дефолт, чтобы не было нулей
         public Vector2 LastHitDir => _lastHitDir;
-        
-        [Header("Команда")]
-        [SerializeField] protected int _team = 1;
-        [SerializeField] private BaseManager _baseManager; 
-        [SerializeField] private bool _isBoss; 
+
+        [Header("Команда")] [SerializeField] protected int _team = 1;
+        [SerializeField] private BaseManager _baseManager;
+        [SerializeField] private bool _isBoss;
         public event Action<HeroesBase, int> OnDamage; //  victim, dmg
-        public event Action<HeroesBase> OnKilled;      //  victim
-        
-        [Header("Передвижение")]
-        [SerializeField] private bool _canMove = true;
-        
-        
-        [Header("На вышке ли герой")]
-        [SerializeField] private bool  _onTheTower = false;
-        
+        public event Action<HeroesBase> OnKilled; //  victim
+
+        [Header("Передвижение")] [SerializeField]
+        private bool _canMove = true;
+
+
+        [Header("На вышке ли герой")] [SerializeField]
+        private bool _onTheTower = false;
+
         public bool CanMove => _canMove;
-        
-        [SerializeField] private Hero _hero = Hero.Lich; 
+
+        [SerializeField] private Hero _hero = Hero.Lich;
         public event Action<bool> OnCanMoveChanged;
 
-  
-        
+
         [Header("Может гулять ?")] [SerializeField]
         public bool canRoaming = false;
-        
-        [Header("Hint")]
-        [SerializeField] private FloatingText floatingText;
+
+        [Header("Hint")] [SerializeField] private FloatingText floatingText;
         [SerializeField] protected Vector3 offset = new Vector3(0, 0.5f, 0);
-        
-        [Header("Здоровье")] 
-        [SerializeField] protected int maxHp = 100;
+
+        [Header("Здоровье")] [SerializeField] protected int maxHp = 100;
         [SerializeField] protected int _currentHp = 100;
 
-        [Header("Манна")] 
-        [SerializeField] protected int _maxManna = 100;
+        [Header("Манна")] [SerializeField] protected int _maxManna = 100;
         [SerializeField] protected int _currentManna = 100;
         public int CurrentManna => _currentManna;
-        
-        [Header("Стоимость героя")] 
-        [SerializeField] private int _gold = 1; 
-       
-     //   [SerializeField] private TMP_Text _goldText = null;  // если TextMeshPro
- 
-        
+
+        [Header("Стоимость героя")] [SerializeField]
+        private int _gold = 1;
+
+        //   [SerializeField] private TMP_Text _goldText = null;  // если TextMeshPro
+
+
         public bool IsDead => _currentHp <= 0;
 
         public HealthbarBehaviour _healthbar;
         public MannaBarBehaviour _mannabar;
-        
-        [Header("Овал выделения")]
-        [SerializeField] private GameObject selectionOval; 
-        
-        
+
+        [Header("Овал выделения")] [SerializeField]
+        private GameObject selectionOval;
+
+
         private CanvasGroup _healthbarCanvasGroup;
-        
+
         private CanvasGroup _mannabarCanvasGroup;
-        
+
         private BaseVisualCharacter _visual;
         private WarriorAI _ai;
-        
-        [Header("Модификаторы урона")]
-        [SerializeField] [Range(0, 100)] private float missChance = 10f;
+
+        [Header("Модификаторы урона")] [SerializeField] [Range(0, 100)]
+        private float missChance = 10f;
+
         [SerializeField] [Range(0, 100)] private float criticalChance = 15f;
         [SerializeField] private float criticalMultiplier = 2f;
 
-        [Header("Регенерация здоровья")]
-        [SerializeField] private bool useRegen = false; 
-        [SerializeField] private bool useRegenManna = true;          // включить / выключить реген
-       
-        
-        
+        [Header("Регенерация здоровья")] [SerializeField]
+        private bool useRegen = false;
+
+        [SerializeField] private bool useRegenManna = true; // включить / выключить реген
+
+
         [SerializeField] private float mannaRegenInterval = 0.1f; // Интервал в секундах
-        [SerializeField] private float regenPerSecond = 2f;      // сколько HP в секунду
+        [SerializeField] private float regenPerSecond = 2f; // сколько HP в секунду
         private float _mannaRegenTimer; // Таймер для регенерации маны
-        private float _regenBuffer;                              // накопление дробных значений
+        private float _regenBuffer; // накопление дробных значений
 
         public event Action OnDeath;
         private bool _deathInvoked;
 
 
-             
         [Header("Враги")]
         // может ли искать босса
-        [SerializeField] private bool _findBoss = true;
+        [SerializeField]
+        private bool _findBoss = true;
 
-         
-        [Header("Показываем урон лича по героям")]
-        [SerializeField] private ShowDamageLichAnimation _showDamageLichAnimation; // Префаб для спауна
 
-         private Transform firePoint;
-        
-         [Header("При смерти юнита")]
-         [SerializeField] private  BodyParts.Skeleton.GibsContainer2D _gibsContainerPrefab;
-         
-         public BodyParts.Skeleton.GibsContainer2D GibsPrefab => _gibsContainerPrefab;
+        [Header("Показываем урон лича по героям")] [SerializeField]
+        private ShowDamageLichAnimation _showDamageLichAnimation; // Префаб для спауна
+
+        private Transform firePoint;
+
+        [Header("При смерти юнита")] [SerializeField]
+        private BodyParts.Skeleton.GibsContainer2D _gibsContainerPrefab;
+
+        public BodyParts.Skeleton.GibsContainer2D GibsPrefab => _gibsContainerPrefab;
 
         public int GetMaxManna()
-        { 
+        {
             return _maxManna;
         }
+
         // Получение текущей команды
         public int GetTeam()
         {
             return _team;
         }
-        
+
         public bool GetOnTheTower()
         {
             return _onTheTower;
         }
 
-         
-        
+
         public void SetCanMove(bool value)
         {
             if (_canMove == value) return;
             _canMove = value;
             OnCanMoveChanged?.Invoke(_canMove);
         }
-        
+
         /// <summary>
         /// Может ли юнит искать босса противоположной команды
         /// </summary>
@@ -144,53 +135,53 @@ namespace Heroes
         {
             return _findBoss;
         }
+
         public int GetMyTeam()
         {
             if (_baseManager == null) return _team; // или 0/1 по умолчанию
             return _baseManager.GetMyTeam();
         }
-        
+
         private void OnEnable()
         {
             if (GetIsBoss())
             {
                 // регистрируем босса 
-           //     Debug.Log($"BossRegistry.RegisterBoss {GetTeam()} {transform}");
+                //     Debug.Log($"BossRegistry.RegisterBoss {GetTeam()} {transform}");
                 BossRegistry.RegisterBoss(GetTeam(), transform);
             }
         }
+
         private void OnDisable()
         {
             if (GetIsBoss())
                 BossRegistry.UnregisterBoss(GetTeam(), transform);
         }
-        
+
         // ПРоверка команды
         public bool CheckTeam(int team)
         {
             return _team == team;
         }
-        
+
         // ПРоверка команды
         public bool CheckMyTeam()
         {
             return _baseManager.GetMyTeam() == _team;
         }
-      
+
         public bool GetIsBoss()
         {
-            return _isBoss; 
+            return _isBoss;
         }
-         
 
 
         private void Awake()
         {
-            
             _ai = GetComponent<WarriorAI>();
             ApplyBalanceFromConfig();
-            
-             
+
+
             _visual = GetComponentInChildren<BaseVisualCharacter>(true);
 
             if (_healthbar == null)
@@ -198,32 +189,32 @@ namespace Heroes
                 _healthbar = GetComponentInChildren<HealthbarBehaviour>(true);
                 _healthbarCanvasGroup = _healthbar.GetComponent<CanvasGroup>();
             }
- 
+
 
             HealthBarInActive();
             MannaBarInActive();
-            
-            
-            if(_mannabar != null)
-            _mannabarCanvasGroup =  _mannabar.GetComponent<CanvasGroup>();
-            
+
+
+            if (_mannabar != null)
+                _mannabarCanvasGroup = _mannabar.GetComponent<CanvasGroup>();
+
             // если в инспекторе не указали, пробуем найти ребёнка по имени
             if (selectionOval == null)
             {
                 var tr = transform.Find("CircleOvalRedShape"); // имя объекта овала в иерархии
                 if (tr != null) selectionOval = tr.gameObject;
             }
-            
+
             if (_baseManager == null)
                 _baseManager = FindObjectOfType<BaseManager>();
-             
         }
 
 
         public int GetGold()
         {
             return _gold;
-       }
+        }
+
         public void ShowDamageAnimationAt(Vector3 worldPos)
         {
             if (_showDamageLichAnimation == null)
@@ -235,33 +226,32 @@ namespace Heroes
             worldPos.y -= 0.1f;
             Instantiate(_showDamageLichAnimation, worldPos, Quaternion.identity);
         }
+
         private void Start()
         {
             if (_healthbar != null)
                 _healthbar.SetHealth(_currentHp, maxHp);
-    
+
             if (_healthbarCanvasGroup == null && _healthbar != null)
                 _healthbarCanvasGroup = _healthbar.gameObject.AddComponent<CanvasGroup>();
 
 
-
             if (_mannabar != null)
             {
-                
                 _mannabar.SetManna(_currentManna, _maxManna);
                 if (_mannabarCanvasGroup == null && _mannabar != null)
                 {
                     _mannabarCanvasGroup = _mannabar.gameObject.AddComponent<CanvasGroup>();
                 }
+
                 _mannabarCanvasGroup.alpha = 0.9f;
             }
 
 
             if (_healthbarCanvasGroup != null)
             {
-                _healthbarCanvasGroup.alpha = 0.9f; 
+                _healthbarCanvasGroup.alpha = 0.9f;
             }
- 
         }
 
         private void Update()
@@ -269,7 +259,7 @@ namespace Heroes
             HandleRegen();
             if (_mannabar != null)
             {
-                 MannaRegen();
+                MannaRegen();
             }
         }
 
@@ -284,19 +274,19 @@ namespace Heroes
 
             // Уменьшаем таймер
             _mannaRegenTimer -= Time.deltaTime;
-            
+
             // Если таймер достиг нуля
             if (_mannaRegenTimer <= 0f)
             {
                 // Восстанавливаем 1 единицу маны
                 AddManna(1);
-                
+
                 // Сбрасываем таймер
                 _mannaRegenTimer = mannaRegenInterval;
             }
         }
 
-        
+
         /// <summary>
         /// Пасивная регенерация здоровья
         /// </summary>
@@ -317,38 +307,26 @@ namespace Heroes
             // Если хочешь всплывающий текст на каждый тик хила:
             // ShowFloatingText("+" + whole, Color.green);
         }
-        
-        
+
+
         public void TakeDamage(int baseDmg)
         {
             TakeDamage(baseDmg, null);
         }
-        
+
         public void TakeDamage(int baseDmg, Transform attacker)
-        {  
-         
-          //  if (attacker != null)
-          //      Debug.Log($"[TakeDamage] victim={name} attacker={attacker.name} ax={attacker.position.x:F3} vx={transform.position.x:F3} hp={_currentHp}->{Mathf.Max(0,_currentHp-baseDmg)}");
-           // else
-           //     Debug.Log($"[TakeDamage] victim={name} attacker=NULL hp={_currentHp}->{Mathf.Max(0,_currentHp-baseDmg)}");
-            
-            // Промах
-            // if (CheckForMiss())
-            // {
-            //     ShowFloatingText("MISS!", Color.yellow);
-            //     return;
-            // }
-            //
-            
+        {
+            Debug.Log($"[HeroesBase] TakeDamage ");
             // Крит
-             bool isCritical = CheckForCritical();
-             int finalDmg = baseDmg;
+            bool isCritical = CheckForCritical();
+            int finalDmg = baseDmg;
             //
-             if (isCritical)
-             {
-                 finalDmg = Mathf.RoundToInt(baseDmg * criticalMultiplier);     ShowFloatingText("CRIT!", Color.red);
-             }
-          
+            if (isCritical)
+            {
+                finalDmg = Mathf.RoundToInt(baseDmg * criticalMultiplier);
+                ShowFloatingText("CRIT!", Color.red);
+            }
+
             if (IsDead) return;
             // запоминаем направление удара, если оно валидно
             int newHp = Mathf.Max(0, _currentHp - finalDmg);
@@ -360,15 +338,14 @@ namespace Heroes
                 if (Mathf.Abs(dx) > 0.01f)
                     _lastHitDir = dx > 0f ? Vector2.right : Vector2.left;
             }
-            
-            
-            
-            if (_visual != null) 
+
+
+            if (_visual != null)
                 _visual.FlashHit();
-        
+
             _currentHp = Mathf.Max(0, _currentHp - finalDmg);
 
-            
+
             // событие урона (после применения)
             if (_team != 1)
             {
@@ -381,26 +358,34 @@ namespace Heroes
 
             if (IsDead && !_deathInvoked)
             {
+                Debug.Log($"[HeroesBase] TakeDamage _deathInvoked");
                 _deathInvoked = true;
                 HealthBarInActive();
                 MannaBarInActive();
-                _ai?.SetDeath(); 
+                _ai?.SetDeath();
                 // событие убийства (если есть атакующий)
                 if (_team != 1)
                 {
                     OnKilled?.Invoke(this);
                 }
-                
+
                 // ВАЖНО: Уведомляем GameManager о смерти героя
                 if (Level.GameManager.Instance != null)
                 {
+                    Debug.Log($"[HeroesBase] TakeDamage Level.GameManager");
                     Level.GameManager.Instance.OnHeroDeath(_hero);
                 }
+                else
+                {
+                    Debug.Log($"[HeroesBase] GameManager not found");
+                }
+
                 OnDeath?.Invoke();
+                Debug.Log($"[HeroesBase] The end");
             }
         }
-        
-        
+
+
         private bool CheckForMiss()
         {
             float chance = UnityEngine.Random.Range(0f, 100f);
@@ -411,7 +396,7 @@ namespace Heroes
         {
             return UnityEngine.Random.Range(0f, 100f) < criticalChance;
         }
-        
+
         private void ShowFloatingText(string message, Color color)
         {
             if (floatingText != null)
@@ -419,10 +404,9 @@ namespace Heroes
                 var ft = Instantiate(floatingText, transform.position + offset, Quaternion.identity);
                 ft.Setup(message, color);
             }
-           
         }
-        
-        
+
+
         public void Heal(int amount)
         {
             if (IsDead) return;
@@ -437,8 +421,8 @@ namespace Heroes
             // Если хочешь подсветку лечения:
             // ShowFloatingText("+" + (_currentHp - oldHp), Color.green);
         }
-        
-        
+
+
         public void AddManna(int amount)
         {
             if (IsDead) return;
@@ -453,13 +437,13 @@ namespace Heroes
             // Если хочешь подсветку лечения:
             // ShowFloatingText("+" + (_currentHp - oldHp), Color.green);
         }
-         
+
 
         public void HealthBarInActive()
         {
             if (_healthbar != null)
                 _healthbar.gameObject.SetActive(false);
-        }       
+        }
 
         public void MannaBarInActive()
         {
@@ -471,12 +455,12 @@ namespace Heroes
         {
             if (_healthbar != null)
                 _healthbar.gameObject.SetActive(true);
-            
+
             if (_mannabar != null)
                 _mannabar.gameObject.SetActive(true);
         }
-        
-        
+
+
         public void SetSelected(bool selected)
         {
             if (selectionOval != null)
@@ -492,6 +476,7 @@ namespace Heroes
         {
             SetSelected(false);
         }
+
         /// <summary>
         /// Есть ли достаточно маны для способности.
         /// </summary>
@@ -512,7 +497,7 @@ namespace Heroes
         public bool SpendManna(int cost)
         {
             cost = Mathf.Max(0, cost);
-            
+
             Debug.Log($"Пытаемся Списываем манну");
             if (_currentManna < cost) return false;
 
@@ -524,7 +509,7 @@ namespace Heroes
 
             return true;
         }
-        
+
         /// <summary>
         /// Возвращает тип героя
         /// </summary>
@@ -533,26 +518,25 @@ namespace Heroes
             return _hero;
         }
 
-        
+
         public void ShowDamageAnimation(Hero hero)
-        {      
-         //   Debug.LogWarning($"[HeroesBase] ShowDamageAnimation hero={hero}");
+        {
+            //   Debug.LogWarning($"[HeroesBase] ShowDamageAnimation hero={hero}");
             if (hero == Hero.Lich)
             {
-            
-          //    Debug.Log($"Кидаем фаербол1111");
-              if (_showDamageLichAnimation == null)
-              {
-                  Debug.LogError($"arrowPrefab _showDamageLichAnimation не установлен");
-                  return;
-              }
+                //    Debug.Log($"Кидаем фаербол1111");
+                if (_showDamageLichAnimation == null)
+                {
+                    Debug.LogError($"arrowPrefab _showDamageLichAnimation не установлен");
+                    return;
+                }
 
-              Transform fp = transform;
-              Vector2 spawnPos = fp.position;
-              spawnPos.y -= 0.1f;
-                 Instantiate(_showDamageLichAnimation, spawnPos, Quaternion.identity);
-           //   Vector2 target = new Vector2(_targetPosition.x, _targetPosition.y);
-           //   arrow.InitFire(target, 150);
+                Transform fp = transform;
+                Vector2 spawnPos = fp.position;
+                spawnPos.y -= 0.1f;
+                Instantiate(_showDamageLichAnimation, spawnPos, Quaternion.identity);
+                //   Vector2 target = new Vector2(_targetPosition.x, _targetPosition.y);
+                //   arrow.InitFire(target, 150);
             }
         }
 
@@ -566,21 +550,14 @@ namespace Heroes
             {
                 maxHp = b.MaxHp;
                 _maxManna = b.MaxMana;
-
                 // при спавне логично начинать с полного
                 _currentHp = maxHp;
                 _currentManna = _maxManna;
-                
                 _ai.Weapon.SetDamage(b.Damage);
-
-    
-                
-
-                    //        Debug.LogWarning($"[HeroesBase] Balance applied: {_hero} diff={difficulty} hp={maxHp} mana={_maxManna} mana={b.Damage}");
             }
         }
-        
-        
+
+
         // Возможные герои
         public enum Hero
         {

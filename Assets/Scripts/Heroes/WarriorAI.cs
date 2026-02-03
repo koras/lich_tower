@@ -316,14 +316,15 @@ namespace Heroes
         private void TickState()
         {
             if (_state == State.Appear) return;
-
+            // Проверяем доступность агента ДО любых операций с ним
+            bool canUseAgent = _agent != null && _agent.enabled && _agent.isOnNavMesh;
             // Поведение в зависимости от состояния
             switch (_state)
             {
                 case State.Idle:
                 {
-                    if(_agent != null)
-                    _agent.isStopped = true;
+                        if (canUseAgent)
+                            _agent.isStopped = true;
                     // сначала ищем врагов
                     bool hasEnemy = SenseForEnemies();
                     if (hasEnemy)
@@ -411,7 +412,8 @@ namespace Heroes
          */
         public void SetIsStoppedAgent()
         {
-            if (_agent != null && _agent.enabled)
+            bool canUseAgent = _agent != null && _agent.enabled && _agent.isOnNavMesh;
+            if (canUseAgent)
             _agent.isStopped = true;
         }
  

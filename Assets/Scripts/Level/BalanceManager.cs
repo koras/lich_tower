@@ -30,8 +30,8 @@ namespace Level
             I = this;
             DontDestroyOnLoad(gameObject);
 
-            Debug.Log($"[BalanceManager] persistent: {PersistentPath}");
-            Debug.Log($"[BalanceManager] streaming:  {StreamingPath}");
+         //   Debug.Log($"[BalanceManager] persistent: {PersistentPath}");
+         //   Debug.Log($"[BalanceManager] streaming:  {StreamingPath}");
 
             EnsureConfigExists();
             Load();

@@ -309,10 +309,10 @@ private IEnumerator ValidateAndProceed444()
             string oldName = playerName;
             int oldUserId = userId;
             
-            Debug.Log($"Old user data for debugging:");
-            Debug.Log($"- Name: {oldName}");
-            Debug.Log($"- User ID: {oldUserId}");
-            Debug.Log($"- Token: {(oldToken.Length > 30 ? oldToken.Substring(0, 30) + "..." : oldToken)}");
+         //   Debug.Log($"Old user data for debugging:");
+         //   Debug.Log($"- Name: {oldName}");
+         //   Debug.Log($"- User ID: {oldUserId}");
+          //  Debug.Log($"- Token: {(oldToken.Length > 30 ? oldToken.Substring(0, 30) + "..." : oldToken)}");
             
             // Попробуем перерегистрироваться с тем же именем
             if (string.IsNullOrEmpty(playerName))
@@ -330,7 +330,7 @@ private IEnumerator ValidateAndProceed444()
             yield return StartCoroutine(RegisterPlayer());
         }
         
-        Debug.Log($"=== TOKEN VALIDATION END ===");
+      //  Debug.Log($"=== TOKEN VALIDATION END ===");
     }
 }
         private IEnumerator ValidateAndProceed()
@@ -345,10 +345,10 @@ private IEnumerator ValidateAndProceed444()
                 
                 yield return www.SendWebRequest();
 
-                Debug.Log($"Token is valid. { www.result.ToString()}"  );
+             //   Debug.Log($"Token is valid. { www.result.ToString()}"  );
                 if (www.result == UnityWebRequest.Result.Success)
                 {
-                    Debug.Log("Token is valid. Player ready!");
+                    //   Debug.Log("Token is valid. Player ready!");
                     OnRegistrationComplete?.Invoke(true, "Token validated");
                 }
                 else

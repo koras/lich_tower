@@ -8,12 +8,11 @@ namespace Level
     {
         [Header("Переход на сцены")] 
         [SerializeField] private string sceneName = "PinchLevel"; 
-        
         [Header("Кнопка")] [SerializeField] private Button _goSceneButton;
         private void Awake()
         {
             Debug.Log($"[ChangeLevel] Awake");
-            _goSceneButton.onClick.AddListener(GoScene);
+            //_goSceneButton.onClick.AddListener(GoScene);
         }
         /// <summary>
         /// Вызывается при смерти героя

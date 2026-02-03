@@ -7,7 +7,8 @@ namespace Ui
 {
     public class GameEndUI : MonoBehaviour
     {
-        [Header("Панели")] [SerializeField] private GameObject winPanel;
+        [Header("Панели")] 
+        [SerializeField] private GameObject winPanel;
         [SerializeField] private GameObject losePanel;
 
         [Header("Тексты")] [SerializeField] private TMP_Text winText;
@@ -20,14 +21,14 @@ namespace Ui
         private void Start()
         {
             // Скрываем панели при старте
-            winPanel.SetActive(false);
-            losePanel.SetActive(false);
+          //  winPanel.SetActive(false);
+          //  losePanel.SetActive(false);
 
             // Подписываемся на события GameManager
             if (Level.GameManager.Instance != null)
             {
-                Level.GameManager.Instance.onGameWin.AddListener(ShowWinScreen);
-                Level.GameManager.Instance.onGameLose.AddListener(ShowLoseScreen);
+              //  Level.GameManager.Instance.onGameWin.AddListener(ShowWinScreen);
+            //    Level.GameManager.Instance.onGameLose.AddListener(ShowLoseScreen);
             }
 
             // Настраиваем кнопки
