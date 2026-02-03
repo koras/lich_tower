@@ -16,11 +16,11 @@ namespace Level
         [SerializeField] private Button reloadButton;
         [SerializeField] private Button resetDefaultButton;
         [SerializeField] private TMP_Text infoText;
-
+        private float _templateHeight = 130f; 
         [Header("Table")] 
         
         [SerializeField] private Transform tableContent; // Content из ScrollView
-        [SerializeField] private BalanceHeroRowUI rowPrefab; // prefab строки
+        [SerializeField] private BalanceHeroRowUI _rowPrefab; // prefab строки
 
         private readonly List<BalanceHeroRowUI> _rows = new();
         private bool _rebuilding;
@@ -78,6 +78,8 @@ namespace Level
 
             // Перечисляем всех героев enum’а
             var heroes = (HeroesBase.Hero[])Enum.GetValues(typeof(HeroesBase.Hero));
+
+            int index = 0;
             foreach (var hero in heroes)
             {
                 // Берём данные из конфига, если нет, подставим дефолты
@@ -87,16 +89,27 @@ namespace Level
                     data = new HeroBalanceData { MaxHp = 100, MaxMana = 100, Damage = 10, Cost = 1, XpReward = 0 };
                 }
 
-                var row = Instantiate(rowPrefab, tableContent);
+                var row = Instantiate(_rowPrefab, tableContent);
+                
+                RectTransform entryRectTransform = row.GetComponent<RectTransform>();
+                entryRectTransform.anchoredPosition = new Vector2(0, -_templateHeight * index);
+
+                row.gameObject.SetActive(true);
+                
                 row.Init(hero, data, OnRowDirtyChanged);
 
                 _rows.Add(row);
+
+                index++;
             }
 
             UpdateInfo();
             _rebuilding = false;
         }
 
+        
+        
+        
         private void ClearRows()
         {
             _rows.Clear();

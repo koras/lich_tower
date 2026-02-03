@@ -540,13 +540,9 @@ namespace Heroes
             if (hero == Hero.Lich)
             {
             
-                
-    
-              
-              Debug.Log($"Кидаем фаербол1111");
+          //    Debug.Log($"Кидаем фаербол1111");
               if (_showDamageLichAnimation == null)
               {
-              
                   Debug.LogError($"arrowPrefab _showDamageLichAnimation не установлен");
                   return;
               }
@@ -580,7 +576,7 @@ namespace Heroes
     
                 
 
-                Debug.LogWarning($"[HeroesBase] Balance applied: {_hero} diff={difficulty} hp={maxHp} mana={_maxManna} mana={b.Damage}");
+                    //        Debug.LogWarning($"[HeroesBase] Balance applied: {_hero} diff={difficulty} hp={maxHp} mana={_maxManna} mana={b.Damage}");
             }
         }
         

@@ -2,11 +2,26 @@ using UnityEngine;
 using Heroes; 
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine;
+using System.Collections;
+
 
 namespace Level
 {
     public class GameManager : MonoBehaviour
     {
+        
+        [Header("Настройка затемнения")] 
+        [SerializeField] private float fadeDuration = 0.5f;
+        [SerializeField] private bool fadeOnStart = true;
+        [SerializeField] private bool disableOnComplete = false;
+
+        [SerializeField] private GameObject spriteRenderer;
+      
+         private SpriteRenderer _spriteRenderer;
+        private Color originalColor;
+        
+        
         public static GameManager Instance { get; private set; }
 
         [Header("События игры")] 
@@ -14,7 +29,11 @@ namespace Level
         [Header("Переход на сцены")] 
         
         [SerializeField] private string sceneNameWin = "LevelWin"; 
-        [SerializeField] private string sceneNameLose = "LevelLose"; 
+        [SerializeField] private string sceneNameLose = "LevelLose";
+        
+        
+        [SerializeField] private GameObject  _prefubWin; 
+        [SerializeField] private GameObject  _prefubLose; 
         
         public UnityEvent onGameWin;
         public UnityEvent onGameLose;
@@ -26,8 +45,74 @@ namespace Level
 
         private bool _gameEnded = false;
 
+        
+        
+        
+        void Start()
+        {
+              _spriteRenderer = spriteRenderer.GetComponent<SpriteRenderer>();
+              
+            if (_spriteRenderer == null)
+            {
+                Debug.LogError("SpriteFadeIn: SpriteRenderer не найден!");
+                return;
+            }
+
+            originalColor = _spriteRenderer.color;
+        
+     
+            
+        }
+        
+        public void StartFadeIn()
+        {
+            StartCoroutine(FadeInCoroutine());
+        }
+        
+        
+        IEnumerator FadeInCoroutine()
+        {
+            // Устанавливаем начальную прозрачность
+            Color startColor = originalColor;
+            startColor.a = 0f;
+            _spriteRenderer.color = startColor;
+
+            // Включаем рендерер если он был выключен
+            _spriteRenderer.enabled = true;
+
+            float elapsedTime = 0f;
+
+            while (elapsedTime < fadeDuration)
+            {
+                float alpha = Mathf.Lerp(0f, 1f, elapsedTime / fadeDuration);
+            
+                Color newColor = originalColor;
+                newColor.a = alpha;
+                _spriteRenderer.color = newColor;
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            // Устанавливаем финальный цвет
+            //     spriteRenderer.color = originalColor;
+
+            if (disableOnComplete)
+            {
+                enabled = false;
+            }
+        }
+
+        // Для вызова из других скриптов
+        public void FadeIn(float customDuration = 0.5f)
+        {
+            fadeDuration = customDuration;
+            StartFadeIn();
+        }
         private void Awake()
         {
+            _spriteRenderer.gameObject.SetActive(true);
+           
             if (Instance == null)
             {
                 Instance = this;
@@ -38,13 +123,8 @@ namespace Level
                 Destroy(gameObject);
                 return;
             }
-            
             // Подписываемся на событие загрузки сцены
             SceneManager.sceneLoaded += OnSceneLoaded;
-            
- 
-            
-            
         }
         
         private void OnDestroy()
@@ -101,10 +181,42 @@ namespace Level
             var payload = Player.GameStatsCollector.I.BuildPayload(isWin, sessionId);
             StartCoroutine(Player.GameAPIService.Instance.SendFinalStats(payload));
             
+            Transform fp = transform;
+            Vector2 spawnPos = fp.position;
+            spawnPos.y -= 0.1f;
+            
+            if (fadeOnStart)
+            {
+                StartFadeIn();
+            }
             
             // Вызываем события
             if (isWin)
-            { 
+            {
+                
+                
+                
+               var win =  Instantiate(_prefubWin, new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity);
+               var winLoseComponent = _prefubWin.GetComponent<WinLose>();
+               
+               
+               if (winLoseComponent != null)
+               {
+                   winLoseComponent.Load();
+               }
+               
+               
+               // if (winLoseComponent != null)
+               // {
+               //     // Устанавливаем задержку если нужно
+               //     //  winLoseComponent._delayBeforeTransition = 2f; // например
+               //     // Запускаем корутину перехода
+               //     winLoseComponent.StartCoroutine(winLoseComponent.TransitionAfterDelay());
+               // }
+                
+                
+                
+                
                 onGameWin?.Invoke();
                 Debug.Log("════════════════════════════════");
                 Debug.Log("            ПОБЕДА!");
@@ -117,7 +229,10 @@ namespace Level
                 }
             }
             else
-            { 
+            {  
+                
+                Instantiate(_prefubLose, new Vector3(spawnPos.x, spawnPos.y, 0), Quaternion.identity);
+
                 onGameLose?.Invoke();
                 Debug.Log("════════════════════════════════");
                 Debug.Log("           ПРОИГРЫШ!");

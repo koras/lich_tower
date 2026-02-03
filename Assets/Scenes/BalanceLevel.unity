@@ -783,7 +783,7 @@ MonoBehaviour:
   resetDefaultButton: {fileID: 1288865677}
   infoText: {fileID: 1101434461}
   tableContent: {fileID: 1825803466}
-  rowPrefab: {fileID: 8703305256946692023, guid: 3ca933545f6c8f14f9a6983e0cd3ee3c, type: 3}
+  _rowPrefab: {fileID: 8703305256946692023, guid: 3ca933545f6c8f14f9a6983e0cd3ee3c, type: 3}
 --- !u!1 &1647202626
 GameObject:
   m_ObjectHideFlags: 0
