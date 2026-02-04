@@ -148,7 +148,7 @@ namespace Ui
 
         private IEnumerator LoadTop10Centered()
         {
-            string url = "http://localhost:8881/api/game/stats/top10-centered";
+            string url = "https://lich.staers.ru/api/game/stats/top10-centered";
             string token = Player.PlayerAuthManager.Instance.AuthToken;
 
             using (UnityWebRequest www = UnityWebRequest.Get(url))
@@ -226,8 +226,8 @@ namespace Ui
 
         private IEnumerator LoadTop10Public()
         {
-            string url = "http://localhost:8881/api/stats/top10";
-
+            string url = "https://lich.staers.ru/api/stats/top10";
+             
             using (UnityWebRequest www = UnityWebRequest.Get(url))
             {
                 www.SetRequestHeader("Accept", "application/json");

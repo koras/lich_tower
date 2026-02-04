@@ -9,8 +9,8 @@ namespace Player
         
         
         [Header("Настройки")]
-        [SerializeField, Min(0)] private int _startGold = 100;
-        [SerializeField, Min(1)] private int _addAmount = 1000; // количество золота за нажатие
+        [SerializeField, Min(0)] private int _startGold = 10;
+        [SerializeField, Min(1)] private int _addAmount = 10; // количество золота за нажатие
         public int Gold { get; private set; }
 
         public event Action<int> OnGoldChanged; // новый баланс
@@ -78,17 +78,6 @@ namespace Player
         private void Load()
         {
             Gold = _startGold;
-            return;
-            if (SaveManager.TryLoad(out SaveData data))
-            {
-                Gold = data.Gold;
-                Debug.Log($"Gold loaded {Gold}");
-            }
-            else
-            {
-                Gold = _startGold;
-                Debug.Log($"Gold init {_startGold}");
-            }
         }
 
         private void OnApplicationQuit()

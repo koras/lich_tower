@@ -45,7 +45,7 @@ namespace Heroes
         [SerializeField] protected int _currentManna = 100;
         public int CurrentManna => _currentManna;
 
-        [Header("Стоимость героя")] [SerializeField]
+
         private int _gold = 1;
 
         //   [SerializeField] private TMP_Text _goldText = null;  // если TextMeshPro
@@ -104,6 +104,12 @@ namespace Heroes
 
         public BodyParts.Skeleton.GibsContainer2D GibsPrefab => _gibsContainerPrefab;
 
+        
+        [Header("Банк учёта золота")]
+        [SerializeField] private GoldBank _goldBank; 
+        
+        
+        
         public int GetMaxManna()
         {
             return _maxManna;
@@ -178,6 +184,11 @@ namespace Heroes
 
         private void Awake()
         {
+            
+            if (_goldBank == null)
+                _goldBank = FindObjectOfType<GoldBank>();
+            
+            
             _ai = GetComponent<WarriorAI>();
             ApplyBalanceFromConfig();
 
@@ -368,7 +379,10 @@ namespace Heroes
                 {
                     OnKilled?.Invoke(this);
                 }
-
+                
+                // Добавляем золото за убийство
+                AddGoldForKill(_hero);
+                
                 // ВАЖНО: Уведомляем GameManager о смерти героя
                 if (Level.GameManager.Instance != null)
                 {
@@ -384,7 +398,34 @@ namespace Heroes
                 Debug.Log($"[HeroesBase] The end");
             }
         }
+        
+        
+        // Новый метод для добавления золота за убийство
+        private void AddGoldForKill(Hero heroType)
+        {
+            if (_goldBank == null)
+            {
+                Debug.LogWarning("GoldBank не найден! Не могу добавить золото за убийство.");
+                return;
+            }
+            
+            
+            // Проверяем смерть Лича (игрока)
+            if (heroType == Hero.OrcWar || heroType == Hero.GobArcher)
+            {
+                // Добавляем золото, равное стоимости юнита
+                _goldBank.Add(_gold);
+            }
 
+
+        
+    
+            // Добавляем золото, равное стоимости юнита
+         //  _goldBank.Add(_gold);
+    
+            // Или фиксированную сумму
+            // _goldBank.Add(10);
+        }
 
         private bool CheckForMiss()
         {

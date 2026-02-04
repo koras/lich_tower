@@ -35,7 +35,7 @@ namespace Player
         public static GameAPIService Instance { get; private set; }
 
 
-        private string _host = "http://localhost:8881";
+        private string _host = "https://lich.staers.ru";
         
         private Queue<APITask> pendingTasks = new Queue<APITask>();
         private bool isProcessing = false;
@@ -222,7 +222,7 @@ namespace Player
             if (!PlayerAuthManager.Instance.IsRegistered)
                 yield break;
 
-           // var url = "http://localhost:8881/api/stats/final";
+           // var url = "https://lich.staers.ru/api/stats/final";
             var url = $"{_host}/api/game/stats/save";
             
             
@@ -276,7 +276,7 @@ namespace Player
                 yield break;
             }
 
-            string url = $"http://localhost:8881/api/game/{currentSessionId}/end";
+            string url = $"https://lich.staers.ru/api/game/{currentSessionId}/end";
             string token = PlayerAuthManager.Instance.AuthToken;
 
             WWWForm form = new WWWForm();

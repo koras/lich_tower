@@ -182,15 +182,15 @@ MonoBehaviour:
   _baseManager: {fileID: 0}
   _isBoss: 0
   _canMove: 1
+  _onTheTower: 0
   _hero: 5
   canRoaming: 1
   floatingText: {fileID: 170592296297075250, guid: c7f3d3d63a282a9499f36bb7486d966a, type: 3}
   offset: {x: 0, y: 0.5, z: 0}
-  maxHp: 12000
-  _currentHp: 12000
+  maxHp: 20
+  _currentHp: 20
   _maxManna: 100
   _currentManna: 0
-  _gold: 1
   _healthbar: {fileID: 4411962096834040148}
   _mannabar: {fileID: 0}
   selectionOval: {fileID: 0}
@@ -204,6 +204,7 @@ MonoBehaviour:
   _findBoss: 0
   _showDamageLichAnimation: {fileID: 3109325695784698206, guid: d4dfcb521c01a8148a65a7d93394b531, type: 3}
   _gibsContainerPrefab: {fileID: 0}
+  _goldBank: {fileID: 0}
 --- !u!210 &-4948566291594160466
 SortingGroup:
   m_ObjectHideFlags: 0

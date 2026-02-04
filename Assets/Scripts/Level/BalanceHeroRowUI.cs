@@ -36,10 +36,15 @@ namespace Level
             SetFields(data);
             _suppressEvents = false;
 
+            // жизни
             HookDirty(hpField);
+            // манна, только у боссов
             HookDirty(manaField);
+            // урон
             HookDirty(dmgField);
+            // стоимость
             HookDirty(costField);
+            
             HookDirty(xpField);
 
             
