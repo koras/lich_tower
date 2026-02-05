@@ -176,6 +176,7 @@ namespace Input
                         if (TryGetGroundWorld(screenPos, out world))
                         {
                             _activeFireball.ConfirmTarget(world); // <- тут начнётся анимация/каст по твоей логике
+                            Debug.Log($"Идём 3");
                             SpawnPoint(world);                    // если хочешь визуальный маркер
                         }
                         else
@@ -266,6 +267,8 @@ namespace Input
 
                     if (TryGetGroundWorld(screenPos, out var world))
                     {
+                        
+                        Debug.Log($"Идём 1");
                         _activeFireball.ConfirmTarget(world);
                         SpawnPoint(world);
                     }
@@ -356,6 +359,7 @@ namespace Input
         // ==================== MOVE HERO ====================
         private bool TryClickGroundForSelectedHero(Vector2 screenPos)
         {
+            
             if (_selectedHero == null) return false;
 
             if (!TryGetGroundWorld(screenPos, out var worldPos))
@@ -366,9 +370,11 @@ namespace Input
                 targetPos = navHit.position;
             else
                 targetPos = worldPos;
-
-            _selectedHero.MoveToPointManual(targetPos);
-            SpawnPoint(targetPos);
+            // выбор игрока
+            // _selectedHero.MoveToPointManual(targetPos);
+            
+            Debug.Log($"Идём 2");
+          //  SpawnPoint(targetPos);
             return true;
         }
 
