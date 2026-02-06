@@ -186,14 +186,59 @@ namespace Heroes
             TickState();
             UpdateTargetVisualization();
         }
+        
+        
+        
+        public Vector2 GetMovementDirection()
+        {
+            // Если управляем джойстиком
+            if (_controlledHero && joystick != null)
+            {
+                Vector2 input = new Vector2(joystick.Horizontal, joystick.Vertical);
+                if (input.magnitude > joystickDeadzone)
+                    return input;
+            }
+    
+            // Если агент движется
+            if (_agent != null && _agent.desiredVelocity.sqrMagnitude > flipThreshold * flipThreshold)
+            {
+                return _agent.desiredVelocity.normalized;
+            }
+    
+            return Vector2.zero;
+        }
+
+        public bool ShouldFaceLeft()
+        {
+            Vector2 moveDir = GetMovementDirection();
+    
+            // Если есть движение - смотрим по направлению движения
+            if (moveDir.sqrMagnitude > joystickDeadzone * joystickDeadzone)
+            {
+                return moveDir.x < 0f;
+            }
+    
+            // Если нет движения, но есть цель - смотрим на цель
+            if (_currentTarget != null)
+            {
+                return _currentTarget.position.x < transform.position.x;
+            }
+    
+            // Иначе сохраняем текущее направление
+            return _lookDir < 0;
+        }
+        
+        
+        
         private void UpdateJoystickMove()
         {
+        
             if (!CanMoveNow() || _agent == null || !_agent.isOnNavMesh)
             {
                 
                 DLog($"[WarriorAI] HardStopAgent {namePNS}");
-               // HardStopAgent();
-            //    return;
+                IsManualControl = false;
+                return;
             }
 
             // 1) читаем стик
@@ -202,70 +247,128 @@ namespace Heroes
                 raw = new Vector2(joystick.Horizontal, joystick.Vertical);
 
             float mag = raw.magnitude;
-
+           
             // 2) deadzone
             if (mag < joystickDeadzone)
             {
                 _joyFiltered = Vector2.Lerp(_joyFiltered, Vector2.zero, Time.deltaTime * joystickSmoothing);
-
-                // стоп
-             //   _agent.isStopped = false;
-             //   _agent.velocity = Vector3.zero;
-
              DLog($"[WarriorAI] HardStopAgent mag < joystickDeadzone");
-                IsManualControl = false;
-            //    SwitchState(State.Idle);
-             //   return;
+             if (IsManualControl)
+             {
+                 IsManualControl = false;
+                 DLog($"[WarriorAI] Стоп джойстик {namePNS}");
+            
+                 // Включаем обратно AI логику
+                 EnableAILogic();
+                 SwitchState(State.Idle);
+             }
+             return;
             }
-
-            // 3) нормализуем направление и сохраняем “силу” отклонения (для ходьба/бег)
+            
+            if (!IsManualControl)
+            {
+                IsManualControl = true;
+                DLog($"[WarriorAI] Начало ручного управления {namePNS}");
+        
+                // Отключаем AI логику
+                DisableAILogic();
+        
+                // ОТМЕНЯЕМ ВСЕ ТЕКУЩИЕ ДЕЙСТВИЯ
+                CancelAllActions();
+                
+                // Отключаем агента
+                if (_agent != null && _agent.enabled)
+                {
+                    _agent.isStopped = true;
+                    _agent.ResetPath();
+                }
+            }
+            
+            
+            // 3) нормализуем направление  
             Vector2 dir = raw / mag;
             float strength = Mathf.InverseLerp(joystickDeadzone, 1f, Mathf.Clamp01(mag));
 
             // 4) сглаживание (чтобы палец не дрожал => персонаж не “дергался”)
             _joyFiltered = Vector2.Lerp(_joyFiltered, dir * strength, Time.deltaTime * joystickSmoothing);
-
-            SwitchState(State.Chasing);
-            // 5) двигаем агента вручную
-            _agent.isStopped = false;
+            
             Vector3 delta = new Vector3(_joyFiltered.x, _joyFiltered.y, 0f) * (_moveSpeed * Time.deltaTime);
-
-            _agent.Move(delta);
-
-            // 6) визуальная сторона
-            IsManualControl = true;
-            //ClearTarget(); // если хочешь, чтобы при ручном движении он не пытался драться/догонять
-           
-//            _character?.PlayWalk();
-           // SwitchState(State.ManualMove); // или заведи отдельное состояние ManualJoystick
-           
-           
-           DLog($"[WarriorAI] UpdateJoystickMove()");
+            
+            if (float.IsNaN(delta.x) || float.IsNaN(delta.y) || float.IsNaN(delta.z))
+            {
+                Debug.LogError($"[WarriorAI] delta содержит NaN: {delta}");
+                _joyFiltered = Vector2.zero;
+                return;
+            }
+    
+            DLog($"[WarriorAI] delta {delta.x}  {delta.y}");
+            // Используем Transform для движения вместо агента
+            transform.position += delta;
+          //  _agent.Move(delta);
+          if (_character != null)
+          {
+              _character.PlayWalk();
+          }
         }
+        // Новый метод для отмены всех действий
+        private void CancelAllActions()
+        {
+            // Отменяем атаку
+            if (weapon != null)
+            {
+                weapon.ClearTarget(); 
+            }
+    
+            // Сбрасываем таймер атаки
+            _attackCd = 0f;
+    
+            // Очищаем все цели
+            _currentTarget = null;
+            _targetHealth = null;
+            _targetPosition = Vector3.zero;
+    
+            // Сбрасываем состояние роуминга
+            _hasRoamPoint = false;
+            _roamWaitTimer = 0f;
+        }
+        private void DisableAILogic()
+        {
+            // Очищаем все цели
+            ClearTarget();
+    
+            // Останавливаем агента
+            if (_agent != null && _agent.enabled)
+            {
+                _agent.isStopped = true;
+                _agent.ResetPath();
+            }
+    
+            // Отменяем атаку
+            if (weapon != null)
+                weapon.ClearTarget();
+        }
+        private void EnableAILogic()
+        {
+            // Включаем обратно AI логику
+            if (_agent != null && _agent.enabled)
+            {
+                _agent.isStopped = false;
+            }
+    
+            // Восстанавливаем состояние
+            SwitchState(State.Idle);
+        }
+        
         private void TickState()
         {
             
             if (_controlledHero)
             {
                 UpdateJoystickMove();
-
-              //  SenseForEnemies();
-
-                // если есть цель и мы рядом - атакуем
-                // if (HasValidTarget())
-                // {
-                //     float dist = Vector3.Distance(transform.position, _currentTarget.position);
-                //     if (dist <= AttackEnterDistance)
-                //         SwitchState(State.Attacking);
-                //     else if (_state == State.Attacking)
-                //         SwitchState(State.Idle);
-                // }
-
-                // ВАЖНО: выполнять логику атаки даже при ручном контроле
-               // if (_state == State.Attacking)
-                  //  UpdateAttacking();
-
-                        //  return;
+                if (IsManualControl)
+                {
+                    return; // Не выполняем никакую AI логику
+                }
             }
             
             bool canUseAgent = _agent != null && _agent.enabled && _agent.isOnNavMesh;
@@ -378,7 +481,15 @@ namespace Heroes
 
         public bool turnToFace()
         {
-            if (_agent != null)
+            Vector2 moveDir = GetMovementDirection();
+    
+            // Обновляем _lookDir на основе направления движения
+            if (moveDir.sqrMagnitude > joystickDeadzone * joystickDeadzone)
+            {
+                if (Mathf.Abs(moveDir.x) > flipThreshold)
+                    _lookDir = moveDir.x > 0f ? +1 : -1;
+            }
+            else if (_agent != null)
             {
                 var v = _agent.desiredVelocity;
                 if (v.sqrMagnitude < flipThreshold * flipThreshold)
@@ -396,7 +507,7 @@ namespace Heroes
                         _lookDir = v.x > 0f ? +1 : -1;
                 }
             }
-            
+    
             return _lookDir < 0;
         }
 
@@ -669,7 +780,11 @@ namespace Heroes
         // ===== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ =====
         private bool SenseForEnemies()
         {
-            
+            if (IsManualControl && _controlledHero)
+            {
+                return false; // Не ищем цели при ручном управлении
+            }
+
             if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
             {
                 Debug.Log("SenseForEnemies");
@@ -680,6 +795,13 @@ namespace Heroes
                 return HasValidTarget();
 
             _senseTimer = senseInterval;
+
+            // Дополнительная проверка на ручное управление
+            if (IsManualControl && _controlledHero)
+            {
+                ClearTarget(); // Очищаем цель, если она есть
+                return false;
+            }
             
             // если герой под контролем, мы не хотим автопогоню,
             // но видеть и атаковать на месте он должен

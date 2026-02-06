@@ -37,7 +37,7 @@ MonoBehaviour:
     - line: '|   accelerometerFrequency: 60'
     - line: '|   companyName: DefaultCompany'
     - line: '|   productName: Tower'
-    - line: '|   defaultCursor: {fileID: 2800000, guid: fcfb0a84b3fb20a4db27f9512b1e5a08,
+    - line: '|   defaultCursor: {fileID: 2800000, guid: 2a067493e9c03dd49ac44c1aebd17cb4,
         type: 3}'
     - line: '|   cursorHotspot: {x: 0, y: 0}'
     - line: '|   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b:
@@ -327,7 +327,7 @@ MonoBehaviour:
     - line: '|   - m_BuildTarget: '
     - line: '|     m_Icons:'
     - line: '|     - serializedVersion: 2'
-    - line: '|       m_Icon: {fileID: 2800000, guid: fcfb0a84b3fb20a4db27f9512b1e5a08,
+    - line: '|       m_Icon: {fileID: 2800000, guid: fd2d69589831c6042809f53a93da443f,
         type: 3}'
     - line: '|       m_Width: 128'
     - line: '|       m_Height: 128'

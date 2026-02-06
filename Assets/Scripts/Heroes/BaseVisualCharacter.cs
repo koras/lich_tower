@@ -307,21 +307,13 @@ namespace Heroes
              //   DLog($"Запрещена атака");
                 return;
             }
-            
-            
-            
- 
-            
-            
-            
+             
           //  DLog($"PlayAttack");
             SetAnimation(attackAnimation, true, 1f);
         }
-
-
+        
         public void PlayDeath()
         {
-
             if (_who == Hero.SkeletonArcher || _who == Hero.Skeleton)
             {
               //  Debug.Log($"Скелет звук смерти");
@@ -401,11 +393,12 @@ namespace Heroes
         private void Update()
         {
             if (_ai == null) return;
+    
+            // Всегда используем turnToFace, который теперь учитывает джойстик
             bool faceLeft = _ai.turnToFace();
             _visualRoot.localRotation = faceLeft ? Quaternion.Euler(0f, 180f, 0f) : Quaternion.identity;
-
         }
-        
+   
         [System.Diagnostics.Conditional("UNITY_EDITOR")]
         private void DLog(string msg)
         {
