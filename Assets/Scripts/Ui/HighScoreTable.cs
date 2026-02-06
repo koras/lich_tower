@@ -92,7 +92,7 @@ namespace Ui
 
 
         private int maxEntries = 5;
-        private float _templateHeight = 100f;
+        private float _templateHeight = 90f;
         private Coroutine loadingDotsCoroutine;
 
         // Добавьте Text элементы для отображения данных
