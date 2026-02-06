@@ -3,6 +3,7 @@ using UnityEngine.AI;
 using Weapons;
 using System;
 using Weapons.Range;
+ 
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -14,6 +15,14 @@ namespace Heroes
     {
         // ===== ПАРАМЕТРЫ ПОВЕДЕНИЯ =====
         [Header("Маркировка цели")]
+        
+        [SerializeField] private Joystick joystick; // или FixedJoystick / DynamicJoystick
+        [SerializeField] private float joystickDeadzone = 0.15f;
+        [SerializeField] private float joystickSmoothing = 12f; // чем больше, тем резче
+        private Vector2 _joyFiltered;
+        
+        
+        
         [SerializeField] private bool showTargetDebug = true;
         [SerializeField] private Color targetColor = Color.red;
         [SerializeField] private GameObject targetMarkerPrefab;
@@ -177,9 +186,88 @@ namespace Heroes
             TickState();
             UpdateTargetVisualization();
         }
+        private void UpdateJoystickMove()
+        {
+            if (!CanMoveNow() || _agent == null || !_agent.isOnNavMesh)
+            {
+                
+                DLog($"[WarriorAI] HardStopAgent {namePNS}");
+               // HardStopAgent();
+            //    return;
+            }
 
+            // 1) читаем стик
+            Vector2 raw = Vector2.zero;
+            if (joystick != null)
+                raw = new Vector2(joystick.Horizontal, joystick.Vertical);
+
+            float mag = raw.magnitude;
+
+            // 2) deadzone
+            if (mag < joystickDeadzone)
+            {
+                _joyFiltered = Vector2.Lerp(_joyFiltered, Vector2.zero, Time.deltaTime * joystickSmoothing);
+
+                // стоп
+             //   _agent.isStopped = false;
+             //   _agent.velocity = Vector3.zero;
+
+             DLog($"[WarriorAI] HardStopAgent mag < joystickDeadzone");
+                IsManualControl = false;
+            //    SwitchState(State.Idle);
+             //   return;
+            }
+
+            // 3) нормализуем направление и сохраняем “силу” отклонения (для ходьба/бег)
+            Vector2 dir = raw / mag;
+            float strength = Mathf.InverseLerp(joystickDeadzone, 1f, Mathf.Clamp01(mag));
+
+            // 4) сглаживание (чтобы палец не дрожал => персонаж не “дергался”)
+            _joyFiltered = Vector2.Lerp(_joyFiltered, dir * strength, Time.deltaTime * joystickSmoothing);
+
+            SwitchState(State.Chasing);
+            // 5) двигаем агента вручную
+            _agent.isStopped = false;
+            Vector3 delta = new Vector3(_joyFiltered.x, _joyFiltered.y, 0f) * (_moveSpeed * Time.deltaTime);
+
+            _agent.Move(delta);
+
+            // 6) визуальная сторона
+            IsManualControl = true;
+            //ClearTarget(); // если хочешь, чтобы при ручном движении он не пытался драться/догонять
+           
+//            _character?.PlayWalk();
+           // SwitchState(State.ManualMove); // или заведи отдельное состояние ManualJoystick
+           
+           
+           DLog($"[WarriorAI] UpdateJoystickMove()");
+        }
         private void TickState()
         {
+            
+            if (_controlledHero)
+            {
+                UpdateJoystickMove();
+
+              //  SenseForEnemies();
+
+                // если есть цель и мы рядом - атакуем
+                // if (HasValidTarget())
+                // {
+                //     float dist = Vector3.Distance(transform.position, _currentTarget.position);
+                //     if (dist <= AttackEnterDistance)
+                //         SwitchState(State.Attacking);
+                //     else if (_state == State.Attacking)
+                //         SwitchState(State.Idle);
+                // }
+
+                // ВАЖНО: выполнять логику атаки даже при ручном контроле
+               // if (_state == State.Attacking)
+                  //  UpdateAttacking();
+
+                        //  return;
+            }
+            
             bool canUseAgent = _agent != null && _agent.enabled && _agent.isOnNavMesh;
 
             switch (_state)
@@ -504,6 +592,7 @@ namespace Heroes
             }
 
             StartAttack();
+            
         }
 
         private void UpdateRoaming()
@@ -580,14 +669,23 @@ namespace Heroes
         // ===== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ =====
         private bool SenseForEnemies()
         {
+            
+            if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
+            {
+                Debug.Log("SenseForEnemies");
+            }
+            
             _senseTimer -= Time.deltaTime;
             if (_senseTimer > 0f)
                 return HasValidTarget();
 
             _senseTimer = senseInterval;
-
-            if (IsManualControl)
-                return false;
+            
+            // если герой под контролем, мы не хотим автопогоню,
+            // но видеть и атаковать на месте он должен
+            // поэтому НЕ возвращаем false
+          //  if (IsManualControl)
+          //      return false;
 
             if (HasValidTarget())
                 return true;
@@ -653,18 +751,26 @@ namespace Heroes
 
             _currentTarget = hp.transform;
             _targetHealth = hp;
+            float dist = Vector3.Distance(transform.position, _currentTarget.position);
 
             if (!CanMoveNow())
             {
-                HardStopAgent();
-                float dist = Vector3.Distance(transform.position, _currentTarget.position);
+                HardStopAgent(); 
                 if (dist <= AttackEnterDistance) 
                     SwitchState(State.Attacking);
                 else 
                     SwitchState(State.Chasing);
                 return;
             }
-            
+            // обычный ИИ как было
+            if (!CanMoveNow())
+            {
+                HardStopAgent();
+                if (dist <= AttackEnterDistance) SwitchState(State.Attacking);
+                else SwitchState(State.Chasing);
+                return;
+            }
+
             if (_agent != null)
             {
                 _agent.stoppingDistance = AttackEnterDistance;
@@ -859,6 +965,10 @@ namespace Heroes
                 StateChanged?.Invoke(_state);
                 return;
             }
+            if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
+            {
+                Debug.Log($"Изменили состояние {_state}");
+            }
 
             _state = s;
             StateChanged?.Invoke(_state);
@@ -879,7 +989,6 @@ namespace Heroes
                     _agent.speed = _moveSpeed;
                     _agent.isStopped = false;
                     break;
-
                 case State.Attacking:
                     _agent.isStopped = false;
                     _agent.speed = _moveSpeed;
