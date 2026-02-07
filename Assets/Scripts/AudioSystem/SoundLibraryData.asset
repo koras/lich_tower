@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioSystem.SoundLibrary
   sounds:
   - id: 1
-    nameSound: ""
+    nameSound: 
     category: 0
     clips:
     - {fileID: 8300000, guid: 94ef17fea260ad743aaa42d3ed6aee92, type: 3}
-    volume: 0.984
+    volume: 0.678
     volumeRandom: 0.3
     pitch: 1.048
     pitchRandom: 0.164
@@ -27,7 +27,7 @@ MonoBehaviour:
     spatial: 1
     spatialBlend: 0
   - id: 6
-    nameSound: ""
+    nameSound: 
     category: 0
     clips:
     - {fileID: 8300000, guid: 1885c6263219817418db3a32900cad33, type: 3}
@@ -39,21 +39,8 @@ MonoBehaviour:
     cooldown: 0.15
     spatial: 1
     spatialBlend: 0
-  - id: 2
-    nameSound: ""
-    category: 0
-    clips:
-    - {fileID: 8300000, guid: 555db2f1b8ded214b9d583abfd126468, type: 3}
-    volume: 1
-    volumeRandom: 0.3
-    pitch: 1.033
-    pitchRandom: 0.07
-    chance: 0.644
-    cooldown: 0.15
-    spatial: 1
-    spatialBlend: 0.322
   - id: 11
-    nameSound: ""
+    nameSound: 
     category: 0
     clips:
     - {fileID: 8300000, guid: 6d2d2c2ce81602d4a8b3cfc78e82b6ff, type: 3}
@@ -66,7 +53,7 @@ MonoBehaviour:
     spatial: 1
     spatialBlend: 0
   - id: 3
-    nameSound: ""
+    nameSound: 
     category: 0
     clips:
     - {fileID: 8300000, guid: 94ef17fea260ad743aaa42d3ed6aee92, type: 3}
@@ -79,7 +66,7 @@ MonoBehaviour:
     spatial: 1
     spatialBlend: 0
   - id: 18
-    nameSound: ""
+    nameSound: 
     category: 4
     clips:
     - {fileID: 8300000, guid: 905ac4de9098bf64ea3ba13957e4eedc, type: 3}
@@ -92,7 +79,7 @@ MonoBehaviour:
     spatial: 1
     spatialBlend: 0
   - id: 16
-    nameSound: ""
+    nameSound: 
     category: 4
     clips:
     - {fileID: 8300000, guid: d99280d7535b4bc4ea69a0ab0698866e, type: 3}
@@ -105,7 +92,7 @@ MonoBehaviour:
     spatial: 1
     spatialBlend: 0
   - id: 17
-    nameSound: ""
+    nameSound: 
     category: 4
     clips:
     - {fileID: 8300000, guid: 09f0cb4efc05be64f84c331f17c35469, type: 3}
@@ -118,7 +105,7 @@ MonoBehaviour:
     spatial: 1
     spatialBlend: 0
   - id: 5
-    nameSound: ""
+    nameSound: 
     category: 0
     clips:
     - {fileID: 8300000, guid: a9c2d85668f617c46ae4ff01d12e3420, type: 3}
@@ -131,7 +118,7 @@ MonoBehaviour:
     spatial: 1
     spatialBlend: 0.027
   - id: 4
-    nameSound: ""
+    nameSound: 
     category: 0
     clips:
     - {fileID: 8300000, guid: a9c2d85668f617c46ae4ff01d12e3420, type: 3}
@@ -144,7 +131,7 @@ MonoBehaviour:
     spatial: 1
     spatialBlend: 0
   - id: 23
-    nameSound: ""
+    nameSound: 
     category: 0
     clips:
     - {fileID: 8300000, guid: bef3c918de9e657449d7d736d3f6af3e, type: 3}
@@ -157,7 +144,7 @@ MonoBehaviour:
     spatial: 1
     spatialBlend: 0.921
   - id: 24
-    nameSound: ""
+    nameSound: 
     category: 0
     clips:
     - {fileID: 8300000, guid: bef3c918de9e657449d7d736d3f6af3e, type: 3}
@@ -169,21 +156,8 @@ MonoBehaviour:
     cooldown: 0.15
     spatial: 1
     spatialBlend: 0.921
-  - id: 22
-    nameSound: ""
-    category: 0
-    clips:
-    - {fileID: 8300000, guid: bef3c918de9e657449d7d736d3f6af3e, type: 3}
-    volume: 0.212
-    volumeRandom: 0
-    pitch: 1.008
-    pitchRandom: 0
-    chance: 1
-    cooldown: 0.15
-    spatial: 1
-    spatialBlend: 0.81
   - id: 21
-    nameSound: ""
+    nameSound: 
     category: 0
     clips:
     - {fileID: 8300000, guid: 457ab7eebfce11148b88d09802f4e991, type: 3}
@@ -195,8 +169,8 @@ MonoBehaviour:
     cooldown: 0.15
     spatial: 1
     spatialBlend: 0.81
-  - id: 23
-    nameSound: ""
+  - id: 9
+    nameSound: 
     category: 0
     clips:
     - {fileID: 8300000, guid: 42bf2d7fd20f06c44b6bca3085169a9b, type: 3}
