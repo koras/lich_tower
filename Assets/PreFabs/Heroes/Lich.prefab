@@ -517,6 +517,7 @@ GameObject:
   - component: {fileID: 5350382148716945265}
   - component: {fileID: 3687539335892311774}
   - component: {fileID: 1624905864167302063}
+  - component: {fileID: 3957525592206619668}
   m_Layer: 7
   m_Name: Lich
   m_TagString: Untagged
@@ -534,7 +535,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -7.58, y: 0.6, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 988766472256153456}
@@ -558,6 +559,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8cb366f913eed1409c2218088fe824a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heroes.WarriorAI
+  joystick: {fileID: 0}
+  joystickDeadzone: 0.15
+  joystickSmoothing: 12
   showTargetDebug: 0
   targetColor: {r: 1, g: 0, b: 0, a: 1}
   targetMarkerPrefab: {fileID: 1126505561148056924}
@@ -691,11 +695,10 @@ MonoBehaviour:
   canRoaming: 0
   floatingText: {fileID: 170592296297075250, guid: c7f3d3d63a282a9499f36bb7486d966a, type: 3}
   offset: {x: 0, y: 0.5, z: 0}
-  maxHp: 1500
-  _currentHp: 1500
+  maxHp: 20000
+  _currentHp: 20000
   _maxManna: 100
   _currentManna: 100
-  _gold: 1
   _healthbar: {fileID: 1690835158160124260}
   _mannabar: {fileID: 1725988393941462875}
   selectionOval: {fileID: 229082690584721999}
@@ -705,10 +708,11 @@ MonoBehaviour:
   useRegen: 1
   useRegenManna: 1
   mannaRegenInterval: 0.1
-  regenPerSecond: 15
+  regenPerSecond: 5
   _findBoss: 1
   _showDamageLichAnimation: {fileID: 2959045381566191925, guid: f7face5836ea2a544979e3af931aee19, type: 3}
   _gibsContainerPrefab: {fileID: 0}
+  _goldBank: {fileID: 0}
 --- !u!114 &6314312694185787797
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -769,6 +773,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Heroes.UnitLink
   Hp: {fileID: 7903865649106602507}
+--- !u!81 &3957525592206619668
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3239769074307896495}
+  m_Enabled: 1
 --- !u!1 &3595805490715560888
 GameObject:
   m_ObjectHideFlags: 0
