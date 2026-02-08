@@ -55,7 +55,14 @@ namespace Input
         private LichFireballAbility _activeFireball; // текущая способность прицеливания
         private bool _isAimingFireball;              // режим: кнопка нажата, ждём зажатия на карте
         private bool _fireballPointerDown;           // сейчас держим палец/мышь при прицеливании
-
+        
+        
+        
+        private Vector2 _lastFireballScreenPos; // НОВОЕ: запоминаем позицию
+        private bool _isImmediateFireballMode = false;
+        
+        
+        
         private void Awake()
         {
             if (targetCamera == null)
@@ -74,9 +81,8 @@ namespace Input
 
         private void Start()
         {
-            UpdateMinZoomText();
-            UpdateMaxZoomText();
-            UpdateCurrentZoomText();
+  
+            
         }
 
         private void Update()
@@ -87,7 +93,7 @@ namespace Input
             else
                 targetCamera.fieldOfView = Mathf.Lerp(targetCamera.fieldOfView, _targetZoom, Time.deltaTime * 10f);
 
-            UpdateCurrentZoomText();
+            
         }
 
         private void LateUpdate()
@@ -108,24 +114,6 @@ namespace Input
             {
                 var t0 = Touch.activeTouches[0];
                 var t1 = Touch.activeTouches[1];
-
-                float currentDistance = Vector2.Distance(t0.screenPosition, t1.screenPosition);
-
-                if (!_wasPinching)
-                {
-                    _previousPinchDistance = currentDistance;
-                    _wasPinching = true;
-                }
-                else
-                {
-                    float delta = currentDistance - _previousPinchDistance;
-                    _previousPinchDistance = currentDistance;
-
-                    float zoomChange = -delta * zoomSpeed * 0.01f;
-                    ApplyZoom(zoomChange);
-                }
-
-                return;
             }
 
             // 1 палец
@@ -227,7 +215,7 @@ namespace Input
                 var w0 = targetCamera.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 0f));
                 Debug.Log($"screen={screenPos} world(ScreenToWorldPoint)={w0}");
 
-                DebugDrawCross(w0, 0.3f, 0.2f);
+            //    DebugDrawCross(w0, 0.3f, 0.2f);
             }
             
             
@@ -408,30 +396,11 @@ namespace Input
         public void ZoomInButton() => ApplyZoom(-buttonZoomStep);
         public void ZoomOutButton() => ApplyZoom(buttonZoomStep);
 
-        public void AddMinZoom() { minZoom += 0.1f; UpdateMinZoomText(); }
-        public void SubMinZoom() { minZoom -= 0.1f; UpdateMinZoomText(); }
-        public void AddMaxZoom() { maxZoom += 1.0f; UpdateMaxZoomText(); }
-        public void SubMaxZoom() { maxZoom -= 1.0f; UpdateMaxZoomText(); }
 
-        private void UpdateCurrentZoomText()
-        {
-            if (_textCurrentZoom == null) return;
+        
 
-            float zoomValue = targetCamera.orthographic ? targetCamera.orthographicSize : targetCamera.fieldOfView;
-            _textCurrentZoom.text = "z " + zoomValue.ToString("0.0");
-        }
 
-        private void UpdateMaxZoomText()
-        {
-            if (_textMaxZoom != null)
-                _textMaxZoom.text = "" + maxZoom.ToString("0.0");
-        }
-
-        private void UpdateMinZoomText()
-        {
-            if (_textMinZoom != null)
-                _textMinZoom.text = "" + minZoom.ToString("0.0");
-        }
+        
 
         private void SpawnPoint(Vector3 worldPos)
         {
@@ -455,7 +424,7 @@ namespace Input
         /// <summary>
         /// UI: нажали кнопку Fireball.
         /// Мы включаем режим прицеливания, но прицел появится ТОЛЬКО когда пользователь зажмёт палец/мышь на карте.
-        /// </summary>
+        /// </summary> 
         public void BeginFireballTargeting()
         {
             if (_selectedHero == null) return;
@@ -467,11 +436,11 @@ namespace Input
                 return;
             }
 
-            if (!ability.CanStart())
-            {
-                Debug.Log("Недостаточно маны на фаербол.");
-                return;
-            }
+         //   if (!ability.CanStart())
+        //    {
+        //        Debug.Log("Недостаточно маны на фаербол.");
+        //        return;
+      //     }
 
             _activeFireball = ability;
             _isAimingFireball = true;

@@ -10,6 +10,7 @@ using Input; // PinchToZoomAndPan
 /// - Показывает "текущая мана / стоимость"
 /// - Fill на кнопке = (currentMana / manaCost) [0..1]
 /// - Кнопка активна только если маны хватает
+/// - Кнопка полностью скрывается (SetActive) если маны недостаточно
 /// - По нажатию включает режим прицеливания (BeginFireballTargeting)
 /// ВАЖНО:
 /// - Мана НЕ списывается здесь. Она списывается в Animation Event на Личе (как ты и хотел).
@@ -22,9 +23,11 @@ namespace Ui
         [SerializeField] private PinchToZoomAndPan _input;   // кто включает режим прицеливания
         [SerializeField] private HeroesBase _heroBase;       // Лич (отсюда берём ману)
 
-        [Header("Mana")]
-       // [SerializeField, Min(0)] 
-        private int mannaCost = 80; // стоимость манны
+         private int mannaCost = 100; // стоимость манны
+
+        [Header("Visibility Settings")]
+        [SerializeField] private bool hideWhenNotEnoughMana = true; // скрывать кнопку при недостатке маны
+        [SerializeField] private GameObject buttonGameObject; // сам GameObject кнопки (если не задан, берется this.gameObject)
 
         [Header("Mana UI")]
         [SerializeField] private TMP_Text _mannaText;        // "50 / 20"
@@ -49,6 +52,8 @@ namespace Ui
 
         private float _fillVelocity; // для SmoothDamp, если захочешь
         private float _currentFillShown;
+        private bool _isEnoughManaLastFrame = false;
+        private bool _isActiveState = true;
 
         private void Awake()
         {
@@ -57,6 +62,9 @@ namespace Ui
 
             if (_buttonGraphic == null)
                 _buttonGraphic = GetComponent<Image>(); // fallback
+
+            if (buttonGameObject == null)
+                buttonGameObject = this.gameObject;
 
             if (_button != null)
                 _origColors = _button.colors;
@@ -73,19 +81,33 @@ namespace Ui
             // если забыли назначить input, попробуем найти в сцене
             if (_input == null)
                 _input = FindObjectOfType<PinchToZoomAndPan>();
+
+            _isActiveState = buttonGameObject.activeSelf;
         }
 
         private void OnEnable()
         {
             RefreshAllUI(immediate: true);
+            _isEnoughManaLastFrame = false; // Сбросить состояние при включении
         }
 
         private void Update()
         {
-            if (_heroBase == null) return;
+            if (_heroBase == null) 
+            {
+                Debug.LogWarning("[ButtonLichFireballSkill] _heroBase is null!");
+                return;
+            }
+
+       //     Debug.Log($"[ButtonLichFireballSkill] Update called. Current mana: {_heroBase.GetCurrentManna()}, Cost: {mannaCost}, HasEnough: {HasEnoughMana()}");
 
             // Текст + индикаторы
             UpdateManaText();
+            
+            // Обновляем видимость кнопки
+            UpdateButtonVisibility();
+            
+            // Обновляем fill и интерактивность
             UpdateFillAndInteractable();
         }
 
@@ -94,6 +116,7 @@ namespace Ui
         /// </summary>
         public void UseFireball()
         {
+            Debug.LogWarning("[ButtonLichFireballSkill] UseFireball");
             if (_heroBase == null)
             {
                 Debug.LogWarning("[ButtonLichFireballSkill] Не назначен HeroesBase Лича (_heroBase).");
@@ -111,7 +134,8 @@ namespace Ui
                 Debug.Log("Не хватает маны на Fireball.");
                 return;
             }
-
+            
+            _heroBase.SpendManna(mannaCost);
             // Включаем режим прицеливания.
             // Списание маны делай в Animation Event на анимации Лича.
             _input.BeginFireballTargeting();
@@ -119,7 +143,48 @@ namespace Ui
 
         private bool HasEnoughMana()
         {
-            Debug.Log("Проверяем манну");
+            bool result = _heroBase != null && _heroBase.HasManna(mannaCost);
+            Debug.Log($"[ButtonLichFireballSkill] HasEnoughMana: {result} (_heroBase={_heroBase != null}, CurrentManna={_heroBase?.GetCurrentManna()}, mannaCost={mannaCost})");
+            return result;
+        }
+
+        private void UpdateButtonVisibility()
+        {
+            if (!hideWhenNotEnoughMana) 
+            {
+                Debug.Log("[ButtonLichFireballSkill] hideWhenNotEnoughMana is false");
+                return;
+            }
+    
+            if (buttonGameObject == null)
+            {
+                Debug.LogError("[ButtonLichFireballSkill] buttonGameObject is null!");
+                return;
+            }
+    
+            bool hasEnoughMana = HasEnoughMana();
+    
+            Debug.Log($"[ButtonLichFireballSkill] UpdateButtonVisibility: hasEnoughMana={hasEnoughMana}, _isEnoughManaLastFrame={_isEnoughManaLastFrame}, buttonGameObject.activeSelf={buttonGameObject.activeSelf}");
+    
+            // Проверяем, изменилось ли состояние
+            if (hasEnoughMana != _isEnoughManaLastFrame)
+            {
+                Debug.Log($"[ButtonLichFireballSkill] State changed! Setting buttonGameObject.SetActive({hasEnoughMana})");
+                buttonGameObject.SetActive(hasEnoughMana);
+                _isActiveState = hasEnoughMana;
+                _isEnoughManaLastFrame = hasEnoughMana;
+            }
+            else
+            {
+                Debug.Log("[ButtonLichFireballSkill] State unchanged, no SetActive needed");
+            }
+        }
+        
+        /// <summary>
+        /// Хватает ли маны на старт прицеливания.
+        /// </summary>
+        public bool CanStart()
+        {
             return _heroBase != null && _heroBase.HasManna(mannaCost);
         }
 
@@ -134,6 +199,9 @@ namespace Ui
 
         private void UpdateFillAndInteractable()
         {
+            // Если кнопка скрыта, не обновляем её визуал
+            if (hideWhenNotEnoughMana && !_isActiveState) return;
+            
             if (_cooldownFill == null && _button == null && _buttonGraphic == null)
                 return;
 
@@ -200,7 +268,40 @@ namespace Ui
                 _cooldownFill.fillAmount = fill;
             }
 
+            // Обновляем состояние видимости
+            bool hasEnoughMana = HasEnoughMana();
+            _isEnoughManaLastFrame = hasEnoughMana;
+            
+            if (immediate && hideWhenNotEnoughMana)
+            {
+                buttonGameObject.SetActive(hasEnoughMana);
+                _isActiveState = hasEnoughMana;
+            }
+
             UpdateFillAndInteractable();
+        }
+        
+        /// <summary>
+        /// Принудительно показать/скрыть кнопку (например, для внешнего контроля)
+        /// </summary>
+        public void SetButtonVisible(bool visible)
+        {
+            buttonGameObject.SetActive(visible);
+            _isActiveState = visible;
+            
+            // Если показываем, обновляем состояние маны
+            if (visible)
+            {
+                _isEnoughManaLastFrame = HasEnoughMana();
+            }
+        }
+        
+        /// <summary>
+        /// Проверяет, активна ли сейчас кнопка
+        /// </summary>
+        public bool IsButtonActive()
+        {
+            return _isActiveState;
         }
     }
 }

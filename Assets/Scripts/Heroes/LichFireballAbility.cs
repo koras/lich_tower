@@ -54,13 +54,13 @@ namespace Heroes
                 fireballWeapon = GetComponentInChildren<WeaponBase>(true);
         }
 
-        /// <summary>
-        /// Хватает ли маны на старт прицеливания.
-        /// </summary>
-        public bool CanStart()
-        {
-            return _hero != null && _hero.HasManna(mannaCost);
-        }
+        // /// <summary>
+        // /// Хватает ли маны на старт прицеливания.
+        // /// </summary>
+        // public bool CanStart()
+        // {
+        //     return _hero != null && _hero.HasManna(mannaCost);
+        // }
 
         /// <summary>
         /// Включить режим прицеливания: показать/создать прицел.
@@ -70,11 +70,11 @@ namespace Heroes
         {
             if (_isTargeting) return;
 
-            if (!CanStart())
-            {
-                Debug.Log("Недостаточно маны на Fireball");
-                return;
-            }
+            // if (!CanStart())
+            // {
+            //     Debug.Log("Недостаточно маны на Fireball");
+            //     return;
+            // }
 
             _isTargeting = true;
             _hasTargetPoint = false;

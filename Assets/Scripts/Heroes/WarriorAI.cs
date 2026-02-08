@@ -581,8 +581,8 @@ namespace Heroes
                 _targetHealth = null;
                 _weaponLichFireball.SetTargetPoint(_targetPosition);
                 
-                if (_heroesBase != null)
-                    _heroesBase.SpendManna(_weaponLichFireball.GetMannaLichCost());
+             //   if (_heroesBase != null)
+               //     _heroesBase.SpendManna(_weaponLichFireball.GetMannaLichCost());
                     
                 _weaponLichFireball.Attack();
             }
@@ -787,15 +787,13 @@ namespace Heroes
 
             if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
             {
-                Debug.Log("SenseForEnemies");
+          //      Debug.Log("SenseForEnemies");
             }
             
             _senseTimer -= Time.deltaTime;
             if (_senseTimer > 0f)
                 return HasValidTarget();
-
             _senseTimer = senseInterval;
-
             // Дополнительная проверка на ручное управление
             if (IsManualControl && _controlledHero)
             {
@@ -1089,7 +1087,7 @@ namespace Heroes
             }
             if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
             {
-                Debug.Log($"Изменили состояние {_state}");
+             //   Debug.Log($"Изменили состояние {_state}");
             }
 
             _state = s;

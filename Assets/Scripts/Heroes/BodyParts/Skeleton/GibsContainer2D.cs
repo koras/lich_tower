@@ -310,14 +310,14 @@ namespace Heroes.BodyParts.Skeleton
                     rb.linearVelocity = v;
                 }
 
-                Debug.Log(
-                    $"[GIBS step #{i}] y={_y[i]:F2} vy={_vy[i]:F2} rbX={rb.position.x:F2} rbVx={rb.linearVelocity.x:F2} floor={floor:F2} onFloor={onFloor}");
+              //  Debug.Log(
+              //      $"[GIBS step #{i}] y={_y[i]:F2} vy={_vy[i]:F2} rbX={rb.position.x:F2} rbVx={rb.linearVelocity.x:F2} floor={floor:F2} onFloor={onFloor}");
                 if (debugGibs && _dbgFrames > 0) // печать только когда "тик" вывода случился
                 {
                     // печатаем 1 раз за интервал, но для всех костей
                     // Чтобы не спамить слишком жирно, можно логать только i==0 и i==last
-                    Debug.Log(
-                        $"[GIBS step #{i}] y={_y[i]:F2} vy={_vy[i]:F2} rbX={rb.position.x:F2} rbVx={rb.linearVelocity.x:F2} onFloor={(_y[i] <= minY + 0.001f)}");
+                //    Debug.Log(
+               //         $"[GIBS step #{i}] y={_y[i]:F2} vy={_vy[i]:F2} rbX={rb.position.x:F2} rbVx={rb.linearVelocity.x:F2} onFloor={(_y[i] <= minY + 0.001f)}");
                 }
             }
 

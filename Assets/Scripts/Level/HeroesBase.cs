@@ -539,12 +539,13 @@ namespace Heroes
         {
             cost = Mathf.Max(0, cost);
 
-            Debug.Log($"Пытаемся Списываем манну");
+                //       Debug.Log($"[HeroesBase] Пытаемся Списываем манну {_currentManna}  {cost}");
             if (_currentManna < cost) return false;
 
-            Debug.Log($" Списываем манну {_currentManna}");
+         //   Debug.Log($"[HeroesBase] Списываем манну {_currentManna}");
             _currentManna -= cost;
 
+        //    Debug.Log($"[HeroesBase] Списываем манну {_currentManna} -= {cost} ");
             if (_mannabar != null)
                 _mannabar.SetManna(_currentManna, _maxManna);
 
