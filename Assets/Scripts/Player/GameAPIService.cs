@@ -176,7 +176,7 @@ namespace Player
                 www.SetRequestHeader("Authorization", $"Bearer {token}");
                 www.SetRequestHeader("Accept", "application/json");
 
-                Debug.Log($"Starting game session for user {userId}...");
+              //  Debug.Log($"Starting game session for user {userId}...");
                 yield return www.SendWebRequest();
 
                 if (www.result == UnityWebRequest.Result.Success)
@@ -190,13 +190,13 @@ namespace Player
                             // Сохраняем ID сессии
                             currentSessionId = response.data.id;
                             
-                            Debug.Log($"Starting game session currentSessionId {currentSessionId}");
+                      //      Debug.Log($"Starting game session currentSessionId {currentSessionId}");
                             // Сохраняем локально
                             PlayerPrefs.SetInt(SESSION_ID_KEY, currentSessionId);
                             PlayerPrefs.SetString(SESSION_START_TIME_KEY, response.data.started_at);
                             PlayerPrefs.Save();
                             
-                            Debug.Log($"Game session started! Session ID: {currentSessionId}");
+                        //    Debug.Log($"Game session started! Session ID: {currentSessionId}");
                             
                             // Вызываем событие
                             OnSessionStarted?.Invoke(currentSessionId);

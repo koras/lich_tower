@@ -50,10 +50,10 @@ namespace Player
         {
             yield return new WaitForSeconds(1f); // Ждем инициализации
         
-            Debug.Log($"Starting");
+          //  Debug.Log($"Starting");
             if (PlayerAuthManager.Instance != null && PlayerAuthManager.Instance.IsRegistered)
             {
-                Debug.Log($"Starting 1");
+             //   Debug.Log($"Starting 1");
                 yield return GameAPIService.Instance.StartGameSession();
             }
         }

@@ -110,7 +110,7 @@ namespace Player
             
             // Генерируем или получаем уникальный Device ID
             deviceId = GetOrCreateDeviceId();
-            Debug.Log($"Device ID: {deviceId}");
+       //     Debug.Log($"Device ID: {deviceId}");
             
             LoadSavedData();
         }
@@ -153,7 +153,7 @@ namespace Player
                 
                 if (isRegistered == 1 && !string.IsNullOrEmpty(authToken))
                 {
-                    Debug.Log($"Loaded existing player: {playerName}, ID: {userId}");
+               //     Debug.Log($"Loaded existing player: {playerName}, ID: {userId}");
                     
                     // Проверяем токен на валидность
                     StartCoroutine(ValidateAndProceed());
@@ -181,7 +181,7 @@ namespace Player
             {
                 // Уже есть имя в PlayerPrefs, используем его
                 playerName = PlayerPrefs.GetString(PLAYER_NAME_KEY);
-                Debug.Log($"Using existing player name: {playerName}");
+              //  Debug.Log($"Using existing player name: {playerName}");
             }
             else
             {
@@ -190,7 +190,7 @@ namespace Player
                 int positiveHash = Mathf.Abs(hash) % 1000000;
                 playerName = $"Player_{positiveHash}";
                 
-                Debug.Log($"Generated persistent player name: {playerName}");
+            //    Debug.Log($"Generated persistent player name: {playerName}");
                 
                 // Сохраняем сразу, чтобы использовать при следующем запуске
                 PlayerPrefs.SetString(PLAYER_NAME_KEY, playerName);
