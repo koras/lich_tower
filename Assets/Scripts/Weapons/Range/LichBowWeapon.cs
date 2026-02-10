@@ -8,7 +8,7 @@ namespace Weapons.Range
     public class LichBowWeapon : WeaponBase, IRangedWeapon
     {
         [Header("Настройки выстрела, чем стреляем")]
-        [SerializeField] private ShamanBombProjectile2D arrowPrefab; // префаб снаряда
+        [SerializeField] private LichFireBombProjectile2D arrowPrefab; // префаб снаряда
         [SerializeField] private Transform firePoint;
         
         [Header("время жизни снаряда")]    // время жизни снаряда
@@ -41,18 +41,18 @@ namespace Weapons.Range
 
             var arrow = Instantiate(arrowPrefab, spawnPos, Quaternion.identity);
             // Указываем стреле игнорировать коллайдер лучника
-            arrow.SetIgnoreCollisions(transform); // Или transform.parent в зависимости от иерархии
+           // arrow.SetIgnoreCollisions(transform); // Или transform.parent в зависимости от иерархии
 
             if (_currentTarget != null)
             {
                 // здесь определённая цель
-                arrow.LaunchTowards(_currentTarget, aimYOffset);
-                arrow.SetTargetHealth(_targetHealth);
+             //   arrow.LaunchTowards(_currentTarget, aimYOffset);
+             //   arrow.SetTargetHealth(_targetHealth);
             }
             else
             {
                 Vector2 fallback = spawnPos + (Vector2)fp.right * noTargetForward;
-                arrow.LaunchTowards(fallback);
+             //   arrow.LaunchTowards(fallback);
                //    Debug.Log($"Стрела запущена вперёд: {fallback} в жопу");
             }
  

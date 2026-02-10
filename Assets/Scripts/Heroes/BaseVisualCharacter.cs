@@ -304,10 +304,11 @@ namespace Heroes
             if (!_ai.canAttack)
             {
                 SetAnimation(idleAnimation, true, 0.7f);
-                //   DLog($"Запрещена атака");
+                Debug.Log($"Запрещена атака");
                 return;
             }
 
+            Debug.Log($"[BaseVisualCharacter] PlayAttack");
             //  DLog($"PlayAttack");
             SetAnimation(attackAnimation, true, 1f);
         }

@@ -313,7 +313,9 @@ GameObject:
   m_Component:
   - component: {fileID: 245526873154222279}
   - component: {fileID: 2457235793006928606}
-  m_Layer: 7
+  - component: {fileID: 7456819611368076832}
+  - component: {fileID: 6472277844604499497}
+  m_Layer: 6
   m_Name: WeaponRightJoystick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -394,6 +396,33 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!210 &7456819611368076832
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372223823116638707}
+  m_Enabled: 1
+  m_SortingLayerID: -1123069753
+  m_SortingLayer: 2
+  m_SortingOrder: 5
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
+--- !u!114 &6472277844604499497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372223823116638707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7ff9212acff06649bfda840ee0a3984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level.SortByY
+  offset: 5
+  precision: 100
 --- !u!1 &2643993037837816816
 GameObject:
   m_ObjectHideFlags: 0
@@ -714,10 +743,10 @@ MonoBehaviour:
   aimSprite: {fileID: 2457235793006928606}
   maxAimLength: 3
   aimFadeSpeed: 8
-  projectilePrefab: {fileID: 0}
-  firePoint: {fileID: 0}
-  projectileSpeed: 10
+  minShootDistance: 1
   shootCooldown: 0.5
+  distanceMultiplier: 1.5
+  showHitPointDebug: 1
 --- !u!114 &3906108929326710117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -741,8 +770,8 @@ MonoBehaviour:
   namePNS: Lich
   roamWaitTime: 2
   roamStoppingDistance: 0.05
-  _moveSpeed: 1
-  _roamSpeed: 0.2
+  _moveSpeed: 1.1
+  _roamSpeed: 0.3
   unitMask:
     serializedVersion: 2
     m_Bits: 192
@@ -6687,7 +6716,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2821354644194194434
 Transform:
   m_ObjectHideFlags: 0

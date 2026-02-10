@@ -228,6 +228,7 @@ namespace Heroes
 
         public void ShowDamageAnimationAt(Vector3 worldPos)
         {
+            // Мгновенный урон
             if (_showDamageLichAnimation == null)
             {
                 Debug.LogError($"[{name}] _showDamageLichAnimation не установлен на атакующем (Личе)!");
@@ -237,7 +238,24 @@ namespace Heroes
             worldPos.y -= 0.1f;
             Instantiate(_showDamageLichAnimation, worldPos, Quaternion.identity);
         }
-
+        
+        public void ShowDamageAnimationInDirection(Vector2 direction, float distance)
+        {
+            // выстрел по направлению
+            
+            // Вызываем анимацию атаки
+            // ...
+    
+            // Затем вызываем выстрел через оружие
+         //   if (_warriorAI != null && _warriorAI.Weapon != null)
+          //  {
+          //      var lichWeapon = _warriorAI.Weapon as LichBowWeapon;
+           ///      {
+          //          lichWeapon.AttackInDirection(direction, distance);
+            //    }
+          //  }
+        }
+        
         private void Start()
         {
             if (_healthbar != null)

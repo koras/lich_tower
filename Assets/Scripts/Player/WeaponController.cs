@@ -1,38 +1,85 @@
 ﻿using UnityEngine;
 using DG.Tweening;
-
+using Weapons;
+using System;
+using Weapons.Range;
+using Heroes;
 
 namespace Player
 {
     public class WeaponController : MonoBehaviour
     {
-        [Header("Joystick")] [SerializeField] private DynamicJoystick rightJoystick; // Ссылка на правый джойстик
-        [SerializeField] private float joystickDeadZone = 0.1f; // Минимальное значение для реакции
+        [Header("Joystick")] 
+        [SerializeField] private DynamicJoystick rightJoystick;
+        [SerializeField] private float joystickDeadZone = 0.1f;
 
-        [Header("Aiming")] [SerializeField] private Transform weaponPivot; // Объект-родитель для оружия
-        [SerializeField] private SpriteRenderer aimSprite; // Спрайт стрелки прицеливания
-        [SerializeField] private float maxAimLength = 3f; // Максимальная длина стрелки
-        [SerializeField] private float aimFadeSpeed = 8f; // Скорость появления/исчезновения
+        private Transform firePoint;
+        
+        
+        [Header("Aiming")] 
+        [SerializeField] private Transform weaponPivot;
+        [SerializeField] private SpriteRenderer aimSprite;
+        [SerializeField] private float maxAimLength = 3f;
+        [SerializeField] private float aimFadeSpeed = 8f;
+        [SerializeField] private float minShootDistance = 1f; // Минимальное расстояние выстрела
 
-        [Header("Shooting")] [SerializeField] private GameObject projectilePrefab; // Префаб снаряда
-        [SerializeField] private Transform firePoint; // Точка вылета снаряда
-        [SerializeField] private float projectileSpeed = 10f;
+        [Header("Shooting")] 
         [SerializeField] private float shootCooldown = 0.5f;
+        [SerializeField] private float distanceMultiplier = 1.5f; // Множитель расстояния (можно регулировать)
 
         private bool isAiming = false;
         private bool canShoot = true;
         private Vector2 aimDirection;
-        private float aimAlpha = 0f; // Текущая прозрачность прицела (0-1)
-        private Vector3 originalAimScale; // Исходный масштаб спрайта стрелки
+        private float aimAlpha = 0f;
+        private Vector3 originalAimScale;
+ 
+
+         private HeroesBase _heroesBase;
+
+        // Для визуализации точки попадания (опционально)
+        [Header("Debug")]
+        [SerializeField] private bool showHitPointDebug = true;
+        private Vector3 lastHitPoint;
+
+
+        private WarriorAI _ai;
+
+        private void Awake()
+        {
+            _ai =  GetComponentInParent<WarriorAI>();
+            if (_ai == null)
+            {
+                Debug.Log($"Оружие не найдено");
+            }
+            _heroesBase =  GetComponentInParent<HeroesBase>();
+            if (_heroesBase == null)
+            {
+                Debug.Log($"Герой не найдено");
+            }
+ 
+        }
 
         private void Start()
         {
-            // Сохраняем исходный масштаб спрайта
             if (aimSprite != null)
             {
                 originalAimScale = aimSprite.transform.localScale;
                 aimSprite.color = new Color(aimSprite.color.r, aimSprite.color.g, aimSprite.color.b, 0f);
-                aimSprite.enabled = true; // Оставляем включенным, но делаем прозрачным
+                aimSprite.enabled = true;
+            }
+            
+            // Ищем точку выстрела если не назначена
+            if (firePoint == null)
+            {
+                // Пробуем найти на оружии
+                //  if (weapon != null)
+               // {
+             //       var rangedWeapon = weapon as IRangedWeapon;
+                  //  if (rangedWeapon != null && rangedWeapon.FirePoint != null)
+                //    {
+               //         firePoint = rangedWeapon.FirePoint;
+               //     }
+            //    }
             }
         }
 
@@ -44,43 +91,95 @@ namespace Player
 
         private void HandleAiming()
         {
-            // Получаем ввод с правого джойстика
+            
+            //       Debug.Log($"[WeaponController] HandleAiming");
+            
             float horizontalInput = rightJoystick.Horizontal;
             float verticalInput = rightJoystick.Vertical;
             Vector2 inputVector = new Vector2(horizontalInput, verticalInput);
 
-            // Проверяем, активен ли джойстик (палец игрока на нем)
             if (inputVector.magnitude > joystickDeadZone)
             {
+                Debug.Log($"[WeaponController] HandleAiming inputVector.magnitude > joystickDeadZone");
                 isAiming = true;
                 aimDirection = inputVector.normalized;
 
-                // Поворачиваем оружие в направлении прицеливания
                 if (weaponPivot != null)
                 {
                     float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
                     weaponPivot.rotation = Quaternion.Euler(0, 0, angle);
                 }
 
-                // Обновляем позицию и размер стрелки прицела
                 UpdateAimSprite();
             }
             else
             {
-                // Если джойстик отпустили и до этого прицеливались - стреляем
                 if (isAiming && canShoot)
                 {
-                 //   Shoot();
-                 Debug.Log("Стреляем");
+                    Debug.Log($"[WeaponController] HandleAiming isAiming && canShoot");
+                    PerformShoot();
                 }
 
                 isAiming = false;
             }
         }
 
+        private void PerformShoot()
+        {
+            if (_ai == null)
+            {
+                Debug.Log($"[WeaponController] не назначен _ai ");
+                return;
+            }
+
+            // Вычисляем силу натяжения джойстика
+            float joystickMagnitude = new Vector2(rightJoystick.Horizontal, rightJoystick.Vertical).magnitude;
+            
+            // Вычисляем расстояние выстрела с учетом силы джойстика
+            float shootDistance = CalculateShootDistance(joystickMagnitude);
+            
+            // Вычисляем точку попадания (куда летит снаряд/наносится урон)
+            Vector3 hitPoint = CalculateHitPoint(shootDistance);
+            
+            // Сохраняем для дебага
+            lastHitPoint = hitPoint;
+            
+            
+            // ПЕРЕДАЕМ НАПРАВЛЕНИЕ ВМЕСТО ТОЧКИ!
+            // _heroesBase.ShowDamageAnimationAt(hitPoint); // Старый вызов
+         //   _heroesBase.ShowDamageAnimationInDirection(aimDirection, shootDistance);
+            // Передаем точку попадания в метод героя
+            //           _heroesBase.ShowDamageAnimationAt(hitPoint);
+            _ai.StartAttackAndSetTargetDirection(aimDirection);
+          
+            Debug.Log($"Стреляем! Направление: {aimDirection}, Расстояние: {shootDistance:F2}, Точка: {hitPoint}");
+
+            // Запускаем перезарядку
+         //   StartCoroutine(ShootCooldown());
+        }
+
+        private float CalculateShootDistance(float joystickMagnitude)
+        {
+            // Минимальное расстояние + часть от максимального в зависимости от силы джойстика
+            float distance = minShootDistance + (joystickMagnitude * (maxAimLength - minShootDistance));
+            
+            // Можно добавить множитель для регулировки дальности
+            distance *= distanceMultiplier;
+            
+            return Mathf.Clamp(distance, minShootDistance, maxAimLength * distanceMultiplier);
+        }
+
+        private Vector3 CalculateHitPoint(float distance)
+        {
+            if (firePoint == null)
+                return transform.position + (Vector3)aimDirection * distance;
+            
+            // От точки выстрела откладываем расстояние в направлении прицела
+            return firePoint.position + (Vector3)aimDirection * distance;
+        }
+
         private void UpdateAimFade()
         {
-            // Плавно меняем прозрачность прицела
             float targetAlpha = isAiming ? 1f : 0f;
             aimAlpha = Mathf.MoveTowards(aimAlpha, targetAlpha, aimFadeSpeed * Time.deltaTime);
 
@@ -96,7 +195,6 @@ namespace Player
         {
             if (aimSprite == null || firePoint == null) return;
 
-            // Вычисляем длину стрелки в зависимости от силы натяжения джойстика
             float joystickMagnitude = new Vector2(rightJoystick.Horizontal, rightJoystick.Vertical).magnitude;
             float currentAimLength = Mathf.Clamp(joystickMagnitude * maxAimLength, 0.2f, maxAimLength);
 
@@ -104,39 +202,12 @@ namespace Player
             Vector2 aimPosition = (Vector2)firePoint.position + aimDirection * (currentAimLength / 2f);
             aimSprite.transform.position = aimPosition;
 
-            // Поворачиваем стрелку в направлении прицеливания
             float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
             aimSprite.transform.rotation = Quaternion.Euler(0, 0, angle);
 
-            // Масштабируем стрелку по длине (только по X)
             Vector3 newScale = originalAimScale;
             newScale.x = originalAimScale.x * (currentAimLength / maxAimLength);
             aimSprite.transform.localScale = newScale;
-        }
-
-        private void Shoot()
-        {
-            if (projectilePrefab == null || firePoint == null) return;
-
-            // Создаем снаряд
-            GameObject projectile = Instantiate(
-                projectilePrefab,
-                firePoint.position,
-                Quaternion.Euler(0, 0, Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg)
-            );
-
-            // Задаем скорость снаряду
-            Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-            if (rb != null)
-            {
-                rb.linearVelocity = aimDirection * projectileSpeed;
-            }
-
-            // Можно добавить эффект выстрела
-            // Instantiate(muzzleFlashEffect, firePoint.position, firePoint.rotation);
-
-            // Запускаем перезарядку
-            StartCoroutine(ShootCooldown());
         }
 
         private System.Collections.IEnumerator ShootCooldown()
@@ -146,15 +217,41 @@ namespace Player
             canShoot = true;
         }
 
-        // Вспомогательный метод для отладки (визуализация в редакторе)
         private void OnDrawGizmos()
         {
             if (Application.isPlaying && isAiming && firePoint != null)
             {
+                // Линия прицеливания
                 Gizmos.color = Color.red;
-                Gizmos.DrawLine(firePoint.position, (Vector2)firePoint.position + aimDirection * maxAimLength);
-                Gizmos.DrawSphere((Vector2)firePoint.position + aimDirection * maxAimLength, 0.1f);
+                float joystickMagnitude = new Vector2(rightJoystick.Horizontal, rightJoystick.Vertical).magnitude;
+                float debugDistance = CalculateShootDistance(joystickMagnitude);
+                Vector3 debugHitPoint = CalculateHitPoint(debugDistance);
+                
+                Gizmos.DrawLine(firePoint.position, debugHitPoint);
+                
+                // Точка попадания
+                Gizmos.color = Color.green;
+                Gizmos.DrawSphere(debugHitPoint, 0.15f);
             }
+
+            // Отображаем последнюю точку попадания (даже когда не целимся)
+            if (showHitPointDebug && Application.isPlaying)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawSphere(lastHitPoint, 0.1f);
+                Gizmos.DrawWireSphere(lastHitPoint, 0.2f);
+            }
+        }
+
+        // Вспомогательный метод для получения данных о выстреле (если нужно другим скриптам)
+        public Vector3 GetLastHitPoint()
+        {
+            return lastHitPoint;
+        }
+
+        public Vector2 GetLastAimDirection()
+        {
+            return aimDirection;
         }
     }
 }

@@ -107,8 +107,8 @@ namespace Heroes
         [Header("Логирование")]
         [SerializeField] private bool debugAI;
         
-        private LichFireballAbility _lichFireball;
-        public LichFireballAbility LichFireball => _lichFireball;
+      //  private LichFireballAbility _lichFireball;
+      //  public LichFireballAbility LichFireball => _lichFireball;
         private HeroesBase _targetHealth;
         
         public bool IsSelected { get; private set; }
@@ -123,6 +123,8 @@ namespace Heroes
         /// </summary>
         public event Action<State> StateChanged;
 
+        private Vector2 _aimDirection;
+        
         // ===== ИНИЦИАЛИЗАЦИЯ =====
         private void Awake()
         {
@@ -144,7 +146,7 @@ namespace Heroes
                     HardStopAgent();
             }
 
-            _lichFireball = GetComponent<LichFireballAbility>();
+         //   _lichFireball = GetComponent<LichFireballAbility>();
             _character = GetComponentInChildren<BaseVisualCharacter>(true);
             
             if (weapon == null)
@@ -537,6 +539,15 @@ namespace Heroes
 
         public void InvokeAttackFromAnimation()
         {
+            
+            if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich )
+            { 
+                
+                Debug.Log($"Только Лич может стрелять 111");
+              //  return;
+            }
+            
+            
             if (!canAttack || _state == State.Appear || _state == State.Death)
                 return;
 
@@ -572,6 +583,9 @@ namespace Heroes
 
         public void InvokeAttackLichFireballFromAnimation()
         {
+          //  Debug.Log($"Только Лич может стрелять");
+         // return;
+            
             if (_state == State.Appear || _state == State.Death)
                 return;
 
@@ -766,14 +780,11 @@ namespace Heroes
                 _hasRoamPoint = false;
                 return;
             }
-
             _hasRoamPoint = true;
             _roamWaitTimer = 0f;
-
             _agent.stoppingDistance = roamStoppingDistance;
             _agent.isStopped = false;
             _agent.SetDestination(_roamTarget);
-
             SwitchState(State.Roaming);
         }
 
@@ -785,10 +796,13 @@ namespace Heroes
                 return false; // Не ищем цели при ручном управлении
             }
 
-            if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
+            if (  _controlledHero)
             {
-          //      Debug.Log("SenseForEnemies");
+                return false; // Не ищем цели если герой наш
             }
+
+
+            
             
             _senseTimer -= Time.deltaTime;
             if (_senseTimer > 0f)
@@ -859,6 +873,20 @@ namespace Heroes
 
             return false;
         }
+
+
+        /**
+         * Устанавливаем направление выстрела
+         */ 
+        public void StartAttackAndSetTargetDirection(Vector2 aimDirection)
+        {
+            Debug.Log($"[WarriorAI] Стреляем! Направление: StartAttackAndSetTargetDirection");
+            _aimDirection = aimDirection;
+            
+            SwitchState(State.Attacking);
+        }
+
+
 
         private void SetTarget(Transform t)
         {
@@ -1087,10 +1115,12 @@ namespace Heroes
             }
             if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
             {
-             //   Debug.Log($"Изменили состояние {_state}");
+                Debug.Log($"Изменили состояние   {_state} <- {s}  ");
             }
 
             _state = s;
+            
+            
             StateChanged?.Invoke(_state);
 
             if (_agent == null)
@@ -1124,14 +1154,22 @@ namespace Heroes
                     _agent.speed = 0f;
                     break;
             }
-
+            if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
+            {
+                Debug.Log($"Изменили ChangeAnimation");
+                _character.PlayAttack();
+            }
             ChangeAnimation();
         }
 
         private void ChangeAnimation()
         {
             if (_character == null)
+            {
+                Debug.Log($"не найден _character ");
                 return;
+            }
+                
 
             switch (_state)
             {
@@ -1152,6 +1190,12 @@ namespace Heroes
                     break;
 
                 case State.Attacking:
+                    
+                    if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
+                    {
+                        Debug.Log($"_character.PlayAttack(); 1");
+                    }
+                    Debug.Log($"_character.PlayAttack(); 2");
                     _character.PlayAttack();
                     break;
 
