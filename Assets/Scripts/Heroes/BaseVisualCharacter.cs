@@ -178,7 +178,7 @@ namespace Heroes
             {
                 case "Attack":
                 case "attack":
-                    DLog("Удар! Наносим урон!");
+                    DLog("[BaseVisualCharacter] Удар! Наносим урон!");
                     Attack();
                     break;
                 case "Hit2":
@@ -186,10 +186,11 @@ namespace Heroes
                     Attack();
                     break;
                 case "lich_fireball":
-                    DLog("Удар! Наносим урон! lich_fireball");
+                    DLog("[BaseVisualCharacter] Удар! Наносим урон! lich_fireball");
                     AttackLichFireball();
                     break;
                 case "lich_fireball_end":
+                    DLog("[BaseVisualCharacter] Удар! lich_fireball_end");
                     //  DLog("Удар! Наносим урон! lich_fireball");
                     AttackLichFireballEnd();
                     break;

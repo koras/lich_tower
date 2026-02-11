@@ -29,7 +29,7 @@ namespace Player
 
         private bool isAiming = false;
         private bool canShoot = true;
-        private Vector2 aimDirection;
+        private Vector2 _aimDirection;
         private float aimAlpha = 0f;
         private Vector3 originalAimScale;
  
@@ -102,11 +102,11 @@ namespace Player
             {
                 Debug.Log($"[WeaponController] HandleAiming inputVector.magnitude > joystickDeadZone");
                 isAiming = true;
-                aimDirection = inputVector.normalized;
+                _aimDirection= inputVector.normalized;
 
                 if (weaponPivot != null)
                 {
-                    float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
+                    float angle = Mathf.Atan2(_aimDirection.y, _aimDirection.x) * Mathf.Rad2Deg;
                     weaponPivot.rotation = Quaternion.Euler(0, 0, angle);
                 }
 
@@ -117,14 +117,14 @@ namespace Player
                 if (isAiming && canShoot)
                 {
                     Debug.Log($"[WeaponController] HandleAiming isAiming && canShoot");
-                    PerformShoot();
+                    PerformShoot(_aimDirection);
                 }
 
                 isAiming = false;
             }
         }
 
-        private void PerformShoot()
+        private void PerformShoot(Vector2 aimDirection)
         {
             if (_ai == null)
             {
@@ -143,19 +143,11 @@ namespace Player
             
             // Сохраняем для дебага
             lastHitPoint = hitPoint;
-            
-            
             // ПЕРЕДАЕМ НАПРАВЛЕНИЕ ВМЕСТО ТОЧКИ!
-            // _heroesBase.ShowDamageAnimationAt(hitPoint); // Старый вызов
-         //   _heroesBase.ShowDamageAnimationInDirection(aimDirection, shootDistance);
-            // Передаем точку попадания в метод героя
-            //           _heroesBase.ShowDamageAnimationAt(hitPoint);
             _ai.StartAttackAndSetTargetDirection(aimDirection);
           
             Debug.Log($"Стреляем! Направление: {aimDirection}, Расстояние: {shootDistance:F2}, Точка: {hitPoint}");
 
-            // Запускаем перезарядку
-         //   StartCoroutine(ShootCooldown());
         }
 
         private float CalculateShootDistance(float joystickMagnitude)
@@ -172,10 +164,10 @@ namespace Player
         private Vector3 CalculateHitPoint(float distance)
         {
             if (firePoint == null)
-                return transform.position + (Vector3)aimDirection * distance;
+                return transform.position + (Vector3)_aimDirection * distance;
             
             // От точки выстрела откладываем расстояние в направлении прицела
-            return firePoint.position + (Vector3)aimDirection * distance;
+            return firePoint.position + (Vector3)_aimDirection * distance;
         }
 
         private void UpdateAimFade()
@@ -199,10 +191,10 @@ namespace Player
             float currentAimLength = Mathf.Clamp(joystickMagnitude * maxAimLength, 0.2f, maxAimLength);
 
             // Позиция стрелки - посередине между игроком и точкой прицеливания
-            Vector2 aimPosition = (Vector2)firePoint.position + aimDirection * (currentAimLength / 2f);
+            Vector2 aimPosition = (Vector2)firePoint.position + _aimDirection * (currentAimLength / 2f);
             aimSprite.transform.position = aimPosition;
 
-            float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(_aimDirection.y, _aimDirection.x) * Mathf.Rad2Deg;
             aimSprite.transform.rotation = Quaternion.Euler(0, 0, angle);
 
             Vector3 newScale = originalAimScale;
@@ -210,12 +202,7 @@ namespace Player
             aimSprite.transform.localScale = newScale;
         }
 
-        private System.Collections.IEnumerator ShootCooldown()
-        {
-            canShoot = false;
-            yield return new WaitForSeconds(shootCooldown);
-            canShoot = true;
-        }
+        
 
         private void OnDrawGizmos()
         {
@@ -251,7 +238,7 @@ namespace Player
 
         public Vector2 GetLastAimDirection()
         {
-            return aimDirection;
+            return _aimDirection;
         }
     }
 }

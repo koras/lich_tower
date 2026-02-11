@@ -540,11 +540,13 @@ namespace Heroes
         public void InvokeAttackFromAnimation()
         {
             
+            Debug.Log($"[WarriorAI] InvokeAttackFromAnimatio");
             if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich )
             { 
                 
-                Debug.Log($"Только Лич может стрелять 111");
-              //  return;
+                Debug.Log($"[WarriorAI] Только Лич может стрелять 111");
+                weapon?.Attack();
+                return;
             }
             
             
@@ -688,8 +690,13 @@ namespace Heroes
 
             if (_currentTarget == null || _targetHealth == null || _targetHealth.IsDead)
             {
-                ExitAttack_NoTarget();
-                return;
+                //_weaponType
+                if (weapon.weaponType != WeaponBase.WeaponType.FireBow)
+                {
+                //    ExitAttack_NoTarget();
+                //    return;
+                }
+ 
             }
 
             float distSqr = (_currentTarget.position - transform.position).sqrMagnitude;
@@ -1156,7 +1163,7 @@ namespace Heroes
             }
             if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
             {
-                Debug.Log($"Изменили ChangeAnimation");
+                Debug.Log($"Изменили ChangeAnimation {s}");
                 _character.PlayAttack();
             }
             ChangeAnimation();
