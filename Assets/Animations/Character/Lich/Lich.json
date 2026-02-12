@@ -10,6 +10,7 @@
   "events": {
     "appear": {},
     "attack": {},
+	"attack_lich_end": {},
     "lich_fireball": {},
     "lich_fireball_end": {}
   },
@@ -9697,8 +9698,12 @@
     "attack": {
       "events": [
         {
-          "time": 0.5,
+          "time": 0.4,
           "name": "attack"
+        },
+        {
+          "time": 0.625,
+          "name": "attack_lich_end"
         }
       ],
       "slots": {

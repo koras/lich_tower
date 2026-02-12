@@ -557,10 +557,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapons.Range.LichBowWeapon
   _polygonCollider2D: {fileID: 0}
+  _targetHealth: {fileID: 0}
+  weaponType: 4
   canAttack: 1
   <Cooldown>k__BackingField: 0.3
   weaponName: Weapon
-  arrowPrefab: {fileID: 0}
+  arrowPrefab: {fileID: 4774594410915760193, guid: 1427e705ddc661a4998ca2a10a0f7504, type: 3}
   firePoint: {fileID: 0}
   hitMask:
     serializedVersion: 2
@@ -594,7 +596,7 @@ Transform:
   m_GameObject: {fileID: 3103076786871160939}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.266, y: 0.24, z: 0}
+  m_LocalPosition: {x: 0.172, y: 0.345, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -672,9 +674,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapons.Projectile.LichAttack
   _polygonCollider2D: {fileID: 0}
+  _targetHealth: {fileID: 0}
+  weaponType: 0
   canAttack: 1
   <Cooldown>k__BackingField: 0.3
   weaponName: Weapon
+  projectilePrefab: {fileID: 390305662583726259, guid: 8795581afb9ba6f4ca2f4359a9337844, type: 3}
+  firePoint: {fileID: 2554709917732477203}
+  projectileDamage: 30
+  projectileSpeed: 5
+  projectileMaxDistance: 20
+  enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &3239769074307896495
 GameObject:
   m_ObjectHideFlags: 0
@@ -6804,6 +6816,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapons.Range.LichWeapon
   _polygonCollider2D: {fileID: 0}
+  _targetHealth: {fileID: 0}
+  weaponType: 0
   canAttack: 1
   <Cooldown>k__BackingField: 0.3
   weaponName: Weapon

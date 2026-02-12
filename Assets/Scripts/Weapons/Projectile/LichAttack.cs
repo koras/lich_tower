@@ -14,6 +14,16 @@ namespace Weapons.Projectile
   {
         private bool _hitAppliedThisSwing; 
         
+        [SerializeField] private LichProjectileFire projectilePrefab;
+        
+        [SerializeField] private Transform firePoint;
+        [SerializeField] private int projectileDamage = 30;
+        [SerializeField] private float projectileSpeed = 15f;
+        [SerializeField] private float projectileMaxDistance = 20f;
+        [SerializeField] private LayerMask enemyLayerMask;
+
+        
+        
         private void Awake()
         {
             if (_polygonCollider2D == null)
@@ -22,68 +32,52 @@ namespace Weapons.Projectile
             AttackColliderTurnOff();
         }
         
-        /// <summary>
-        /// Вызывается из Animation Event в момент удара.
-        /// Тут НЕТ коллайдера, бьём только закреплённую цель.
-        /// </summary>
-        public override void HitAttack()
+  
+
+        public override void LichAttackDirection(Vector2 aimDirection)
         {
             if (!canAttack)
             {
-                Debug.Log($"Запрет на атаку");
+                Debug.Log($"[LichAttack] Запрет на атаку");
                 return;
             }
 
-         //   Debug.Log("Sword.HitAttack()");  
-            // цель не назначена
-            if (_targetHealth == null || _currentTarget == null)
+            if (projectilePrefab == null)
+            {
+                Debug.LogError("[LichAttack] projectilePrefab не назначен!");
                 return;
+            }
 
-            // чтобы за один взмах не наносить урон несколько раз
-            if (_hitAppliedThisSwing)
+            // Получаем команду владельца
+            HeroesBase owner = GetComponentInParent<HeroesBase>();
+            if (owner == null)
+            {
+                Debug.LogError("[LichAttack] Владелец оружия не найден!");
                 return;
+            }
 
-            _hitAppliedThisSwing = true;
+            // Проверяем, достаточно ли маны
+      
+
+            // Спавним снаряд
+            Vector2 spawnPosition = firePoint != null ? firePoint.position : transform.position;
+            LichProjectileFire projectile = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
             
-          //  Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
-            _targetHealth.TakeDamage(Damage,transform);
+            // Инициализируем снаряд
+            projectile.Initialize(
+                aimDirection, 
+                projectileDamage, 
+                owner.GetTeam(), 
+                owner.transform
+            );
 
+            // Тратим ману
+            //owner.SpendManna(GetMannaCost());
 
+            Debug.Log($"[LichAttack] Выстрел в направлении: {aimDirection}, команда: {owner.GetTeam()}");
         }
 
         
-        public override void Attack()
-        {
-            if (!canAttack)
-            {
-             //   Debug.Log($"Запрет на атаку");
-                return;
-            }
-            // проверяем, можем ли вообще атаковать
-            if (_currentTarget == null || _targetHealth == null)
-            {
-            //    Debug.Log("Sword.Attack: цели нет, атаковать некого");
-                return;
-            }
-            if (_currentTarget == null)
-            {
-            //    Debug.Log("_currentTarget");
-                    // return;
-            }
-
-            // кулдаун ЛОГИЧНО проверять на атаке, а не на SetEnemyTarget
-            if (Time.time - _lastUseTime < Cooldown)
-                return;
-
-            _lastUseTime = Time.time;
-            _hitAppliedThisSwing = false;   // новый взмах, сбрасываем флаг
-            base.Attack();
-            
-           // Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
-            _targetHealth.TakeDamage(Damage,transform);
-        }
-     
- 
         /// <summary>
         /// Закрепляем цель и кешируем её здоровье.
         /// БЕЗ кулдауна, это просто выбор цели.
@@ -91,11 +85,6 @@ namespace Weapons.Projectile
         public override void SetEnemyTarget(Transform currentTarget)
         {
             _currentTarget = currentTarget;
-
-            _targetHealth = _currentTarget
-                ? _currentTarget.GetComponent<Heroes.HeroesBase>()
-                  ?? _currentTarget.GetComponentInParent<Heroes.HeroesBase>()
-                : null;
         }
         private void AttackColliderTurnOff() => _polygonCollider2D.enabled = false;
     }

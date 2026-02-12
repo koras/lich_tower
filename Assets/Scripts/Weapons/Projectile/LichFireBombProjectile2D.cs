@@ -16,6 +16,24 @@ namespace Weapons.Projectile
         [Header("Звуки")] [SerializeField] private bool playAnimalSounds = true;
         [SerializeField] private Vector3 soundOffset = Vector3.zero;
 
+        
+        
+        
+        [Header("Настройки снаряда")]
+        [SerializeField] private float speed = 15f;
+        [SerializeField] private float maxDistance = 20f;
+        [SerializeField] private LayerMask targetLayerMask;
+    
+        
+        private Vector2 _direction;
+        private Vector2 _startPosition;
+        private int _damage;
+        private int _team;
+        private Transform _owner;
+        private bool _isInitialized;
+        private bool _hasHit;
+        
+        
         [Header("Анимация")]
 
         // [SerializeField] public SkeletonAnimation skeletonAnimation;
@@ -264,6 +282,21 @@ namespace Weapons.Projectile
             var arrow = Instantiate(_shamanFireFirstPrefab, spawnPos, Quaternion.identity);
             arrow.transform.position = spawnPos;
             Destroy(gameObject);
+        }
+        
+        public void Initialize(Vector2 direction, int damage, int team, Transform owner = null)
+        {
+            _direction = direction.normalized;
+            _damage = damage;
+            _team = team;
+            _owner = owner;
+            _startPosition = transform.position;
+            _isInitialized = true;
+            _hasHit = false;
+
+            // Поворачиваем снаряд в сторону движения
+            float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
         }
 
 

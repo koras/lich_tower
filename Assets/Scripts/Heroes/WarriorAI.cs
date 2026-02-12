@@ -482,7 +482,27 @@ namespace Heroes
         }
 
         public bool turnToFace()
-        {
+        { 
+            // Если мы в ручном управлении ИЛИ в состоянии атаки, используем принудительное направление
+            if (  _state == State.Attacking)
+            {
+                // Используем последнее направление выстрела
+                Vector2 aimDir = _aimDirection;
+                if (aimDir.sqrMagnitude > 0.01f)
+                {
+                    _lookDir = aimDir.x > 0f ? +1 : -1;
+                   return _lookDir < 0;
+                }
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            
             Vector2 moveDir = GetMovementDirection();
     
             // Обновляем _lookDir на основе направления движения
@@ -515,8 +535,10 @@ namespace Heroes
 
         public void InvokeAppearFromAnimation()
         {
+          
             SwitchState(State.Idle);
             _heroesBase?.HealthBarActive();
+      
             
             if (_controlledHero)
                 return;
@@ -543,9 +565,12 @@ namespace Heroes
             Debug.Log($"[WarriorAI] InvokeAttackFromAnimatio");
             if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich )
             { 
-                
+                if(weapon == null)
+                {
+                    Debug.Log($"[WarriorAI] weapon == null");
+                }
                 Debug.Log($"[WarriorAI] Только Лич может стрелять 111");
-                weapon?.Attack();
+                weapon?.LichAttackDirection(_aimDirection);
                 return;
             }
             

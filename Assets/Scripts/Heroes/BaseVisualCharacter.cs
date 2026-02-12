@@ -194,6 +194,13 @@ namespace Heroes
                     //  DLog("Удар! Наносим урон! lich_fireball");
                     AttackLichFireballEnd();
                     break;
+                case "attack_lich_end":
+                    DLog("[BaseVisualCharacter] Удар! attack_lich_end");
+                    //  DLog("Удар! Наносим урон! lich_fireball");
+                    AttackLichEnd();
+                    break;
+                
+                
                 case "Appear":
                 case "appear":
                     //    DLog("Появление героя");
@@ -390,6 +397,13 @@ namespace Heroes
         {
             //  PlaySound(SoundId.ExplosionBoomLich);
             _ai.InvokeAttackLichFireballFromAnimation();
+        }
+         
+            
+        private void AttackLichEnd()
+        {
+            _ai.SetCanAttack(true);
+            _ai.InvokeAppearFromAnimation();
         }
 
         private void AttackLichFireballEnd()

@@ -36,17 +36,17 @@ namespace Weapons.Range
 
       public override void Attack()
       {
-          Debug.Log($"Кидаем фаербол1111");
+          Debug.Log($"[LichWeapon] Кидаем фаербол1111");
           if (_arrowPrefabLich == null)
           {
-              Debug.LogError($"arrowPrefab не установлен");
+              Debug.LogError($"[LichWeapon]  arrowPrefab не установлен");
               return;
           }
 
           Transform fp = firePoint != null ? firePoint : transform;
           Vector2 spawnPos = new Vector2(_targetPosition.x, _targetPosition.y + heightSpawnOffset);
 
-          Debug.Log($"Выпускаем фаербол ======");
+          Debug.Log($"[LichWeapon]  Выпускаем фаербол ======");
           var arrow = Instantiate(_arrowPrefabLich, spawnPos, Quaternion.identity);
               Vector2 target = new Vector2(_targetPosition.x, _targetPosition.y);
               arrow.InitFire(target, 150);

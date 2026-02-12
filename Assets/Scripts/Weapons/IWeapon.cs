@@ -11,6 +11,9 @@ namespace Weapons
 
         string WeaponName  { get; }
         void SpawnBow();
+
+
+        void LichAttackDirection(Vector2 aimDirection);
         
         void Attack(); // действие
 

@@ -53,6 +53,13 @@ namespace Weapons
             Debug.Log($"[{weaponName}] Base HitAttack() — переопредели в наследнике!");
         }
 
+
+        public virtual  void LichAttackDirection(Vector2 aimDirection)
+        {
+            
+            
+        }
+
         public virtual void Attack()
         {
             //   Debug.Log($"base:Attack");

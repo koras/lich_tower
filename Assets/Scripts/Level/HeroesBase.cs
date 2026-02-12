@@ -108,8 +108,10 @@ namespace Heroes
         [Header("Банк учёта золота")]
         [SerializeField] private GoldBank _goldBank; 
         
-        
-        
+        /// <summary>
+        /// Принудительно установить направление взгляда
+        /// </summary>
+ 
         public int GetMaxManna()
         {
             return _maxManna;
