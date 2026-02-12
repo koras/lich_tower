@@ -29,10 +29,10 @@ namespace Weapons.Range
 
         public override void Attack()
         {
-            
+            Debug.Log("[LichBowWeapon] Attack");
             if (arrowPrefab == null)
             {
-            //    Debug.LogError("[GobArcherWeapons] Не назначен префаб стрелы!");
+              Debug.LogError("[LichBowWeapon] Не назначен префаб arrowPrefab стрелы!");
                 return;
             }
 

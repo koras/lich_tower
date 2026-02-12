@@ -311,7 +311,16 @@ namespace Heroes
 
             Debug.Log($"[BaseVisualCharacter] PlayAttack");
             //  DLog($"PlayAttack");
-            SetAnimation(attackAnimation, true, 1f);
+
+            if (_who == Hero.Lich)
+            {
+                // Лич атакует
+                SetAnimation(attackAnimation, false, 1f);
+            }
+            else
+            {
+                SetAnimation(attackAnimation, true, 1f);
+            }
         }
 
         public void PlayDeath()

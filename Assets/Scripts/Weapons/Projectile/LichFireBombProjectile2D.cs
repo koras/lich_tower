@@ -1,90 +1,72 @@
-﻿using UnityEngine; 
-using Heroes; 
-using Spine.Unity; 
-using AudioSystem; 
-
+﻿using UnityEngine;
+using Heroes;
+using Spine.Unity;
+using AudioSystem;
 
 
 namespace Weapons.Projectile
 {
-    
-    
     [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(SpriteRenderer))]
-    
     /**
      * Лич выпускает огонь, его стандартное оружие(не фаербол)
      */
     public class LichFireBombProjectile2D : MonoBehaviour
-  {
-      
-      
-      [Header("Звуки")]
-      [SerializeField] private bool playAnimalSounds = true;
-      [SerializeField] private Vector3 soundOffset = Vector3.zero;
+    {
+        [Header("Звуки")] [SerializeField] private bool playAnimalSounds = true;
+        [SerializeField] private Vector3 soundOffset = Vector3.zero;
 
-      [Header("Анимация")] 
-        
-        
-     // [SerializeField] public SkeletonAnimation skeletonAnimation;
-      //[SerializeField] protected AnimationReferenceAsset idleAnimation;
- 
-       private Animator _animator;
-      
-     
-      [Header("Огонь")]
-       
-     [SerializeField] private FX.ShamanFireFirst _shamanFireFirstPrefab; 
-      [SerializeField] private Transform firePoint;
-     
-      [Header("Spine")]
-      [SerializeField] private SkeletonAnimation _skeletonAnimation;
-     
-      [Header("Animation")]
-      [SerializeField] private AnimationReferenceAsset _fire;
-     
-      
-      
-      [Header("Время жизни снаряда")] 
-    //  [SerializeField] private float _lifeTimer = 4f;
-      
-        [SerializeField] private bool debugStraight = false;
+        [Header("Анимация")]
 
-        [Header("Парабола")]
-        [SerializeField, Min(0.01f)]
+        // [SerializeField] public SkeletonAnimation skeletonAnimation;
+        //[SerializeField] protected AnimationReferenceAsset idleAnimation;
+        private Animator _animator;
+
+
+        [Header("Огонь")] [SerializeField] private FX.ShamanFireFirst _shamanFireFirstPrefab;
+        [SerializeField] private Transform firePoint;
+
+        [Header("Spine")] [SerializeField] private SkeletonAnimation _skeletonAnimation;
+
+        [Header("Animation")] [SerializeField] private AnimationReferenceAsset _fire;
+
+
+        [Header("Время жизни снаряда")]
+        //  [SerializeField] private float _lifeTimer = 4f;
+        [SerializeField]
+        private bool debugStraight = false;
+
+        [Header("Парабола")] [SerializeField, Min(0.01f)]
         private float baseArcHeight = 1.5f;
 
-        [SerializeField, Min(0f)]
-        private float arcPerUnit = 0.2f;
+        [SerializeField, Min(0f)] private float arcPerUnit = 0.2f;
 
-        [Header("Время полёта")]
-        [SerializeField, Min(0.1f)]
+        [Header("Время полёта")] [SerializeField, Min(0.1f)]
         private float flightSpeed = 8f;
 
-        [SerializeField, Min(0.05f)]
-        private float minDuration = 0.15f;
+        [SerializeField, Min(0.05f)] private float minDuration = 0.15f;
 
-        [SerializeField, Min(0.05f)]
-        private float maxDuration = 1.2f;
+        [SerializeField, Min(0.05f)] private float maxDuration = 1.2f;
 
-        [Header("Урон")] 
-        [field: SerializeField] public int Damage { get; private set; } = 5;
+        [Header("Урон")]
+        [field: SerializeField]
+        public int Damage { get; private set; } = 5;
 
-     //   [SerializeField] private float hitRadius = 0.3f;  
-      //  [SerializeField] private LayerMask damageMask = -1;
+        //   [SerializeField] private float hitRadius = 0.3f;  
+        //  [SerializeField] private LayerMask damageMask = -1;
         [SerializeField] private Transform ignoreCollisionsWith; // Чей коллайдер игнорировать
 
-     //   [Header("Визуализация траектории")]
-     //   [SerializeField] private bool showTrajectory = true;
-     //   [SerializeField] private Color trajectoryColor = Color.red;
-     //   [SerializeField] private int trajectoryPoints = 20;
+        //   [Header("Визуализация траектории")]
+        //   [SerializeField] private bool showTrajectory = true;
+        //   [SerializeField] private Color trajectoryColor = Color.red;
+        //   [SerializeField] private int trajectoryPoints = 20;
 
-        [Header("Жизненный цикл")]
-        [SerializeField] private bool destroyOnArrive = true;
+        [Header("Жизненный цикл")] [SerializeField]
+        private bool destroyOnArrive = true;
+
         [SerializeField] private GameObject hitEffectPrefab;
 
-        [Header("Отладка")]
-        [SerializeField] private bool enableDebug = false;
+        [Header("Отладка")] [SerializeField] private bool enableDebug = false;
         [SerializeField] private GameObject debugMarkerPrefab;
         private GameObject debugMarker;
         protected HeroesBase _targetHealth;
@@ -98,29 +80,26 @@ namespace Weapons.Projectile
         private bool _hitDetected;
         private Collider2D _arrowCollider;
 
-        
-        
-       // public void SetAnimation(AnimationReferenceAsset animationCurrent, bool loop, float timeScale)
-       // {
-         //   skeletonAnimation.AnimationState.SetAnimation(0, animationCurrent, loop).TimeScale = timeScale;
-      //  }
 
-        
-        
+        // public void SetAnimation(AnimationReferenceAsset animationCurrent, bool loop, float timeScale)
+        // {
+        //   skeletonAnimation.AnimationState.SetAnimation(0, animationCurrent, loop).TimeScale = timeScale;
+        //  }
+
+
         private void Awake()
         {
             _animator = GetComponent<Animator>();
             _arrowCollider = GetComponent<Collider2D>();
-            
+
             // Если есть коллайдер у стрелы - делаем его триггером
             if (_arrowCollider != null)
             {
                 _arrowCollider.isTrigger = true;
             }
-            
+
             if (_skeletonAnimation == null)
                 _skeletonAnimation = GetComponentInChildren<SkeletonAnimation>(true);
-
         }
 
 
@@ -131,28 +110,28 @@ namespace Weapons.Projectile
         {
             if (anim == null || _skeletonAnimation == null) return;
 
-            var entry =  _skeletonAnimation.AnimationState.SetAnimation(0, anim, loop);
+            var entry = _skeletonAnimation.AnimationState.SetAnimation(0, anim, loop);
             entry.TimeScale = timeScale;
         }
-        
+
         void Start()
         {
-            Play(_fire, true,1f);
+            Play(_fire, true, 1f);
         }
-        
+
 
         public void LaunchTowards(Transform target, float yOffset = 0f)
         {
-            if (!target) 
+            if (!target)
             {
-            //    Debug.LogError("❌ Стрела: цель не назначена!");
+                //    Debug.LogError("❌ Стрела: цель не назначена!");
                 return;
             }
 
             Vector2 end = (Vector2)target.position + Vector2.up * yOffset;
             LaunchTowards(end);
 
-         //   if (enableDebug) Debug.Log($"🎯 Стрела запущена в цель: {target.name}, позиция: {end}");
+            //   if (enableDebug) Debug.Log($"🎯 Стрела запущена в цель: {target.name}, позиция: {end}");
 
             // Маркер цели
             if (debugMarkerPrefab != null)
@@ -161,15 +140,6 @@ namespace Weapons.Projectile
                     debugMarker = Instantiate(debugMarkerPrefab);
                 debugMarker.transform.position = end;
             }
-            
-            
-         //   if(idleAnimation != null){ 
-         //       SetAnimation(idleAnimation, true, 0.7f);
-         //   }
-          //  else
-         //   {
-         //       Debug.Log($"🎯 не установлен idleAnimation");
-        //    }
         }
 
         public void LaunchTowards(Vector2 target)
@@ -185,14 +155,12 @@ namespace Weapons.Projectile
             _launched = true;
             _hitDetected = false;
 
-            if (enableDebug) 
+            if (enableDebug)
             {
-               // Debug.Log($"🏹 Стрела запущена: " +
-              //           $"старт: {_start}, цель: {_end}, " +
-              //           $"дистанция: {dist:F2}, время: {_duration:F2}");
+                // Debug.Log($"🏹 Стрела запущена: " +
+                //           $"старт: {_start}, цель: {_end}, " +
+                //           $"дистанция: {dist:F2}, время: {_duration:F2}");
             }
-            
-
         }
 
         // Установить чьи коллайдеры игнорировать
@@ -206,7 +174,7 @@ namespace Weapons.Projectile
             if (!_launched) return;
 
             _t += Time.deltaTime / _duration;
-            
+
             if (_t >= 1f)
             {
                 ArriveAtDestination();
@@ -239,7 +207,6 @@ namespace Weapons.Projectile
             }
         }
 
- 
 
         /// <summary>
         /// Обрабатывает прибытие стрелы в конечную точку
@@ -262,54 +229,49 @@ namespace Weapons.Projectile
                 Destroy(gameObject);
             }
         }
+
         private void PlaySound(SoundId id)
         {
             if (!playAnimalSounds) return;
             if (AudioService.I == null) return;
             AudioService.I.Play(id, transform.position + soundOffset);
         }
+
         /// <summary>
         /// Проверяет попадание в конечной точке траектории
         /// </summary>
         private void CheckHitAtDestination()
         {
-
             ApplyDamageTargetHealth();
             return;
             // акомментировано специально, работаем на цель
-            
         }
 
         private void ApplyDamageTargetHealth()
         {
-
             PlaySound(SoundId.HitAttackFireBall);
             // Наносим урон
             if (_targetHealth != null)
             {
-             //   Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
-                _targetHealth.TakeDamage(Damage,transform);
+                //   Vector2 hitDir = ((Vector2)_targetHealth.transform.position - (Vector2)transform.position).normalized;
+                _targetHealth.TakeDamage(Damage, transform);
             }
- 
-            
- 
-         Transform fp = firePoint != null ? firePoint : transform;
-         Vector2 spawnPos = fp.position;
 
-             var arrow = Instantiate(_shamanFireFirstPrefab, spawnPos, Quaternion.identity);
-             arrow.transform.position = spawnPos;
-             Destroy(gameObject);
-            
+
+            Transform fp = firePoint != null ? firePoint : transform;
+            Vector2 spawnPos = fp.position;
+
+            var arrow = Instantiate(_shamanFireFirstPrefab, spawnPos, Quaternion.identity);
+            arrow.transform.position = spawnPos;
+            Destroy(gameObject);
         }
-        
 
-        public void SetTargetHealth(HeroesBase  targetHealth)
+
+        public void SetTargetHealth(HeroesBase targetHealth)
         {
-     //       Debug.Log($"🎯 Установили цель");
-     //     if(_targetHealth != null)
-                _targetHealth = targetHealth;
+            //       Debug.Log($"🎯 Установили цель");
+            //     if(_targetHealth != null)
+            _targetHealth = targetHealth;
         }
-        
-        
     }
 }

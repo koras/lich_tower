@@ -228,6 +228,12 @@ namespace Heroes
 
         public void ShowDamageAnimationAt(Vector3 worldPos)
         {
+            
+            if ( GetHeroType() == Hero.Lich)
+            {
+                Debug.LogError($"[HeroesBase] {GetHeroType()} ShowDamageAnimationAt");
+                return;
+            }
             // Мгновенный урон
             if (_showDamageLichAnimation == null)
             {
