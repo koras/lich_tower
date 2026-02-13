@@ -495,14 +495,6 @@ namespace Heroes
                 }
             }
             
-            
-            
-            
-            
-            
-            
-            
-            
             Vector2 moveDir = GetMovementDirection();
     
             // Обновляем _lookDir на основе направления движения

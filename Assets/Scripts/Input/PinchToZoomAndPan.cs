@@ -299,8 +299,8 @@ namespace Input
             if (Mouse.current == null) return;
 
             Vector2 screenPos = Mouse.current.position.ReadValue();
+            
             // Если клик по UI, не трогаем мир
-
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 var w0 = targetCamera.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 0f));
@@ -414,13 +414,6 @@ namespace Input
                 Debug.Log("[PinchToZoomAndPan] Этот герой не Лич, фаербол недоступен.");
                 return;
             }
-
-            //   if (!ability.CanStart())
-            //    {
-            //        Debug.Log("Недостаточно маны на фаербол.");
-            //        return;
-            //     }
-
             _activeFireball = ability;
             _isAimingFireball = true;
             _fireballPointerDown = false;

@@ -67,20 +67,6 @@ namespace Player
                 aimSprite.color = new Color(aimSprite.color.r, aimSprite.color.g, aimSprite.color.b, 0f);
                 aimSprite.enabled = true;
             }
-            
-            // Ищем точку выстрела если не назначена
-            if (firePoint == null)
-            {
-                // Пробуем найти на оружии
-                //  if (weapon != null)
-               // {
-             //       var rangedWeapon = weapon as IRangedWeapon;
-                  //  if (rangedWeapon != null && rangedWeapon.FirePoint != null)
-                //    {
-               //         firePoint = rangedWeapon.FirePoint;
-               //     }
-            //    }
-            }
         }
 
         private void Update()
@@ -131,7 +117,7 @@ namespace Player
                 Debug.Log($"[WeaponController] не назначен _ai ");
                 return;
             }
-
+ 
             // Вычисляем силу натяжения джойстика
             float joystickMagnitude = new Vector2(rightJoystick.Horizontal, rightJoystick.Vertical).magnitude;
             
