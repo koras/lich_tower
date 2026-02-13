@@ -1,5 +1,6 @@
 ﻿using UnityEngine; 
 using Heroes; 
+using Damage; 
 using Spine.Unity; 
 using AudioSystem; 
 
@@ -21,8 +22,7 @@ namespace Weapons.Projectile
         [SerializeField] private float projectileSpeed = 15f;
         [SerializeField] private float projectileMaxDistance = 20f;
         [SerializeField] private LayerMask enemyLayerMask;
-
-        
+ 
         
         private void Awake()
         {

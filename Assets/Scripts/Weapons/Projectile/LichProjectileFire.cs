@@ -12,6 +12,11 @@ namespace Weapons.Projectile
         [SerializeField] private LayerMask targetLayerMask;
         [SerializeField] private GameObject hitEffectPrefab;
         
+         
+        [SerializeField] private ShowDamageLichAnimation _showDamageLichAnimationPrefab;
+        
+        
+        
         private Vector2 _direction;
         private Vector2 _startPosition;
         private int _damage;
@@ -70,11 +75,22 @@ namespace Weapons.Projectile
                     if (target.GetTeam() != _team && target != _owner?.GetComponent<HeroesBase>())
                     {
                         HitTarget(target);
+                        ShowDamageLichAnimation(target);
+                            //showDamageLichAnimationPrefab
                         break;
                     }
                 }
             }
         }
+
+        private void ShowDamageLichAnimation(HeroesBase target)
+        {
+            // Transform fp = target.transform.position;
+            Vector2 spawnPos = target.transform.position;
+            spawnPos.y -= 0.1f;
+            Instantiate(_showDamageLichAnimationPrefab, spawnPos, Quaternion.identity);
+        }
+
 
         private void HitTarget(HeroesBase target)
         {
