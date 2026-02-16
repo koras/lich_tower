@@ -5,6 +5,11 @@ using UnityEngine.EventSystems;
 
 public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
+    
+    
+    private int _lockedPointerId = int.MinValue;
+    
+    
     public float Horizontal { get { return (snapX) ? SnapFloat(input.x, AxisOptions.Horizontal) : input.x; } }
     public float Vertical { get { return (snapY) ? SnapFloat(input.y, AxisOptions.Vertical) : input.y; } }
     public Vector2 Direction { get { return new Vector2(Horizontal, Vertical); } }
@@ -21,7 +26,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         set { deadZone = Mathf.Abs(value); }
     }
 
-    public AxisOptions AxisOptions { get { return AxisOptions; } set { axisOptions = value; } }
+    public AxisOptions AxisOptions { get { return axisOptions; } set { axisOptions = value; } }
     public bool SnapX { get { return snapX; } set { snapX = value; } }
     public bool SnapY { get { return snapY; } set { snapY = value; } }
 
@@ -39,7 +44,12 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     private Camera cam;
 
     private Vector2 input = Vector2.zero;
-
+    [SerializeField] private bool debugJoystick = false;
+    private void JLog(string msg)
+    {
+        if (debugJoystick) Debug.Log($"[JOY:{name}] {msg}");
+    }
+    
     protected virtual void Start()
     {
         HandleRange = handleRange;
@@ -59,11 +69,29 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
+        JLog($"DOWN pointerId={eventData.pointerId} locked={_lockedPointerId}");
+
+        if (_lockedPointerId != int.MinValue && eventData.pointerId != _lockedPointerId)
+        {
+            JLog($"DOWN IGNORED чужой палец pointerId={eventData.pointerId}");
+            return;
+        }
+
+        // Лочим первый палец
+        if (_lockedPointerId == int.MinValue)
+            _lockedPointerId = eventData.pointerId;
+
+        // дальше оригинальный код
+        
         OnDrag(eventData);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+        
+        if (eventData.pointerId != _lockedPointerId)
+            return;
+      
         cam = null;
         if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
             cam = canvas.worldCamera;
@@ -131,8 +159,20 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     public virtual void OnPointerUp(PointerEventData eventData)
     {
+        JLog($"UP pointerId={eventData.pointerId} locked={_lockedPointerId}");
+
+        if (eventData.pointerId != _lockedPointerId)
+        {
+            JLog($"UP IGNORED чужой палец pointerId={eventData.pointerId}");
+            return;
+        }
+        
         input = Vector2.zero;
         handle.anchoredPosition = Vector2.zero;
+        
+        // отпускаем палец
+        _lockedPointerId = int.MinValue;
+        JLog("RESET input=0");
     }
 
     protected Vector2 ScreenPointToAnchoredPosition(Vector2 screenPosition)

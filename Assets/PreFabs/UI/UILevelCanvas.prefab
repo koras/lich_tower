@@ -149,8 +149,6 @@ GameObject:
   - component: {fileID: 4234969799952054678}
   - component: {fileID: 6986774567613397173}
   - component: {fileID: 3680249884363537080}
-  - component: {fileID: 3646870149401284130}
-  - component: {fileID: 1171801982123640827}
   - component: {fileID: 7750744935188284730}
   m_Layer: 5
   m_Name: UILevelCanvas
@@ -270,33 +268,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3646870149401284130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 67897382080153380}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7ff9212acff06649bfda840ee0a3984, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Level.SortByY
-  offset: 20
-  precision: 1000
---- !u!210 &1171801982123640827
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 67897382080153380}
-  m_Enabled: 1
-  m_SortingLayerID: -483973503
-  m_SortingLayer: 1
-  m_SortingOrder: 20
-  m_SortAtRoot: 0
-  m_Sort3DAs2D: 0
 --- !u!225 &7750744935188284730
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -397,7 +368,7 @@ GameObject:
   - component: {fileID: 3199816143270391071}
   - component: {fileID: 7840027104856438008}
   m_Layer: 5
-  m_Name: Dynamic Joystick
+  m_Name: Joystick(LeftJoystick)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -411,7 +382,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 493146090278249790}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1383.4}
+  m_LocalPosition: {x: 0, y: 0, z: 1387.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -420,8 +391,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 115.3999, y: -13.599976}
-  m_SizeDelta: {x: 611.8, y: 401.4}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 703.9, y: 398.4}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &5562757626106560411
 CanvasRenderer:
@@ -480,6 +451,7 @@ MonoBehaviour:
   snapY: 0
   background: {fileID: 4830426002937734006}
   handle: {fileID: 3476229308569700977}
+  debugJoystick: 0
   moveThreshold: 1
 --- !u!1 &546705906243099842
 GameObject:
@@ -861,7 +833,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1136386779622740559}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -870,7 +842,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 256, y: 256}
+  m_AnchoredPosition: {x: 532, y: 217}
   m_SizeDelta: {x: 256, y: 256}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1973482851895746171
@@ -1768,7 +1740,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &259837835304037338
 Transform:
   m_ObjectHideFlags: 0
@@ -3992,8 +3964,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6496653763138149103}
-  - component: {fileID: 1879107819992350909}
-  - component: {fileID: 2699914646945069811}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -4018,33 +3988,6 @@ Transform:
   - {fileID: 9143141918320949396}
   m_Father: {fileID: 8621414775111429475}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!210 &1879107819992350909
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6872550316953219188}
-  m_Enabled: 1
-  m_SortingLayerID: -483973503
-  m_SortingLayer: 1
-  m_SortingOrder: 50
-  m_SortAtRoot: 1
-  m_Sort3DAs2D: 0
---- !u!114 &2699914646945069811
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6872550316953219188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7ff9212acff06649bfda840ee0a3984, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Level.SortByY
-  offset: 456456456
-  precision: 100
 --- !u!1 &7067588141214698277
 GameObject:
   m_ObjectHideFlags: 0
@@ -5121,7 +5064,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8816930175325996230}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5130,7 +5073,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 256, y: 256}
+  m_AnchoredPosition: {x: 372, y: 206}
   m_SizeDelta: {x: 256, y: 256}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8653022730579902755
@@ -5198,17 +5141,17 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8880718757519489141}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -78.9}
+  m_LocalPosition: {x: 0, y: 0, z: -64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6992918286833659259}
   m_Father: {fileID: 8621414775111429475}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1840.3, y: -13.900024}
-  m_SizeDelta: {x: 534.9, y: 491.8}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -844.1, y: 0}
+  m_SizeDelta: {x: 839.30005, y: 404.8}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &8342059586168321955
 CanvasRenderer:
@@ -5267,6 +5210,7 @@ MonoBehaviour:
   snapY: 0
   background: {fileID: 6992918286833659259}
   handle: {fileID: 6886553772988432541}
+  debugJoystick: 0
   moveThreshold: 1
 --- !u!1 &8935938655772434025
 GameObject:

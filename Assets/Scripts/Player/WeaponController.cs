@@ -14,7 +14,7 @@ namespace Player
         [SerializeField] private float joystickDeadZone = 0.1f;
 
         private Transform firePoint;
-        
+        private float _lastJoystickMagnitude;
         
         [Header("Aiming")] 
         [SerializeField] private Transform weaponPivot;
@@ -27,6 +27,9 @@ namespace Player
         [SerializeField] private float shootCooldown = 0.5f;
         [SerializeField] private float distanceMultiplier = 1.5f; // Множитель расстояния (можно регулировать)
 
+        
+        private Joystick _rightJoyBase;
+        
         private bool isAiming = false;
         private bool canShoot = true;
         private Vector2 _aimDirection;
@@ -46,16 +49,19 @@ namespace Player
 
         private void Awake()
         {
-            _ai =  GetComponentInParent<WarriorAI>();
+           // _ai =  GetComponentInParent<WarriorAI>();
+            _ai =  GetComponent<WarriorAI>();
             if (_ai == null)
             {
-                Debug.Log($"Оружие не найдено");
+                Debug.Log($"[WeaponController] Оружие не найдено");
             }
-            _heroesBase =  GetComponentInParent<HeroesBase>();
+  //          _heroesBase =  GetComponentInParent<HeroesBase>();
+            _heroesBase =  GetComponent<HeroesBase>();
             if (_heroesBase == null)
             {
-                Debug.Log($"Герой не найдено");
+                Debug.Log($"[WeaponController] Герой не найдено");
             }
+            
  
         }
 
@@ -77,8 +83,7 @@ namespace Player
 
         private void HandleAiming()
         {
-            
-            //       Debug.Log($"[WeaponController] HandleAiming");
+      
             
             float horizontalInput = rightJoystick.Horizontal;
             float verticalInput = rightJoystick.Vertical;
@@ -89,6 +94,7 @@ namespace Player
                 Debug.Log($"[WeaponController] HandleAiming inputVector.magnitude > joystickDeadZone");
                 isAiming = true;
                 _aimDirection= inputVector.normalized;
+                _lastJoystickMagnitude = inputVector.magnitude; // <-- запомнили силу
 
                 if (weaponPivot != null)
                 {
@@ -102,15 +108,16 @@ namespace Player
             {
                 if (isAiming && canShoot)
                 {
+                    PerformShoot(_aimDirection, _lastJoystickMagnitude); // <-- передаем сохраненное
                     Debug.Log($"[WeaponController] HandleAiming isAiming && canShoot");
-                    PerformShoot(_aimDirection);
+                   // PerformShoot(_aimDirection);
                 }
 
                 isAiming = false;
             }
         }
 
-        private void PerformShoot(Vector2 aimDirection)
+        private void PerformShoot(Vector2 aimDirection, float joystickMagnitude)
         {
             if (_ai == null)
             {
@@ -119,7 +126,7 @@ namespace Player
             }
  
             // Вычисляем силу натяжения джойстика
-            float joystickMagnitude = new Vector2(rightJoystick.Horizontal, rightJoystick.Vertical).magnitude;
+          //  float joystickMagnitude = new Vector2(rightJoystick.Horizontal, rightJoystick.Vertical).magnitude;
             
             // Вычисляем расстояние выстрела с учетом силы джойстика
             float shootDistance = CalculateShootDistance(joystickMagnitude);
@@ -132,7 +139,7 @@ namespace Player
             // ПЕРЕДАЕМ НАПРАВЛЕНИЕ ВМЕСТО ТОЧКИ!
             _ai.StartAttackAndSetTargetDirection(aimDirection);
           
-            Debug.Log($"Стреляем! Направление: {aimDirection}, Расстояние: {shootDistance:F2}, Точка: {hitPoint}");
+            Debug.Log($"[WeaponController] Shoot! Direction: {aimDirection}, Distance: {shootDistance:F2}, Point: {hitPoint}");
 
         }
 
@@ -190,31 +197,31 @@ namespace Player
 
         
 
-        private void OnDrawGizmos()
-        {
-            if (Application.isPlaying && isAiming && firePoint != null)
-            {
-                // Линия прицеливания
-                Gizmos.color = Color.red;
-                float joystickMagnitude = new Vector2(rightJoystick.Horizontal, rightJoystick.Vertical).magnitude;
-                float debugDistance = CalculateShootDistance(joystickMagnitude);
-                Vector3 debugHitPoint = CalculateHitPoint(debugDistance);
-                
-                Gizmos.DrawLine(firePoint.position, debugHitPoint);
-                
-                // Точка попадания
-                Gizmos.color = Color.green;
-                Gizmos.DrawSphere(debugHitPoint, 0.15f);
-            }
-
-            // Отображаем последнюю точку попадания (даже когда не целимся)
-            if (showHitPointDebug && Application.isPlaying)
-            {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawSphere(lastHitPoint, 0.1f);
-                Gizmos.DrawWireSphere(lastHitPoint, 0.2f);
-            }
-        }
+        // private void OnDrawGizmos()
+        // {
+        //     if (Application.isPlaying && isAiming && firePoint != null)
+        //     {
+        //         // Линия прицеливания
+        //         Gizmos.color = Color.red;
+        //         float joystickMagnitude = new Vector2(rightJoystick.Horizontal, rightJoystick.Vertical).magnitude;
+        //         float debugDistance = CalculateShootDistance(joystickMagnitude);
+        //         Vector3 debugHitPoint = CalculateHitPoint(debugDistance);
+        //         
+        //         Gizmos.DrawLine(firePoint.position, debugHitPoint);
+        //         
+        //         // Точка попадания
+        //         Gizmos.color = Color.green;
+        //         Gizmos.DrawSphere(debugHitPoint, 0.15f);
+        //     }
+        //
+        //     // Отображаем последнюю точку попадания (даже когда не целимся)
+        //     if (showHitPointDebug && Application.isPlaying)
+        //     {
+        //         Gizmos.color = Color.yellow;
+        //         Gizmos.DrawSphere(lastHitPoint, 0.1f);
+        //         Gizmos.DrawWireSphere(lastHitPoint, 0.2f);
+        //     }
+        // }
 
         // Вспомогательный метод для получения данных о выстреле (если нужно другим скриптам)
         public Vector3 GetLastHitPoint()

@@ -6,228 +6,542 @@ using TMPro;
 using Heroes;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
-
+using System.Text; // Для StringBuilder в логировании
 
 namespace Input
 {
     public class PinchToZoomAndPan : MonoBehaviour
     {
-        private const string _hero_select = "Lich";
+        // ==================== КОНСТАНТЫ ====================
+        private const string _hero_select = "Lich"; // Имя выбираемого героя
+        private const string LOG_PREFIX = "[PinchToZoomAndPan] "; // Префикс для логов
 
-        [Header("Camera / Map")] public Camera targetCamera;
+        // ==================== КОМПОНЕНТЫ КАМЕРЫ ====================
+        [Header("Camera / Map")] 
+        public Camera targetCamera; // Целевая камера для управления
 
-        [Header("Animals")] [SerializeField] private LayerMask animalMask; // слой животных (Pig, Boar и т.п.)
+        // ==================== ЖИВОТНЫЕ ====================
+        [Header("Animals")] 
+        [SerializeField] private LayerMask animalMask; // Слой животных (Pig, Boar и т.п.)
+        [Tooltip("Включить для отладки кликов по животным")]
+        [SerializeField] private bool debugAnimalClicks = true;
 
-        [Header("точка куда кликнул пользователь")] [SerializeField]
-        private GameObject prefabPoint;
+        // ==================== ТОЧКИ НА КАРТЕ ====================
+        [Header("точка куда кликнул пользователь")] 
+        [SerializeField] private GameObject prefabPoint; // Префаб точки для визуализации клика
+        private GameObject _lastPointInstance; // Последний созданный экземпляр точки
+        [Tooltip("Включить для отладки точек на карте")]
+        [SerializeField] private bool debugSpawnPoint = true;
 
-        private GameObject _lastPointInstance;
+ 
+ 
 
-        [Header("Zoom")] [SerializeField] public float zoomSpeed = 0.2f;
-        [SerializeField] public float minZoom = 3f;
-        [SerializeField] public float maxZoom = 10f;
+        // Данные пинча
+        private float _previousPinchDistance; // Предыдущее расстояние между пальцами
 
-        [SerializeField] private TMP_Text _textMinZoom = null;
-        [SerializeField] private TMP_Text _textMaxZoom = null;
-        [SerializeField] private TMP_Text _textCurrentZoom = null;
 
-        [Header("Mouse Wheel Zoom")] [SerializeField]
-        public float scrollZoomSpeed = 0.02f;
-
-        // данные пинча
-        private float _previousPinchDistance;
-        private bool _wasPinching;
-
-        // целевой зум (для плавности)
+        // Целевой зум (для плавности)
         private float _targetZoom;
 
-        [SerializeField] private float buttonZoomStep = 1f;
+        [SerializeField] private float buttonZoomStep = 1f; // Шаг зума при нажатии кнопок
 
-        [Header("Selection")] [SerializeField] private LayerMask heroMask;
-        [SerializeField] private LayerMask groundMask;
+        // ==================== ВЫБОР ГЕРОЯ ====================
+        [Header("Selection")] 
+        [SerializeField] private LayerMask heroMask; // Слой героев
+        [SerializeField] private LayerMask groundMask; // Слой земли
 
-        [Header("Основной герой")] [SerializeField]
-        private WarriorAI _selectedHero;
+        [Header("Основной герой")] 
+        [SerializeField] private WarriorAI _selectedHero; // Выбранный герой
+        [Tooltip("Включить для отладки выбора героя")]
+        [SerializeField] private bool debugHeroSelection = true;
 
-        [Header("Abilities")] private LichFireballAbility _activeFireball; // текущая способность прицеливания
-        private bool _isAimingFireball; // режим: кнопка нажата, ждём зажатия на карте
-        private bool _fireballPointerDown; // сейчас держим палец/мышь при прицеливании
+        // ==================== СПОСОБНОСТИ ====================
+        [Header("Abilities")] 
+        private LichFireballAbility _activeFireball; // Текущая активная способность фаербола
+        private bool _isAimingFireball; // Флаг: режим прицеливания фаербола активен
+        private bool _fireballPointerDown; // Флаг: палец/мышь зажаты в режиме прицеливания
+        private Vector2 _lastFireballScreenPos; // Последняя позиция экрана для фаербола
 
+        private int _fireballPointerId = int.MinValue; // ID пальца для фаербола
+        private System.Action _onFireballAimingFinished; // Колбэк при завершении прицеливания
+        private bool _fireballTargetShown; // Флаг: показана ли цель фаербола
+        [Tooltip("Включить для отладки фаербола")]
+        [SerializeField] private bool debugFireball = true;
 
-        private Vector2 _lastFireballScreenPos; // НОВОЕ: запоминаем позицию
-        private bool _isImmediateFireballMode = false;
+        // ==================== ЗОНЫ ДЖОЙСТИКОВ ====================
+        [Header("Joystick Zones")] 
+        [SerializeField] private RectTransform leftJoystickZone; // Зона левого джойстика
+        [SerializeField] private RectTransform rightJoystickZone; // Зона правого джойстика
+        [Tooltip("Включить для отладки джойстиков")]
+        [SerializeField] private bool debugJoysticks = true;
 
+        // ID пальцев, захвативших джойстики
+        private int _leftStickFinger = int.MinValue;
+        private int _rightStickFinger = int.MinValue;
+
+        // ==================== ОБЩИЕ НАСТРОЙКИ ОТЛАДКИ ====================
+        [Header("Debug Settings")]
+        [Tooltip("Уровень детализации логов")]
+        [SerializeField] private LogLevel logLevel = LogLevel.Info;
+        private enum LogLevel { None, Error, Warning, Info, Verbose }
+
+        // Счетчики для производительности (опционально)
+        private int _touchProcessedCount = 0;
+        private float _lastLogTime = 0f;
+
+        // ==================== МЕТОДЫ ЖИЗНЕННОГО ЦИКЛА ====================
 
         private void Awake()
         {
+            Log("Awake() - инициализация компонента", LogLevel.Info);
+            
             if (targetCamera == null)
+            {
                 targetCamera = Camera.main;
+                Log($"targetCamera не назначена, использую Camera.main: {targetCamera?.name}", LogLevel.Warning);
+            }
 
-            _targetZoom = targetCamera.orthographic
-                ? targetCamera.orthographicSize
-                : targetCamera.fieldOfView;
+            if (targetCamera != null)
+            {
+                _targetZoom = targetCamera.orthographic
+                    ? targetCamera.orthographicSize
+                    : targetCamera.fieldOfView;
+                
+                Log($"targetCamera = {targetCamera.name}, режим: {(targetCamera.orthographic ? "Orthographic" : "Perspective")}, начальный зум: {_targetZoom}", LogLevel.Info);
+            }
+            else
+            {
+                LogError("Camera.main не найдена! Компонент не будет работать корректно.");
+            }
 
-            //   Debug.Log($"[Input] targetCamera = {targetCamera.name}, rect={targetCamera.rect}, pixelRect={targetCamera.pixelRect}");
+            // Проверка необходимых компонентов
+            ValidateComponents();
         }
 
-        private void OnEnable() => EnhancedTouchSupport.Enable();
-        private void OnDisable() => EnhancedTouchSupport.Disable();
-
-        private void Start()
+        /// <summary>
+        /// Проверяет наличие всех необходимых компонентов и выводит предупреждения
+        /// </summary>
+        private void ValidateComponents()
         {
+            if (prefabPoint == null)
+                LogWarning("prefabPoint не назначен - точки кликов не будут отображаться");
+            
+            if (animalMask == 0)
+                LogWarning("animalMask не назначен - клики по животным не будут работать");
+            
+            if (heroMask == 0)
+                LogWarning("heroMask не назначен - выбор героев не будет работать");
+            
+            if (groundMask == 0)
+                LogWarning("groundMask не назначен - клики по земле не будут работать");
+        }
+
+        private void OnEnable()
+        {
+            EnhancedTouchSupport.Enable();
+            Log("EnhancedTouchSupport включен", LogLevel.Verbose);
+        }
+        
+        private void OnDisable()
+        {
+            EnhancedTouchSupport.Disable();
+            Log("EnhancedTouchSupport отключен", LogLevel.Verbose);
         }
 
         private void Update()
         {
-            // только плавный зум
-            if (targetCamera.orthographic)
-                targetCamera.orthographicSize =
-                    Mathf.Lerp(targetCamera.orthographicSize, _targetZoom, Time.deltaTime * 10f);
-            else
-                targetCamera.fieldOfView = Mathf.Lerp(targetCamera.fieldOfView, _targetZoom, Time.deltaTime * 10f);
+            // Плавное применение зума
+            if (targetCamera != null)
+            {
+                if (targetCamera.orthographic)
+                {
+                    float oldSize = targetCamera.orthographicSize;
+                    targetCamera.orthographicSize = Mathf.Lerp(oldSize, _targetZoom, Time.deltaTime * 10f);
+                    
+                    if (Mathf.Abs(oldSize - targetCamera.orthographicSize) > 0.01f)
+                        Log($"Плавный зум: {oldSize:F2} -> {targetCamera.orthographicSize:F2}", LogLevel.Verbose);
+                }
+                else
+                {
+                    float oldFOV = targetCamera.fieldOfView;
+                    targetCamera.fieldOfView = Mathf.Lerp(oldFOV, _targetZoom, Time.deltaTime * 10f);
+                    
+                    if (Mathf.Abs(oldFOV - targetCamera.fieldOfView) > 0.01f)
+                        Log($"Плавный зум: {oldFOV:F2} -> {targetCamera.fieldOfView:F2}", LogLevel.Verbose);
+                }
+
+ 
+            }
         }
+ 
 
         private void LateUpdate()
         {
+            // Определяем тип ввода (тач или мышь)
             if (Touchscreen.current != null && Touch.activeTouches.Count > 0)
+            {
+                if (logLevel == LogLevel.Verbose)
+                    Log($"Обработка тач-ввода: {Touch.activeTouches.Count} активных касаний", LogLevel.Verbose);
+                
                 HandleTouchInput();
+            }
             else
+            {
+                if (logLevel == LogLevel.Verbose && Mouse.current != null)
+                    Log("Обработка мыши", LogLevel.Verbose);
+                
                 HandleMouseInput();
+            }
         }
 
-        // ==================== TOUCH INPUT ====================
+        // ==================== ОБРАБОТКА ТАЧ-ВВОДА ====================
+
+        /// <summary>
+        /// Обрабатывает все касания экрана
+        /// </summary>
         private void HandleTouchInput()
         {
-            
-     
-
             int touchCount = Touch.activeTouches.Count;
+            _touchProcessedCount++;
 
-            // 2 пальца = зум (если не прицеливаемся)
-            if (!_isAimingFireball && touchCount >= 2)
+            // Логируем количество касаний раз в секунду
+            if (Time.time - _lastLogTime > 1f && logLevel == LogLevel.Verbose)
             {
-                var t0 = Touch.activeTouches[0];
-                var t1 = Touch.activeTouches[1];
+                Log($"Активных касаний: {touchCount}", LogLevel.Verbose);
+                _lastLogTime = Time.time;
             }
 
-            // 1 палец
-            if (touchCount == 1)
+            // 1) Сначала распределяем новые касания по джойстикам
+            foreach (var t in Touch.activeTouches)
             {
-                var touch = Touch.activeTouches[0];
-                Vector2 screenPos = touch.screenPosition;
+                if (t.phase != UnityEngine.InputSystem.TouchPhase.Began)
+                    continue;
 
-                // Получаем информацию о клике по UI
-                GameObject clickedUIObject = null;
-                if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
+                Vector2 pos = t.screenPosition;
+                Log($"Новое касание ID:{t.touchId}, фаза:Began, позиция:{pos}", LogLevel.Verbose);
+
+                // Левый джойстик
+                if (_leftStickFinger == int.MinValue && IsInRect(leftJoystickZone, pos))
                 {
-                    clickedUIObject = GetClickedUIObject(touch.touchId, screenPos);
-
-                    // Если кликнули по UI
-                    if (clickedUIObject != null)
-                    {
-                        // Логируем информацию о клике
-                        Debug.Log($"Клик по UI: {clickedUIObject.name}, " +
-                                  $"Позиция: {screenPos}, " +
-                                  $"Координаты: ({screenPos.x}, {screenPos.y})");
-
-                        // Проверяем, какая именно кнопка
-                        if (IsClickOnButton(clickedUIObject, "Fireball"))
-                        {
-                            Debug.Log($"Клик по кнопке Fireball! Координаты: {screenPos}");
-                            // Здесь можно вызвать обработку клика по кнопке фаербола
-                            // или просто отметить, что клик был по этой кнопке
-                        }
-                        else if (IsClickOnButton(clickedUIObject, "Attack"))
-                        {
-                            Debug.Log($"Клик по кнопке Attack! Координаты: {screenPos}");
-                        }
-                        else if (IsClickOnButton(clickedUIObject, "Move"))
-                        {
-                            Debug.Log($"Клик по кнопке Move! Координаты: {screenPos}");
-                        }
-
-                        if (!(_isAimingFireball && touch.touchId == _fireballPointerId))
-                            return;  
-                    }
+                    _leftStickFinger = t.touchId;
+                    Log($"Левый джойстик захвачен пальцем ID:{t.touchId}, позиция:{pos}", LogLevel.Info);
+                    continue;
                 }
 
-                // Если палец по UI, не трогаем мир
-                if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began
-                    && IsPointerOverUI_Touch(touch.touchId)
-                    && !(_isAimingFireball && touch.touchId == _fireballPointerId))
+                // Правый джойстик
+                if (_rightStickFinger == int.MinValue && IsInRect(rightJoystickZone, pos))
                 {
-                    return;
+                    _rightStickFinger = t.touchId;
+                    Log($"Правый джойстик захвачен пальцем ID:{t.touchId}, позиция:{pos}", LogLevel.Info);
+                    continue;
                 }
+            }
 
-
-                // ===== FIREBALL AIM MODE =====
-                if (_isAimingFireball && _activeFireball != null)
+            // 2) Освобождение пальцев джойстиков
+            foreach (var t in Touch.activeTouches)
+            {
+                if (t.phase == UnityEngine.InputSystem.TouchPhase.Ended ||
+                    t.phase == UnityEngine.InputSystem.TouchPhase.Canceled)
                 {
-                    // если пальцев нет — выходим
-                    if (Touch.activeTouches.Count == 0)
+                    if (t.touchId == _leftStickFinger)
                     {
-                        _activeFireball.CancelTargeting();
-                        EndFireballTargetingMode();
-                        return;
+                        _leftStickFinger = int.MinValue;
+                        Log($"Левый джойстик освобожден (палец ID:{t.touchId})", LogLevel.Info);
                     }
-
-                    // берём первый палец (в режиме прицеливания он у тебя один)
-                    var t = Touch.activeTouches[0];
-                    Vector2 pos = t.screenPosition;
-
-                    // пока держим — обновляем прицел (Moved/Stationary)
-                    if (_fireballPointerDown &&
-                        (t.phase == UnityEngine.InputSystem.TouchPhase.Moved ||
-                         t.phase == UnityEngine.InputSystem.TouchPhase.Stationary))
+                    if (t.touchId == _rightStickFinger)
                     {
-                        if (TryGetGroundWorld(pos, out var world))
-                        {
-                            _selectedHero.GetComponent<HeroesBase>().SpendManna(100);
-                            _activeFireball.UpdateTarget(world);
-                        }
+                        _rightStickFinger = int.MinValue;
+                        Log($"Правый джойстик освобожден (палец ID:{t.touchId})", LogLevel.Info);
+                    }
+                }
+            }
+
+            // 3) Обработка мультитач для зума (пинч)
+            // if (touchCount >= 2)
+            // {
+            //     HandlePinchZoom();
+            // }
+
+            // 4) Обработка каждого пальца, не принадлежащего джойстикам
+            foreach (var touch in Touch.activeTouches)
+            {
+                // Пропускаем пальцы, захваченные джойстиками
+                if (touch.touchId == _leftStickFinger || touch.touchId == _rightStickFinger)
+                    continue;
+
+                HandleSingleTouch(touch);
+            }
+
+
+        }
+
+        /// <summary>
+        /// Проверяет, находится ли точка внутри RectTransform
+        /// </summary>
+        private bool IsInRect(RectTransform rect, Vector2 screenPos)
+        {
+            if (rect == null)
+            {
+                LogWarning("IsInRect: rect не назначен");
+                return false;
+            }
+            
+            bool result = RectTransformUtility.RectangleContainsScreenPoint(rect, screenPos, null);
+            
+            if (logLevel == LogLevel.Verbose && result)
+                Log($"Точка {screenPos} находится в зоне {rect.name}", LogLevel.Verbose);
+            
+            return result;
+        }
  
 
-                        return;
-                    }
+        /// <summary>
+        /// Обрабатывает одно касание (не джойстик)
+        /// </summary>
+        private void HandleSingleTouch(Touch touch)
+        {
+            Vector2 screenPos = touch.screenPosition;
+            
+            Log($"Обработка касания ID:{touch.touchId}, фаза:{touch.phase}, позиция:{screenPos}", LogLevel.Verbose);
 
-                    // отпустили — кастуем
-                    if (_fireballPointerDown &&
-                        (t.phase == UnityEngine.InputSystem.TouchPhase.Ended ||
-                         t.phase == UnityEngine.InputSystem.TouchPhase.Canceled))
+            // ===== Проверка клика по UI =====
+            if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
+            {
+                var clickedUIObject = GetClickedUIObject(touch.touchId, screenPos);
+
+                if (clickedUIObject != null)
+                {
+                    Log($"Клик по UI: {clickedUIObject.name}, позиция:{screenPos}", LogLevel.Info);
+
+                    // Если это не режим фаербола или палец не тот - выходим
+                    if (!(_isAimingFireball && touch.touchId == _fireballPointerId))
                     {
-                        _fireballPointerDown = false;
-
-                        if (TryGetGroundWorld(pos, out var world))
-                            _activeFireball.ConfirmTarget(world);
-                        else
-                            _activeFireball.CancelTargeting();
-
-                        EndFireballTargetingMode();
+                        Log($"Клик по UI обработан, выход из обработки касания", LogLevel.Verbose);
                         return;
                     }
+                }
 
+                // Если палец по UI, не трогаем мир (кроме режима фаербола)
+                if (IsPointerOverUI_Touch(touch.touchId) &&
+                    !(_isAimingFireball && touch.touchId == _fireballPointerId))
+                {
+                    Log($"Касание ID:{touch.touchId} перехвачено UI, игнорируем", LogLevel.Verbose);
                     return;
                 }
+            }
 
-                // ===== NORMAL MODE (не прицеливаемся) =====
-                if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
-                {
-                    if (TryClickBirdAnimal(screenPos)) return;
-                    if (TryClickHero(screenPos)) return;
-                    if (TryClickAnimal(screenPos)) return;
-                    if (TryClickGroundForSelectedHero(screenPos)) return;
-                }
-
-                _wasPinching = false;
+            // ===== РЕЖИМ ПРИЦЕЛИВАНИЯ ФАЕРБОЛА =====
+            if (_isAimingFireball && _activeFireball != null)
+            {
+                HandleFireballTouch(touch);
                 return;
             }
 
-            _wasPinching = false;
+            // ===== ОБЫЧНЫЙ РЕЖИМ =====
+            if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
+            {
+                Log($"Обычный клик в позиции {screenPos}", LogLevel.Info);
+                
+                if (TryClickBirdAnimal(screenPos)) return;
+          
+                if (TryClickAnimal(screenPos)) return;
+              //  if (TryClickGroundForSelectedHero(screenPos)) return;
+                
+                Log("Клик не обработан ни одним из обработчиков", LogLevel.Verbose);
+            }
         }
 
+        /// <summary>
+        /// Обрабатывает касания в режиме фаербола
+        /// </summary>
+        private void HandleFireballTouch(Touch touch)
+        {
+            Vector2 screenPos = touch.screenPosition;
+            
+            Log($"Режим фаербола: обработка касания ID:{touch.touchId}, фаза:{touch.phase}", LogLevel.Verbose);
+
+            // Нажатие - начало прицеливания
+            if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
+            {
+                _fireballPointerDown = true;
+                _fireballPointerId = touch.touchId;
+                
+                Log($"Фаербол: начало прицеливания, палец ID:{touch.touchId}", LogLevel.Info);
+
+                if (TryGetGroundWorld(screenPos, out var world))
+                {
+                    Log($"Фаербол: начальная позиция в мире: {world}", LogLevel.Info);
+                    _activeFireball.StartTargeting();
+                    _activeFireball.UpdateTarget(world);
+                }
+                else
+                {
+                    LogWarning($"Фаербол: не удалось определить позицию на земле из {screenPos}");
+                }
+                
+                return;
+            }
+
+            // Движение - обновление прицела
+            if (_fireballPointerDown &&
+                (touch.phase == UnityEngine.InputSystem.TouchPhase.Moved ||
+                 touch.phase == UnityEngine.InputSystem.TouchPhase.Stationary))
+            {
+                if (TryGetGroundWorld(screenPos, out var world))
+                {
+                    Log($"Фаербол: обновление прицела, новая позиция: {world}", LogLevel.Verbose);
+                    _activeFireball.UpdateTarget(world);
+                }
+                
+                return;
+            }
+
+            // Отпускание - подтверждение цели
+            if (_fireballPointerDown &&
+                (touch.phase == UnityEngine.InputSystem.TouchPhase.Ended ||
+                 touch.phase == UnityEngine.InputSystem.TouchPhase.Canceled))
+            {
+                _fireballPointerDown = false;
+                
+                Log($"Фаербол: завершение прицеливания, палец ID:{touch.touchId} отпущен", LogLevel.Info);
+
+                if (TryGetGroundWorld(screenPos, out var world))
+                {
+                    Log($"Фаербол: подтверждение цели в {world}", LogLevel.Info);
+                    _activeFireball.ConfirmTarget(world);
+                    //SpawnPoint(world);
+                }
+                else
+                {
+                    LogWarning($"Фаербол: не удалось определить позицию на земле, отмена цели");
+                    _activeFireball.CancelTargeting();
+                }
+
+                EndFireballTargetingMode();
+            }
+        }
+
+        // ==================== ОБРАБОТКА МЫШИ ====================
+
+        /// <summary>
+        /// Обрабатывает ввод с мыши
+        /// </summary>
+        private void HandleMouseInput()
+        {
+            if (Mouse.current == null)
+            {
+                LogWarning("Mouse.current == null, обработка мыши невозможна");
+                return;
+            }
+
+            Vector2 screenPos = Mouse.current.position.ReadValue();
+
+            // Отладка позиции мыши в мире
+            if (Mouse.current.leftButton.wasPressedThisFrame && logLevel == LogLevel.Verbose)
+            {
+                var worldPos = targetCamera.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 0f));
+                Log($"Клик мыши: экран={screenPos}, мир={worldPos}", LogLevel.Verbose);
+            }
+
+            // Проверка наведения на UI
+            if (Mouse.current.leftButton.wasPressedThisFrame && IsPointerOverUI_Mouse() && !_isAimingFireball)
+            {
+                Log("Клик мыши перехвачен UI, игнорируем", LogLevel.Verbose);
+                return;
+            }
+
+            // ===== РЕЖИМ ПРИЦЕЛИВАНИЯ ФАЕРБОЛА =====
+            if (_isAimingFireball && _activeFireball != null)
+            {
+                HandleFireballMouse(screenPos);
+                return;
+            }
+
+            // ===== ОБЫЧНЫЙ РЕЖИМ =====
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                Log($"Обычный клик мыши в позиции {screenPos}", LogLevel.Info);
+                
+               // if (TryClickHero(screenPos)) return;
+                if (TryClickBirdAnimal(screenPos)) return;
+                if (TryClickAnimal(screenPos)) return;
+                if (TryClickGroundForSelectedHero(screenPos)) return;
+                
+                Log("Клик мыши не обработан ни одним из обработчиков", LogLevel.Verbose);
+            }
+
+ 
+        }
+
+        /// <summary>
+        /// Обрабатывает мышь в режиме фаербола
+        /// </summary>
+        private void HandleFireballMouse(Vector2 screenPos)
+        {
+            Log($"Режим фаербола (мышь): обработка", LogLevel.Verbose);
+
+            // Нажатие - начало прицеливания
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                _fireballPointerDown = true;
+                Log("Фаербол (мышь): начало прицеливания", LogLevel.Info);
+
+                if (TryGetGroundWorld(screenPos, out var world))
+                {
+                    Log($"Фаербол (мышь): начальная позиция: {world}", LogLevel.Info);
+                    _activeFireball.StartTargeting();
+                    _activeFireball.UpdateTarget(world);
+                }
+
+                return;
+            }
+
+            // Движение с зажатой кнопкой - обновление прицела
+            if (Mouse.current.leftButton.isPressed && _fireballPointerDown)
+            {
+                if (TryGetGroundWorld(screenPos, out var world))
+                {
+                    Log($"Фаербол (мышь): обновление прицела, позиция: {world}", LogLevel.Verbose);
+                    _activeFireball.UpdateTarget(world);
+                }
+
+                return;
+            }
+
+            // Отпускание - подтверждение цели
+            if (Mouse.current.leftButton.wasReleasedThisFrame && _fireballPointerDown)
+            {
+                _fireballPointerDown = false;
+                Log("Фаербол (мышь): завершение прицеливания", LogLevel.Info);
+
+                if (TryGetGroundWorld(screenPos, out var world))
+                {
+                    Log($"Фаербол (мышь): подтверждение цели в {world}", LogLevel.Info);
+                    _activeFireball.ConfirmTarget(world);
+                 //   SpawnPoint(world);
+                }
+                else
+                {
+                    LogWarning("Фаербол (мышь): не удалось определить позицию на земле, отмена цели");
+                    _activeFireball.CancelTargeting();
+                }
+
+                EndFireballTargetingMode();
+            }
+        }
+
+        // ==================== ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ UI ====================
+
+        /// <summary>
+        /// Получает UI объект, на который было выполнено нажатие
+        /// </summary>
         private GameObject GetClickedUIObject(int touchId, Vector2 screenPosition)
         {
-            if (EventSystem.current == null) return null;
+            if (EventSystem.current == null)
+            {
+                LogWarning("EventSystem.current == null, невозможно определить клик по UI");
+                return null;
+            }
 
             // Создаем PointerEventData
             PointerEventData pointerData = new PointerEventData(EventSystem.current)
@@ -243,28 +557,103 @@ namespace Input
             // Возвращаем первый UI объект
             if (results.Count > 0)
             {
+                Log($"Найден UI объект: {results[0].gameObject.name}, иерархия: {GetGameObjectPath(results[0].gameObject)}", LogLevel.Verbose);
                 return results[0].gameObject;
             }
 
             return null;
         }
-        
-        
-        
-        // добавь поля
-        private int _fireballPointerId = int.MinValue;
-        private System.Action _onFireballAimingFinished;
-// новый метод: старт из UI на PointerDown
-        private bool _fireballTargetShown;
 
-        public void BeginFireballTargetingFromUIButton(int pointerId, Vector2 screenPos, System.Action onFinished)
+        /// <summary>
+        /// Получает полный путь к объекту в иерархии
+        /// </summary>
+        private string GetGameObjectPath(GameObject obj)
         {
-            Debug.Log($"[PinchToZoomAndPan] BeginFireballTargetingFromUIButton pointerId={pointerId} pos={screenPos}");
+            string path = obj.name;
+            while (obj.transform.parent != null)
+            {
+                obj = obj.transform.parent.gameObject;
+                path = obj.name + "/" + path;
+            }
+            return path;
+        }
 
-            if (_selectedHero == null) { onFinished?.Invoke(); return; }
+        /// <summary>
+        /// Проверяет, находится ли мышь над UI элементом
+        /// </summary>
+        private bool IsPointerOverUI_Mouse()
+        {
+            bool result = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+            
+            if (result && logLevel == LogLevel.Verbose)
+                Log("Мышь над UI", LogLevel.Verbose);
+            
+            return result;
+        }
+
+        /// <summary>
+        /// Проверяет, находится ли касание над UI элементом
+        /// </summary>
+        private bool IsPointerOverUI_Touch(int touchId)
+        {
+            bool result = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touchId);
+            
+            if (result && logLevel == LogLevel.Verbose)
+                Log($"Касание ID:{touchId} над UI", LogLevel.Verbose);
+            
+            return result;
+        }
+
+        // ==================== МЕТОДЫ ФАЕРБОЛА ====================
+
+        /// <summary>
+        /// Начинает режим прицеливания фаербола (вызывается из UI)
+        /// </summary>
+        public void BeginFireballTargeting()
+        {
+            Log("BeginFireballTargeting() - попытка активации режима фаербола", LogLevel.Info);
+            
+            if (_selectedHero == null)
+            {
+                LogWarning("Невозможно активировать фаербол: не выбран герой");
+                return;
+            }
 
             var ability = _selectedHero.GetComponent<LichFireballAbility>();
-            if (ability == null) { onFinished?.Invoke(); return; }
+            if (ability == null)
+            {
+                LogWarning($"Герой {_selectedHero.name} не имеет способности LichFireballAbility");
+                return;
+            }
+
+            _activeFireball = ability;
+            _isAimingFireball = true;
+            _fireballPointerDown = false;
+
+            Log($"Режим фаербола активирован для героя {_selectedHero.name}. Ожидание нажатия на карте.", LogLevel.Info);
+        }
+
+        /// <summary>
+        /// Начинает режим прицеливания фаербола с указанного пальца (для UI)
+        /// </summary>
+        public void BeginFireballTargetingFromUIButton(int pointerId, Vector2 screenPos, System.Action onFinished)
+        {
+            Log($"BeginFireballTargetingFromUIButton() - pointerId:{pointerId}, pos:{screenPos}", LogLevel.Info);
+
+            if (_selectedHero == null)
+            {
+                LogWarning("Невозможно активировать фаербол: не выбран герой");
+                onFinished?.Invoke();
+                return;
+            }
+
+            var ability = _selectedHero.GetComponent<LichFireballAbility>();
+            if (ability == null)
+            {
+                LogWarning($"Герой {_selectedHero.name} не имеет способности LichFireballAbility");
+                onFinished?.Invoke();
+                return;
+            }
 
             _activeFireball = ability;
             _isAimingFireball = true;
@@ -273,273 +662,228 @@ namespace Input
 
             _activeFireball.StartTargeting();
 
-            // попробуем сразу поставить прицел по месту нажатия
+            // Пробуем сразу поставить прицел по месту нажатия
             if (TryGetGroundWorld(screenPos, out var world))
+            {
+                Log($"Фаербол: начальная позиция из UI: {world}", LogLevel.Info);
                 _activeFireball.UpdateTarget(world);
-
-            Debug.Log("[PinchToZoomAndPan] Fireball mode ON (single touch tracking).");
-        }
-        // НОВЫЙ метод: проверяет, кликнули ли по конкретной кнопке
-        private bool IsClickOnButton(GameObject uiObject, string buttonName)
-        {
-            if (uiObject == null) return false;
-            return uiObject.name.Contains(buttonName);
-        }
-
-        private void DebugDrawCross(Vector3 world, float size, float time)
-        {
-            world.z = 0;
-            Debug.DrawLine(world + Vector3.left * size, world + Vector3.right * size, Color.magenta, time);
-            Debug.DrawLine(world + Vector3.up * size, world + Vector3.down * size, Color.magenta, time);
-        }
-
-        // ==================== MOUSE INPUT ====================
-        private void HandleMouseInput()
-        {
-            if (Mouse.current == null) return;
-
-            Vector2 screenPos = Mouse.current.position.ReadValue();
-            
-            // Если клик по UI, не трогаем мир
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-            {
-                var w0 = targetCamera.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 0f));
-                Debug.Log($"screen={screenPos} world(ScreenToWorldPoint)={w0}");
-
-                //    DebugDrawCross(w0, 0.3f, 0.2f);
             }
 
-
-            if (Mouse.current.leftButton.wasPressedThisFrame && IsPointerOverUI_Mouse() && !_isAimingFireball)
-                return;
-
-            // ===== FIREBALL AIM MODE =====
-            if (_isAimingFireball && _activeFireball != null)
-            {
-                // Нажали -> показать прицел
-                if (Mouse.current.leftButton.wasPressedThisFrame)
-                {
-                    _fireballPointerDown = true;
-
-                    if (TryGetGroundWorld(screenPos, out var world))
-                    {
-                        _activeFireball.StartTargeting();
-                        _activeFireball.UpdateTarget(world);
-                    }
-
-                    return;
-                }
-
-                // Держим -> двигаем прицел
-                if (Mouse.current.leftButton.isPressed && _fireballPointerDown)
-                {
-                    if (TryGetGroundWorld(screenPos, out var world))
-                    {
-                        _activeFireball.UpdateTarget(world);
-                    }
-
-                    return;
-                }
-
-                // Отпустили -> подтвердить
-                if (Mouse.current.leftButton.wasReleasedThisFrame && _fireballPointerDown)
-                {
-                    _fireballPointerDown = false;
-
-                    if (TryGetGroundWorld(screenPos, out var world))
-                    {
-                        Debug.Log($"Идём 1");
-                        _activeFireball.ConfirmTarget(world);
-                        SpawnPoint(world);
-                    }
-                    else
-                    {
-                        _activeFireball.CancelTargeting();
-                    }
-
-                    EndFireballTargetingMode();
-                    return;
-                }
-
-                // колесо зума можно оставить даже в прицеливании (на вкус)
-            }
-
-            // ===== NORMAL MODE =====
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-            {
-                if (TryClickHero(screenPos)) return;
-                if (TryClickBirdAnimal(screenPos)) return;
-                if (TryClickAnimal(screenPos)) return;
-                if (TryClickGroundForSelectedHero(screenPos)) return;
-            }
+            Log("Режим фаербола активирован (отслеживание одного касания)", LogLevel.Info);
         }
-
-        // ==================== MOVE HERO ====================
-        private bool TryClickGroundForSelectedHero(Vector2 screenPos)
-        {
-            if (_selectedHero == null) return false;
-
-            if (!TryGetGroundWorld(screenPos, out var worldPos))
-                return false;
-
-            Vector3 targetPos;
-            if (UnityEngine.AI.NavMesh.SamplePosition(worldPos, out var navHit, 1f, UnityEngine.AI.NavMesh.AllAreas))
-                targetPos = navHit.position;
-            else
-                targetPos = worldPos;
-            // выбор игрока
-            // _selectedHero.MoveToPointManual(targetPos);
-
-            Debug.Log($"[PinchToZoomAndPan] Идём 2");
-            //  SpawnPoint(targetPos);
-            return true;
-        }
-
- 
-
- 
 
         /// <summary>
-        /// UI: нажали кнопку Fireball.
-        /// Мы включаем режим прицеливания, но прицел появится ТОЛЬКО когда пользователь зажмёт палец/мышь на карте.
-        /// </summary> 
-        public void BeginFireballTargeting()
-        {
-            Debug.Log("[PinchToZoomAndPan] BeginFireballTargeting");
-            if (_selectedHero == null) return;
-
-            var ability = _selectedHero.GetComponent<LichFireballAbility>();
-            if (ability == null)
-            {
-                Debug.Log("[PinchToZoomAndPan] Этот герой не Лич, фаербол недоступен.");
-                return;
-            }
-            _activeFireball = ability;
-            _isAimingFireball = true;
-            _fireballPointerDown = false;
-
-            //         if (_isAimingFireball && _activeFireball != null)
-
-            Debug.Log("[PinchToZoomAndPan] Fireball mode ON: ждём зажатия на карте (press & hold).");
-        }
-
-        private bool IsPointerOverUI_Mouse()
-        {
-            return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
-        }
-
-        private bool IsPointerOverUI_Touch(int touchId)
-        {
-            return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touchId);
-        }
-
+        /// Завершает режим прицеливания фаербола
+        /// </summary>
         private void EndFireballTargetingMode()
         {
+            Log("EndFireballTargetingMode() - завершение режима фаербола", LogLevel.Info);
+            
             _isAimingFireball = false;
             _fireballPointerDown = false;
             _activeFireball = null;
-
             _fireballPointerId = int.MinValue;
 
             var cb = _onFireballAimingFinished;
             _onFireballAimingFinished = null;
             cb?.Invoke();
- 
-            Debug.Log("[PinchToZoomAndPan] Fireball mode OFF.");
+
+            Log("Режим фаербола деактивирован", LogLevel.Info);
         }
-        //
-        // ==================== WORLD HIT ====================
+
+        // ==================== МЕТОДЫ ПЕРЕМЕЩЕНИЯ ГЕРОЯ ====================
+
         /// <summary>
-        /// Получаем world позицию по клику/тачу, только если попали в groundMask.
+        /// Пытается переместить выбранного героя по клику на землю
+        /// </summary>
+        private bool TryClickGroundForSelectedHero(Vector2 screenPos)
+        {
+            if (_selectedHero == null)
+            {
+                Log("TryClickGroundForSelectedHero: герой не выбран", LogLevel.Verbose);
+                return false;
+            }
+
+            if (!TryGetGroundWorld(screenPos, out var worldPos))
+            {
+                Log($"TryClickGroundForSelectedHero: не удалось получить мировые координаты из {screenPos}", LogLevel.Verbose);
+                return false;
+            }
+
+            // Поиск точки на навигационной сетке
+            Vector3 targetPos;
+            if (UnityEngine.AI.NavMesh.SamplePosition(worldPos, out var navHit, 1f, UnityEngine.AI.NavMesh.AllAreas))
+            {
+                targetPos = navHit.position;
+                Log($"Найдена точка на NavMesh: {targetPos} (исходная: {worldPos})", LogLevel.Info);
+            }
+            else
+            {
+                targetPos = worldPos;
+                LogWarning($"Точка {worldPos} не на NavMesh, используется исходная позиция");
+            }
+
+            // Здесь должен быть вызов метода перемещения героя
+            // _selectedHero.MoveToPointManual(targetPos);
+
+          //  Log($"[PinchToZoomAndPan] Перемещение героя {_selectedHero.name} в {targetPos}", LogLevel.Info);
+          //  SpawnPoint(targetPos);
+            
+            return true;
+        }
+
+        /// <summary>
+        /// Пытается получить мировые координаты по экранным, проверяя попадание в groundMask
         /// </summary>
         private bool TryGetGroundWorld(Vector2 screenPos, out Vector3 worldPos)
         {
             Ray ray = targetCamera.ScreenPointToRay(screenPos);
             RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity, groundMask);
+            
             if (hit.collider == null)
             {
+                Log($"TryGetGroundWorld: нет попадания в groundMask из {screenPos}", LogLevel.Verbose);
                 worldPos = default;
                 return false;
             }
 
             worldPos = hit.point;
             worldPos.z = 0f;
+            
+            Log($"TryGetGroundWorld: успех, позиция {worldPos}, объект: {hit.collider.name}", LogLevel.Verbose);
             return true;
         }
+
+        /// <summary>
+        /// Создает визуальную точку в указанной позиции
+        /// </summary>
         private void SpawnPoint(Vector3 worldPos)
         {
             if (_isAimingFireball)
             {
-                Debug.Log("[PinchToZoomAndPan] сейчас фаербол у лича");
-                // сейчас фаербол у лича
+                Log("SpawnPoint: пропускаем, активен режим фаербола", LogLevel.Verbose);
                 return;
             }
 
-            if (prefabPoint == null) return;
+            if (prefabPoint == null)
+            {
+                LogWarning("SpawnPoint: prefabPoint не назначен");
+                return;
+            }
 
             if (_lastPointInstance != null)
+            {
+                Log($"Удаление предыдущей точки {_lastPointInstance.name}", LogLevel.Verbose);
                 Destroy(_lastPointInstance);
+            }
 
             worldPos.z = 0f;
-            Debug.Log("[PinchToZoomAndPan] Ставим точку");
             _lastPointInstance = Instantiate(prefabPoint, worldPos, Quaternion.identity);
+            
+            if (debugSpawnPoint)
+                Log($"Создана точка в {worldPos}", LogLevel.Info);
         }
+
+        // ==================== МЕТОДЫ ВЗАИМОДЕЙСТВИЯ С ЖИВОТНЫМИ ====================
+
+        /// <summary>
+        /// Пытается убить обычное животное по клику
+        /// </summary>
         private bool TryClickAnimal(Vector2 screenPos)
         {
             Ray ray = targetCamera.ScreenPointToRay(screenPos);
             RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity, animalMask);
-            if (hit.collider == null) return false;
-
-            // Если кликнули по коллайдеру дочернего объекта, берём AI у родителя
-            var animal = hit.collider.GetComponent<Animals.AnimalsAI>();
-            if (animal == null) return false;
-            animal.Kill();
-            Debug.Log($"[PinchToZoomAndPan] 🐗 Убили животное: {animal.name}");
-            return true;
-        }
-
-        private bool TryClickBirdAnimal(Vector2 screenPos)
-        {
-            Ray ray = targetCamera.ScreenPointToRay(screenPos);
-            RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity, animalMask);
+            
             if (hit.collider == null)
             {
                 return false;
             }
 
-            // Если кликнули по коллайдеру дочернего объекта, берём AI у родителя
+            var animal = hit.collider.GetComponent<Animals.AnimalsAI>();
+            if (animal == null)
+            {
+                Log($"Объект {hit.collider.name} не имеет компонента AnimalsAI", LogLevel.Verbose);
+                return false;
+            }
+
+            if (debugAnimalClicks)
+                Log($"Убито животное: {animal.name}, позиция: {hit.point}", LogLevel.Info);
+            
+            animal.Kill();
+            return true;
+        }
+
+        /// <summary>
+        /// Пытается убить птицу по клику
+        /// </summary>
+        private bool TryClickBirdAnimal(Vector2 screenPos)
+        {
+            Ray ray = targetCamera.ScreenPointToRay(screenPos);
+            RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity, animalMask);
+            
+            if (hit.collider == null)
+            {
+                return false;
+            }
+
             var animalBird = hit.collider.GetComponent<Animals.BirdAI>();
             if (animalBird == null)
             {
                 return false;
             }
 
+            if (debugAnimalClicks)
+                Log($"Убита птица: {animalBird.name}, позиция: {hit.point}", LogLevel.Info);
+            
             animalBird.Kill();
-            Debug.Log($"[PinchToZoomAndPan] 🐗 Убили животное: {animalBird.name}");
             return true;
         }
 
-        // ==================== HERO SELECT ====================
-        private bool TryClickHero(Vector2 screenPos)
+
+        
+        
+
+        /// <summary>
+        /// Логирует сообщение с учетом уровня детализации
+        /// </summary>
+        private void Log(string message, LogLevel level = LogLevel.Info)
         {
-            Ray ray = targetCamera.ScreenPointToRay(screenPos);
-            RaycastHit2D hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity, heroMask);
-            if (hit.collider == null) return false;
-
-            var hero = hit.collider.GetComponentInParent<WarriorAI>();
-            if (hero == null) return false;
-
-            if (hero.name != _hero_select)
-                return false;
-
-            if (_selectedHero != null)
-                _selectedHero.SetSelected(false);
-
-            _selectedHero = hero;
-            _selectedHero.SetSelected(true);
-
-            Debug.Log($"[PinchToZoomAndPan] Выбран герой: {_selectedHero.name}");
-            return true;
+            if (logLevel >= level)
+            {
+                switch (level)
+                {
+                    case LogLevel.Error:
+                        Debug.LogError(LOG_PREFIX + message);
+                        break;
+                    case LogLevel.Warning:
+                        Debug.LogWarning(LOG_PREFIX + message);
+                        break;
+                    default:
+                        Debug.Log(LOG_PREFIX + message);
+                        break;
+                }
+            }
         }
+
+        /// <summary>
+        /// Логирует предупреждение
+        /// </summary>
+        private void LogWarning(string message)
+        {
+            if (logLevel >= LogLevel.Warning)
+                Debug.LogWarning(LOG_PREFIX + message);
+        }
+
+        /// <summary>
+        /// Логирует ошибку
+        /// </summary>
+        private void LogError(string message)
+        {
+            if (logLevel >= LogLevel.Error)
+                Debug.LogError(LOG_PREFIX + message);
+        }
+
+        
+ 
     }
 }

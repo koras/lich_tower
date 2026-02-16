@@ -26,8 +26,7 @@ namespace Heroes
 
         [SerializeField] private Color aimLineColor = Color.cyan;
 
-
-        //     [SerializeField] private Animator _animator; 
+ 
         [Header("Анимация")] [SerializeField] public SkeletonAnimation skeletonAnimation;
 
         [SerializeField] protected AnimationReferenceAsset idleAnimation;

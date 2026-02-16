@@ -6,7 +6,11 @@ using AudioSystem;
 
 namespace Weapons.Projectile
 {
-    public class LichBombHoleProjectile2D : MonoBehaviour
+    
+        
+    [RequireComponent(typeof(Animator))]
+    [RequireComponent(typeof(SpriteRenderer))]
+    public class LichFireProjectile2D : MonoBehaviour
     {
         [Header("Компоненты")]
         private Animator _animator;
@@ -20,13 +24,8 @@ namespace Weapons.Projectile
 
         [Header("Плавное исчезновение")]
         [SerializeField] private float fadeDuration = 1f;
-        private void PlaySound(SoundId id)
-        {
-            
-            if (!playAnimalSounds) return;
-            if (AudioService.I == null) return;
-            AudioService.I.Play(id, transform.position + soundOffset);
-        }
+
+        
         private void Awake()
         {
             _animator = GetComponent<Animator>();
@@ -36,7 +35,7 @@ namespace Weapons.Projectile
         private void Start()
         {
             //  Debug.LogError($"ExplosionBoomLichExplosionBoomLichExplosionBoomLichExplosionBoomLich");
-            PlaySound(SoundId.ExplosionBoomLich);
+  
             StartCoroutine(LifeRoutine());
         }
 

@@ -225,7 +225,6 @@ namespace Heroes
             {
                 return _currentTarget.position.x < transform.position.x;
             }
-    
             // Иначе сохраняем текущее направление
             return _lookDir < 0;
         }
@@ -309,7 +308,7 @@ namespace Heroes
           //  _agent.Move(delta);
           if (_character != null)
           {
-              _character.PlayWalk();
+           //   _character.PlayWalk();
           }
         }
         // Новый метод для отмены всех действий
@@ -367,7 +366,7 @@ namespace Heroes
             if (_controlledHero)
             {
                 UpdateJoystickMove();
-                if (IsManualControl)
+                if (IsManualControl && _state != State.Attacking)
                 {
                     return; // Не выполняем никакую AI логику
                 }
@@ -554,14 +553,15 @@ namespace Heroes
         public void InvokeAttackFromAnimation()
         {
             
-            Debug.Log($"[WarriorAI] InvokeAttackFromAnimatio");
+            Debug.Log($"[WarriorAI] InvokeAttackFromAnimation");
             if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich )
             { 
                 if(weapon == null)
                 {
                     Debug.Log($"[WarriorAI] weapon == null");
+                    Debug.Log($"[WarriorAI] InvokeAttackFromAnimation not fire");
                 }
-                Debug.Log($"[WarriorAI] Только Лич может стрелять 111");
+                Debug.Log($"[WarriorAI] InvokeAttackFromAnimation fire"); 
                 weapon?.LichAttackDirection(_aimDirection);
                 return;
             }
@@ -595,9 +595,18 @@ namespace Heroes
             }
 
             if (_currentTarget != null)
+            {
+                
                 weapon?.Attack();
+                Debug.Log($"[WarriorAI] InvokeAttackFromAnimation weapon?.Attack");
+            }
             else
+            {
+                
+                Debug.Log($"[WarriorAI] InvokeAttackFromAnimation State.Idle");
                 SwitchState(State.Idle);
+            }
+ 
         }
 
         public void InvokeAttackLichFireballFromAnimation()
@@ -907,6 +916,7 @@ namespace Heroes
             Debug.Log($"[WarriorAI] Стреляем! Направление: StartAttackAndSetTargetDirection");
             _aimDirection = aimDirection;
             
+            Debug.Log($"[WarriorAI] aimDirection {aimDirection}");
             SwitchState(State.Attacking);
         }
 
@@ -1139,7 +1149,7 @@ namespace Heroes
             }
             if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
             {
-                Debug.Log($"Изменили состояние   {_state} <- {s}  ");
+                Debug.Log($"[WarriorAI] SwitchState change state   {_state} <- {s}  ");
             }
 
             _state = s;
@@ -1166,6 +1176,7 @@ namespace Heroes
                 case State.Attacking:
                     _agent.isStopped = false;
                     _agent.speed = _moveSpeed;
+                    Debug.Log($"[WarriorAI] State.Attacking State.Attacking");
                     break;
 
                 case State.Idle:
@@ -1180,7 +1191,7 @@ namespace Heroes
             }
             if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
             {
-                Debug.Log($"Изменили ChangeAnimation {s}");
+                Debug.Log($"[WarriorAI] ChangeAnimatio {s}"); 
                 _character.PlayAttack();
             }
             ChangeAnimation();
@@ -1190,7 +1201,7 @@ namespace Heroes
         {
             if (_character == null)
             {
-                Debug.Log($"не найден _character ");
+                Debug.Log($"[WarriorAI] not found character _character"); 
                 return;
             }
                 
@@ -1217,9 +1228,9 @@ namespace Heroes
                     
                     if (_heroesBase.GetHeroType() == HeroesBase.Hero.Lich)
                     {
-                        Debug.Log($"_character.PlayAttack(); 1");
+                        Debug.Log($"[WarriorAI] _character.PlayAttack(); 1");
                     }
-                    Debug.Log($"_character.PlayAttack(); 2");
+                    Debug.Log($"[WarriorAI] _character.PlayAttack(); 2");
                     _character.PlayAttack();
                     break;
 

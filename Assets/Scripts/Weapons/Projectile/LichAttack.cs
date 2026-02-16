@@ -36,15 +36,18 @@ namespace Weapons.Projectile
 
         public override void LichAttackDirection(Vector2 aimDirection)
         {
+            Debug.Log($"[LichAttack] LichAttackDirection");
             if (!canAttack)
             {
                 Debug.Log($"[LichAttack] Запрет на атаку");
+                Debug.Log($"[LichAttack] LichAttackDirection not access");
                 return;
             }
 
             if (projectilePrefab == null)
             {
                 Debug.LogError("[LichAttack] projectilePrefab не назначен!");
+                Debug.Log($"[LichAttack] LichAttackDirection not access projectilePrefab");
                 return;
             }
 
@@ -52,7 +55,8 @@ namespace Weapons.Projectile
             HeroesBase owner = GetComponentInParent<HeroesBase>();
             if (owner == null)
             {
-                Debug.LogError("[LichAttack] Владелец оружия не найден!");
+               // Debug.LogError("[LichAttack] Владелец оружия не найден!");
+                Debug.Log($"[LichAttack] LichAttackDirection not access projectilePrefab awn");
                 return;
             }
 

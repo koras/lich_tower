@@ -597,7 +597,7 @@ Transform:
   m_GameObject: {fileID: 3103076786871160939}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.172, y: 0.345, z: 0}
+  m_LocalPosition: {x: 0.146, y: 0.277, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1129,7 +1129,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -1123069753
-  m_SortingOrder: 20
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!114 &8486745298456138351
 MonoBehaviour:
@@ -6119,8 +6119,8 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 20
+  m_SortingLayerID: -1123069753
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!114 &6632333499064348941
 MonoBehaviour:
@@ -6550,6 +6550,7 @@ GameObject:
   - component: {fileID: 9144413278915794280}
   - component: {fileID: 7976627237400294734}
   - component: {fileID: 1984400708240459938}
+  - component: {fileID: 7295991947740914638}
   m_Layer: 12
   m_Name: Spine GameObject (Lich)
   m_TagString: Untagged
@@ -6711,6 +6712,19 @@ MonoBehaviour:
   addNormalsDeprecated: 0
   calculateTangentsDeprecated: 0
   maskInteractionDeprecated: 0
+--- !u!210 &7295991947740914638
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8116737663663956237}
+  m_Enabled: 1
+  m_SortingLayerID: -1123069753
+  m_SortingLayer: 2
+  m_SortingOrder: 10
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
 --- !u!1 &8370789620127975327
 GameObject:
   m_ObjectHideFlags: 0
